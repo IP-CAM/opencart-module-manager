@@ -1,0 +1,18 @@
+2014-07-28 17:06:28 - PHP Notice:  Error: Could not load language module/watermark! in C:\xampp\htdocs\opencart-clear.dev\www\system\library\language.php on line 39
+2014-07-28 17:06:28 - PHP Notice:  Error: Could not load language module/watermarks! in C:\xampp\htdocs\opencart-clear.dev\www\system\library\language.php on line 39
+2014-07-28 17:09:24 - PHP Notice:  Error: Could not load language module/watermarks! in C:\xampp\htdocs\opencart-clear.dev\www\system\library\language.php on line 39
+2014-07-28 17:09:25 - PHP Notice:  Error: Could not load language module/watermarks! in C:\xampp\htdocs\opencart-clear.dev\www\system\library\language.php on line 39
+2014-07-28 17:14:08 - PHP Notice:  Undefined variable: error_warning in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 7
+2014-07-28 17:14:08 - PHP Notice:  Undefined variable: heading_title in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 16
+2014-07-28 17:14:08 - PHP Notice:  Undefined variable: button_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 20
+2014-07-28 17:14:08 - PHP Notice:  Undefined variable: button_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 22
+2014-07-28 17:14:38 - PHP Notice:  Undefined variable: heading_title in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 16
+2014-07-28 17:14:38 - PHP Notice:  Undefined variable: button_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 20
+2014-07-28 17:14:38 - PHP Notice:  Undefined variable: button_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 22
+2014-07-28 17:14:47 - PHP Notice:  Undefined variable: button_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 19
+2014-07-28 17:14:47 - PHP Notice:  Undefined variable: button_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 21
+2014-07-28 17:20:44 - PHP Warning:  require(/admin/view/template/teil/teil-scripts.php): failed to open stream: No such file or directory in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 36
+2014-07-28 17:21:00 - PHP Warning:  require(C:\xampp\htdocs\opencart-clear.dev\www/admin//admin/view/template/teil/teil-scripts.php): failed to open stream: No such file or directory in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 36
+2014-07-28 17:21:00 - PHP Warning:  require(C:\xampp\htdocs\opencart-clear.dev\www/admin//admin/view/template/teil/teil-scripts.php): failed to open stream: No such file or directory in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 36
+2014-07-28 17:21:06 - PHP Warning:  require(C:\xampp\htdocs\opencart-clear.dev\www/admin/admin/view/template/teil/teil-scripts.php): failed to open stream: No such file or directory in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 36
+2014-07-28 17:21:06 - PHP Warning:  require(C:\xampp\htdocs\opencart-clear.dev\www/admin/admin/view/template/teil/teil-scripts.php): failed to open stream: No such file or directory in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\watermark.tpl on line 36

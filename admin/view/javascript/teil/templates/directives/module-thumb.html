@@ -1,0 +1,52 @@
+<li class="modules__item">
+	<span class="installed" ng-if="module.installed">
+		{{ 'INSTALLED_MODULE_TEXT' | translate }}
+	</span><!-- end .installed -->
+
+	<span ng-if="module.hasUpdate" class="update-avalible">
+		<span class="glyphicon glyphicon-refresh"></span>
+	</span>
+
+	<div class="modules__item-thumbnail">
+		<span class="preview-item-icon-container">
+			<span class="preview-item-icon-table">
+				<span class="preview-item-icon">
+					<span class="glyphicon glyphicon-eye-open"></span>
+				</span><!-- end .preview-item-icon -->
+			</span><!-- end .preview-item-icon-table -->
+		</span><!-- end .preview-item-icon-container -->
+
+		<img class="modules__item-thumbnail-image" ng-src="{{ module.image }}">
+	</div>
+
+	<div class="modules__item-info">
+		<div class="modules__topic topic-code">{{ module.category }}</div>
+		<h3 class="modules__title nolinks">
+			{{ module.title }}
+		</h3>
+
+		<div class="description">
+			{{ module.description }}
+		</div>
+		
+		<div class="modules__publication-downloads">
+			<span class="glyphicon glyphicon-download"></span> {{ module.downloads }}
+		</div>
+
+		<div class="modules__publication-rating">
+			<span class="glyphicon glyphicon-star"></span>
+			<span class="glyphicon glyphicon-star"></span>
+			<span class="glyphicon glyphicon-star"></span>
+			<span class="glyphicon glyphicon-star"></span>
+			<span class="glyphicon glyphicon-star-empty"></span>
+			(135)
+		</div>
+
+	</div>
+	
+	<a 
+		class="modules__item-link" 
+		href="javascript:;" 
+		ng-click="openPopup(module)">
+	</a>
+</li>
