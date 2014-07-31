@@ -3,11 +3,18 @@
 
 (function() {
 
-	function WatermarkController($scope, $http, TOKEN) {
+	function WatermarkController($scope, $http, $timeout, TOKEN) {
 		$scope.watermarkUrl = '';
 		$scope.watermarkEditorUrl = '';
 		$scope.watermarkPositions = [];
 		$scope.selectedPotision = {};
+
+		// Fix image onload event
+		$timeout(function() {
+			var selectedPotision = $scope.selectedPotision;
+
+			$scope.resolveSelectedPosition(selectedPotision);
+		}, 1000);
 
 		$scope.image = {
 			width: '',
@@ -40,45 +47,50 @@
 
 				$scope.selectedPotision = resp.data.positions[0];
 
-				if (resp.data.position) {
-					angular.extend($scope.selectedPotision, resp.data.position);
+				if (resp.data.position.key != undefined) {
+					angular.forEach(resp.data.positions, function(el) {
+						if (resp.data.position.key == el.key) $scope.selectedPotision = el;
+					});
 				};
 
 				$scope.startWatching();
 			});
 
 		$scope.startWatching = function() {
-			$scope.$watch('selectedPotision', function(val) {
-				var imageWidth = angular.element('#preview-image').width(),
-					imageHeight = angular.element('#preview-image').height();
+			$scope.$watch('selectedPotision', $scope.resolveSelectedPosition, true);
+		};
 
-				var containerWidth = angular.element('#watermark-image-preview').width(),
-					containerHeight = angular.element('#watermark-image-preview').height();
 
-				if (val.key.match(/^top-/i)) {
-					$scope.offset.top = 0;
-				};
+		$scope.resolveSelectedPosition = function(val) {
+			var imageWidth = angular.element('#preview-image').width(),
+				imageHeight = angular.element('#preview-image').height();
 
-				if (val.key.match(/^middle-/i)) {
-					$scope.offset.top = (containerHeight - imageHeight) / 2;
-				};
+			var containerWidth = angular.element('#watermark-image-preview').width(),
+				containerHeight = angular.element('#watermark-image-preview').height();
 
-				if (val.key.match(/^bottom-/i)) {
-					$scope.offset.top = containerHeight - imageHeight;
-				};
+			if (val.key.match(/^top-/i)) {
+				$scope.offset.top = 0;
+			};
 
-				if (val.key.match(/-left$/i)) {
-					$scope.offset.left = 0;
-				};
+			if (val.key.match(/^middle-/i)) {
+				$scope.offset.top = (containerHeight - imageHeight) / 2;
+			};
 
-				if (val.key.match(/-center$/i)) {
-					$scope.offset.left = (containerWidth - imageWidth) / 2;
-				};
+			if (val.key.match(/^bottom-/i)) {
+				$scope.offset.top = containerHeight - imageHeight;
+			};
 
-				if (val.key.match(/-right$/i)) {
-					$scope.offset.left = containerWidth - imageWidth;
-				};
-			}, true);
+			if (val.key.match(/-left$/i)) {
+				$scope.offset.left = 0;
+			};
+
+			if (val.key.match(/-center$/i)) {
+				$scope.offset.left = (containerWidth - imageWidth) / 2;
+			};
+
+			if (val.key.match(/-right$/i)) {
+				$scope.offset.left = containerWidth - imageWidth;
+			};
 		};
 
 
@@ -99,6 +111,13 @@
 			.then(function(resp) {
 				console.log(resp);
 			});
+		};
+
+		$scope.init = function() {
+
+			
+			
+
 		};
 
 	};

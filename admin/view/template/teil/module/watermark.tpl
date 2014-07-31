@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="content" ng-controller="WatermarkController">
+        <div class="content" ng-controller="WatermarkController" ng-init="init()">
 			
         	<div class="half">
 				<div class="pult-container">
