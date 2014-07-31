@@ -1,4 +1,23 @@
 <?php echo $header; ?>
+
+
+<!-- Styles -->
+<link rel="stylesheet" type="text/css" href="/admin/view/stylesheet/teil/modules-list.css">
+<link rel="stylesheet" href="/admin/view/javascript/teil/bower_components/sass-bootstrap-glyphicons/css/bootstrap-glyphicons.css">
+
+<!-- Mignify popup -->
+<link rel="stylesheet" href="/admin/view/javascript/teil/bower_components/magnific-popup/dist/magnific-popup.css">
+
+<!-- Animate.css -->
+<link rel="stylesheet" href="/admin/view/javascript/teil/bower_components/animate.css/animate.css">
+
+<!-- Token -->
+<input type="hidden" value="<?php echo $token ?>" id="token">
+<input type="hidden" value="<?php echo $this->config->get('config_email') ?>" id="admin-email">
+<input type="hidden" value="<?php echo DIR_TEIL_MODULES ?>" id="dir-teil-modules">
+<input type="hidden" value="<?php echo $this->config->get('config_admin_language') ?>" id="admin-language">
+
+
 <div id="content">
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
@@ -22,7 +41,7 @@
           </tr>
           <tr>
             <td>&nbsp;</td>
-            <td><div id="featured-product" class="scrollbox">
+            <td><div id="featured-product">
                 <?php $class = 'odd'; ?>
                 <?php foreach ($products as $product) { ?>
                 <?php $class = ($class == 'even' ? 'odd' : 'even'); ?>
@@ -197,4 +216,44 @@ function addModule() {
 	module_row++;
 }
 //--></script> 
+
+
+<!-- Mignific popup -->
+<script src="/admin/view/javascript/teil/bower_components/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
+
+<!-- Angular core -->
+<script src="/admin/view/javascript/teil/bower_components/angular/angular.js"></script>
+<script src="/admin/view/javascript/teil/bower_components/angular-route/angular-route.min.js"></script>
+<script src="/admin/view/javascript/teil/bower_components/angular-cookies/angular-cookies.min.js"></script>
+<script src="/admin/view/javascript/teil/bower_components/angular-translate/angular-translate.min.js"></script>
+<script src="/admin/view/javascript/teil/bower_components/angular-animate/angular-animate.min.js"></script>
+
+<!-- Init -->
+<script src="/admin/view/javascript/teil/init.js"></script>
+
+<!-- Localization -->
+<script src="/admin/view/javascript/teil/localization/en.js"></script>
+<script src="/admin/view/javascript/teil/localization/ru.js"></script>
+
+<!-- Controllers -->
+<script src="/admin/view/javascript/teil/controllers/CommonController.js"></script>
+<script src="/admin/view/javascript/teil/controllers/SelfController.js"></script>
+
+<!-- Directives -->
+<script src="/admin/view/javascript/teil/directives/ng-enter.js"></script>
+<script src="/admin/view/javascript/teil/directives/module-min-price.js"></script>
+<script src="/admin/view/javascript/teil/directives/module-popup.js"></script>
+<script src="/admin/view/javascript/teil/directives/module-thumb.js"></script>
+<script src="/admin/view/javascript/teil/directives/btn-progress.js"></script>
+<script src="/admin/view/javascript/teil/directives/capitalize.js"></script>
+<script src="/admin/view/javascript/teil/directives/progress-block-btn.js"></script>
+
+<!-- Services -->
+<script src="/admin/view/javascript/teil/services/module-downloader.js"></script>
+<script src="/admin/view/javascript/teil/services/module.js"></script>
+
+<!-- Filters -->
+<script src="/admin/view/javascript/teil/filters/date-format.js"></script>
+
+
 <?php echo $footer; ?>
