@@ -2,7 +2,6 @@
 class ControllerTeilHome extends Controller { 
  
     public function index() {
-        print_r(gethostname()); die();
         $this->template = 'teil/base/default.tpl';
         
         // If form submited
