@@ -65,3 +65,18 @@
 2014-07-31 14:26:19 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
 2014-07-31 14:26:58 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
 2014-07-31 14:27:02 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:48:19 - PHP Notice:  Error: Could not load model teil/home! in C:\xampp\htdocs\opencart-clear.dev\www\system\engine\loader.php on line 48
+2014-07-31 14:48:56 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:48:58 - PHP Notice:  Undefined index: TeilServiceProviders in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:48:58 - PHP Warning:  Invalid argument supplied for foreach() in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:49:01 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:49:01 - PHP Notice:  Undefined index: TeilServiceProviders in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:49:01 - PHP Warning:  Invalid argument supplied for foreach() in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:49:41 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:49:42 - PHP Notice:  Undefined index: TeilServiceProviders in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:49:42 - PHP Warning:  Invalid argument supplied for foreach() in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:49:46 - PHP Notice:  Undefined index: TeilServiceProviders in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:49:46 - PHP Warning:  Invalid argument supplied for foreach() in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:51:32 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:51:33 - PHP Notice:  Undefined index: TeilServiceProviders in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
+2014-07-31 14:51:33 - PHP Warning:  Invalid argument supplied for foreach() in C:\xampp\htdocs\opencart-clear.dev\www\admin\controller\teil\home.php on line 192
