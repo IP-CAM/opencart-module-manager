@@ -1,0 +1,247 @@
+<div id="module-popup" class="white-popup mfp-with-anim" ng-class="{'loading': loading}">
+
+	<div id="clock-loading" ng-class="{'show-loading popin': loading}" class="clock-loading">
+		<img src="/admin/view/image/teil/loading_clock.png" class="loading-icon">
+	</div>
+
+	<header class="image-header">
+		<img ng-src="{{ module.image }}">
+	</header>
+
+	<!-- Module info -->
+	<h2 class="__h2-title">{{ module.title }}</h2>
+	<div class="category-small">{{ module.category }}</div>
+
+	<!-- Update button -->
+	<progress-block-btn 
+		ng-cloak 
+		ng-show="module.hasUpdate" 
+		module="module" 
+		progress="0" 
+	></progress-block-btn>
+
+	<!-- Key info -->
+	<div class="bs-callout bs-callout-warning" ng-if="module.installed && !isKeyValid && module.days_left && !isKeyFree || module.installed && !isInsertedKeysMatch || module.installed && !isKeyValid && !module.days_left && !isKeyFree && module.regular_payment && !isTrialKey || module.installed && isKeyFree && !isKeyValid && module.regular_payment" ng-cloak>
+		<h4>{{ 'KEY_IS_DEPRECATED_TEXT' | translate }}</h4>
+		<p>{{ 'CURRENT_INSERTED_KEY_TEXT' | translate }} <code>{{ module.key }}</code></p>
+
+		<div ng-if="!isKeyFree || module.regular_payment && module.days_left != '-'">
+			<h3>{{ 'KEY_INFORMATION_TEXT' | translate }}:</h3>
+			<p ng-show="isTrialKey">{{ 'IS_TRIAL_KEY_MESSAGE' | translate }} - <code>{{ 'IS_TRIAL_KEY_MESSAGE_VALUE' | translate }}</code></p>
+
+			<p>
+				{{ 'MODULE_TYPE_TEXT' | translate }} - 
+				<code>{{ module.module_type_name }}</code>
+			</p>
+			
+			<p>
+				{{ 'KEY_ACTIVE_UNTILL_TEXT' | translate }} - 
+				<code ng-if="module.regular_payment || isTrialKey">{{ module.expired_at }}</code>
+				<code ng-if="!module.regular_payment && !isTrialKey" class="large">&infin;</code>
+			</p>
+			
+			<p>
+				{{ 'DAYS_LEFT_TEXT' | translate }} - 
+				<code ng-if="module.regular_payment || isTrialKey">{{ module.days_left || 0 }}</code>
+				<code ng-if="!module.regular_payment && !isTrialKey" class="large">&infin;</code>
+			</p>
+			
+			<p><small><a ng-click="toggleEnterKeyOverlay()">{{ 'INSERT_KEY_ACTION_TEXT' | translate }}</a> {{ 'INSERT_KEY_ACTION_POST_TEXT' | translate }}</small></p>
+		</div>
+
+		<button class="aware-action-button btn__blue" ng-click="toggleEnterKeyOverlay()">{{ 'ENTER_KEY_TEXT' | translate }}</button>
+	</div>
+
+	<div class="bs-callout bs-callout-warning" ng-if="module.installed && isTrialKey && !isTrialKeyValid && !module.days_left && isInsertedKeysMatch || isInsertedKeysMatch && module.installed && module.inserted_key == 'DEMO' && !module.days_left || module.installed && isInsertedKeysMatch && isKeyFree && module.inserted_key == 'DEMO'" ng-cloak>
+		<h4>{{ 'TRIAL_ENDED_TEXT' | translate }}</h4>
+		<p>{{ 'KEY_ACTIVE_PERIOD_TEXT' | translate }} <code>{{ module.key_expired_at }}</code></p>
+
+		<button class="aware-action-button btn__blue" ng-click="toggleEnterKeyOverlay()">{{ 'ENTER_KEY_TEXT' | translate }}</button>
+	</div>
+
+	<div class="bs-callout bs-callout-success" ng-if="module.installed && isKeyValid || module.installed && isKeyFree" ng-cloak>
+		<h4>{{ 'KEY_INFO_TEXT' | translate }}</h4>
+		
+		<p ng-show="isKeyValidTrial">{{ 'IS_TRIAL_KEY_MESSAGE' | translate }} <code>{{ 'IS_TRIAL_KEY_MESSAGE_VALUE' | translate }}</code></p>
+
+		<!-- Module hasn't got a free version -->
+		<div ng-if="isKeyFree">
+			<p class="category-small">{{ 'FREE_MODULE_TYPE_TEXT' | translate }}</p>
+			<p>{{ 'DAY_LEFT_TEXT' | translate }} <code class="large">&infin;</code></p>
+			<p>{{ 'EXPIRED_AT_TEXT' | translate }} <code class="large">&infin;</code></p>
+			<p>{{ 'KEY_TEXT' | translate }} <code>{{ 'KEY_IS_NOT_AVALIBLE_TEXT' | translate }}</code></p>
+			<p>{{ 'MODULE_TYPE_TEXT' | translate }} <code>{{ module.module_type_name_free }}</code></p>
+		</div>
+
+		<!-- Module has free verion -->
+		<div ng-if="!isKeyFree">
+			<p>
+				{{ 'DAY_LEFT_TEXT' | translate }} 
+				<code ng-if="module.regular_payment || isTrialKey">{{ module.days_left }}</code>
+				<code ng-if="!module.regular_payment && !isTrialKey" class="large">&infin;</code>
+			</p>
+
+			<p>
+				{{ 'EXPIRED_AT_TEXT' | translate }} 
+				<code ng-if="module.regular_payment || isTrialKey">{{ module.expired_at }}</code>
+				<code ng-if="!module.regular_payment && !isTrialKey" class="large">&infin;</code>
+			</p>
+
+			<p>
+				{{ 'KEY_TEXT' | translate }} 
+				<code ng-if="module.regular_payment || isTrialKey">{{ module.key }}</code>
+				<code ng-if="!module.regular_payment && !isTrialKey">{{ 'KEY_IS_NOT_AVALIBLE_TEXT' | translate }}</code>
+			</p>
+
+			<p>{{ 'MODULE_TYPE_TEXT' | translate }} <code>{{ module.module_type_name }}</code></p>
+		</div>
+		
+		<button 
+			class="aware-action-button btn__blue" 
+			ng-click="toggleEnterKeyOverlay()" 
+		>{{ 'ENTER_NEW_KEY_TEXT' | translate }}</button>
+	</div>
+
+
+	<!-- Enter key section -->
+	<div class="key-section" ng-class="{'show-insert-layer': showEnterKeyField}">
+		<div class="insert-key-container">
+			<input type="text" value="" placeholder="{{ 'ENTER_KEY_PLACEHOLDER_TEXT' | translate }} (XXXX-XXXX-XXXX-XXXX-XXXX)" class="key-input" ng-class="{'input-error': !storeKeyStatus}" ng-model="userLicenseKey" ng-enter="storeKey()" capitalize>
+
+			<div class="insert-key-buttons">
+				<button class="inser-key-cancel btn__blue" ng-click="toggleEnterKeyOverlay()">{{ 'CANCEL_TEXT' | translate }}</button>
+				<button class="inser-key-apply btn__blue" ng-click="storeKey()">{{ 'APPLY_KEY_TEXT' | translate }}</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Pricing sections -->
+	<h3 class="__h2">{{ 'PRICING_TEXT' | translate }}</h3>
+	
+	<div class="module-type-pricing-table">
+		<label 
+			class="pricing-item" 
+			ng-repeat="type in module.types" 
+			ng-class="{'unlocked': type.active || type.hasBetterType}" 
+		>
+			<input type="radio" ng-model="$parent.selectedType" ng-value="type" name="radio-module-selected-type">
+
+			<!-- Lock icon -->
+			<div class="lock-icon">
+				<span class="glyphicon glyphicon-lock"></span>
+			</div>
+
+			<div class="heading">
+				{{ type.name }} 
+				<i ng-if="type.isFree">(free)</i>
+			</div>
+
+			<ul class="attrs">
+				<li>Custom Design</li>
+				<li>Basic SEO</li>
+				<li>Graphic Design</li>
+				<li>Detailed Documentation</li>
+				<li>Lorem ipsum dolor sit amet, consectetur</li>
+			</ul>
+
+			
+			<div>
+				<div ng-if="!type.active && !type.hasBetterType">{{ type.price | number:0 }}</div>
+
+				<!-- Buy it now buttons -->
+				<button 
+					ng-if="isKeyFree && !type.active && !isTrialKey || !module.purchased && !type.active && !isTrialKey || isTrialKey && type.real_price > 0" 
+					class="btn__blue"
+					ng-show="!type.hasBetterType || isTrialKey" 
+			 		ng-click="purchase($event, type.id)" 
+				>
+					{{ 'BUT_IT_NOW_TEXT' | translate }}
+					<span class="price">{{ type.price | number:0 }}$</span>
+				</button>
+
+				<button 
+					ng-if="!isKeyFree && module.purchased && !type.active && !isTrialKey" 
+					class="btn__blue" 
+					ng-show="!type.hasBetterType" 
+					ng-click="purchase($event, type.id)" 
+				>
+					{{ 'UPGRADE_TEXT' | translate }}
+					<span class="price">{{ type.price | number:0 }}$</span>
+				</button>
+
+				<button 
+					class="btn__blue" 
+					ng-if="type.extendable && !isTrialKey && module.regular_payment" 
+					ng-click="purchase($event, type.id)" 
+				>
+					{{ 'EXTEND_LICENSE_TEXT' | translate }}
+					<span class="price">{{ type.price | number:0 }}$</span>
+				</button>
+			</div>
+
+
+		</label><!-- end .pricing-item -->
+	</div><!-- end .module-type-radio-list -->
+
+	<span ng-if="isActiveType && !isTrialKey || !isGreaterType && !isTrialKey">
+		<span ng-if="module.regular_payment && totalRealPrice > 0">
+			<span ng-if="module.days_left > 0">{{ 'IS_ACTIVE_TEXT' | translate }}</span>
+
+			<button 
+				class="btn__blue" 
+				ng-if="!isKeyFree" 
+				ng-click="purchase($event)" 
+			>{{ 'EXTEND_LICENSE_TEXT' | translate }}</button>
+
+			<strong>{{ 'MODULE_PRICE_TEXT' | translate }}: </strong> {{ totalPrice }} 
+		</span>
+
+		<span ng-if="!module.regular_payment && totalRealPrice > 0">
+			<span>{{ 'IS_ACTIVE_TEXT' | translate }}</span>
+		</span>
+
+		<span ng-if="totalRealPrice <= 0">
+			{{ 'IS_ACTIVE_TEXT' | translate }} 
+			<strong>{{ 'FREE_MODULE_TYPE_TEXT' | translate }}</strong>
+		</span>
+	</span>
+
+	<span ng-if="isActiveType && isTrialKey && module.days_left || !isGreaterType && isTrialKey && module.days_left">
+		{{ 'IS_TRIAL_ACTIVE' | translate }}
+	</span>
+
+	<span ng-if="isGreaterType && !isActiveType || isTrialKey">
+		<span ng-if="totalRealPrice > 0">
+			<strong>{{ 'MODULE_PRICE_TEXT' | translate }}: </strong> {{ totalPrice }}
+		</span>
+		
+		<span ng-if="totalRealPrice <= 0">
+			<strong>{{ 'FREE_MODULE_TYPE_TEXT' | translate }}</strong>
+		</span>
+	</span>
+
+	<!-- Buy it now buttons -->
+	<button 
+		ng-if="!module.purchased && !isActiveType && !isTrialKey || isTrialKey && totalRealPrice > 0" 
+		class="btn__blue"
+		ng-show="isGreaterType || isTrialKey" 
+ 		ng-click="purchase($event)" 
+	>{{ 'BUT_IT_NOW_TEXT' | translate }}</button>
+
+	<button 
+		ng-if="module.purchased && !isActiveType && !isTrialKey" 
+		class="btn__blue" 
+		ng-show="isGreaterType || isTrialKey" 
+		ng-click="purchase($event)" 
+	>{{ 'UPGRADE_TEXT' | translate }}</button>
+
+	<!-- Download / remove button -->
+	<btn-progress 
+		ng-class="{__error: module.installed, " 
+		progress="0" 
+		ng-click="action($event);" 
+		class="btn__blue btn__block" 
+		module="module"
+	></btn-progress>
+
+</div>
