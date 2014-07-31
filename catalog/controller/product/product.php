@@ -289,7 +289,7 @@ class ControllerProductProduct extends Controller {
 			$this->load->model('tool/image');
 
 			if ($product_info['image']) {
-				$this->data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('config_image_popup_width'), $this->config->get('config_image_popup_height'));
+				$this->data['popup'] = $this->model_tool_image->watermarkResize($product_info['image'], $this->config->get('config_image_popup_width'), $this->config->get('config_image_popup_height'), true);
 			} else {
 				$this->data['popup'] = '';
 			}

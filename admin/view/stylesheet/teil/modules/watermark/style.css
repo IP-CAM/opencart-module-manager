@@ -1,0 +1,117 @@
+.watermark .hide-me {
+	display: none;
+}
+.watermark .half {
+	float: left;
+	width: 50%;
+	box-sizint: border-box;
+}
+.watermark .watermark-image-preview {
+	float: left;
+	width: 450px;
+	height: 550px;
+	border: 1px dashed #ccc;
+	box-sizing: border-box;
+	padding: 0;
+	position: relative;
+	background: url(/admin/view/image/teil/modules/watermark/watermark-demo-image.jpg) no-repeat 50% 50%;
+	background-size: cover;
+}
+.watermark .top-left {
+	position: absolute;
+}
+.watermark .top-center {
+	position: absolute;
+}
+.watermark .top-right {
+	position: absolute;
+}
+.watermark .middle-left {
+	position: absolute;
+}
+.watermark .middle-center {
+	position: absolute;
+}
+.watermark .middle-right {
+	position: absolute;
+}
+.watermark .bottom-left {
+	position: absolute;
+}
+.watermark .bottom-center {
+	position: absolute;
+}
+.watermark .bottom-right {
+	position: absolute;
+}
+.watermark #controll-pult {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    margin: 0 auto;
+    display: none;
+}
+.watermark #controll-pult::before {
+	content: "";
+	display: block;
+	position: absolute;
+	left: 55px;
+	right: 55px;
+	top: 55px;
+	bottom: 55px;
+	border: 9px solid #ccc;
+	border-radius: 50%;
+}
+.watermark #controll-pult div[class^="box-"] {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+}
+.watermark #controll-pult div.box-top {
+    left: 50%;
+    margin-left: -50px;
+    top: 30px;
+}
+.watermark #controll-pult div.box-bottom {
+    left: 50%;
+    top: auto;
+    bottom: 25px;
+    margin-left: -50px;
+}
+.watermark #controll-pult div.box-left {
+    top: 50%;  
+    margin-top: -15px;
+    height: 30px;
+}
+.watermark #controll-pult div.box-right {
+    left: auto;  right: 0;  top: 50%;  
+    margin-top: -15px;
+    height: 30px;
+}
+.watermark #controll-pult > div[class^="box-"] label {
+    display: block;
+    font-weight: 700;
+}
+.watermark #controll-pult > div[class^="box-"] input[type="number"] {
+    width: 50px;
+}
+.watermark #controll-pult div.box-top label {}
+.watermark #controll-pult div.box-bottom label {}
+.watermark #controll-pult div.box-left label {
+    float: left;
+    margin-top: 5px;
+}
+.watermark #controll-pult div.box-right label {
+    float: right;
+    margin-top: 5px;
+}
+.watermark .pult-container {
+    text-align: center;
+    min-width: 440px;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-right: 10px;
+}
