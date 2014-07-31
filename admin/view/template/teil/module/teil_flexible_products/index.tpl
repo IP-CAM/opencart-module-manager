@@ -1,7 +1,7 @@
 <?php echo $header ?>
 
 <?php require DIR_APPLICATION . '/view/template/teil/teil-head.php' ?>
-<link rel="stylesheet" type="text/css" href="/admin/view/stylesheet/teil/modules/module_name/style.css">
+<link rel="stylesheet" type="text/css" href="/admin/view/stylesheet/teil/modules/teil_flexible_products/style.css">
 
 
 <div id="content" class="watermark" ng-app="teil">
@@ -40,7 +40,7 @@
 
 
 <?php require DIR_APPLICATION . '/view/template/teil/teil-scripts.php' ?>
-<script src="/admin/view/javascript/teil/modules/module_name/controller.js"></script>
+<script src="/admin/view/javascript/teil/modules/teil_flexible_products/controller.js"></script>
 
 
 <?php echo $footer ?>

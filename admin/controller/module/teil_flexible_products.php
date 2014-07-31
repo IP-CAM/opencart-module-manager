@@ -1,11 +1,11 @@
 <?php
 
-class ControllerModuleModuleName extends Controller {
+class ControllerModuleTeilFlexibleProducts extends Controller {
 
 	public function index() {
 		$this->load->model('tool/image');
 
-		$this->language->load('module/module_name');
+		$this->language->load('module/teil_flexible_products');
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
@@ -29,7 +29,7 @@ class ControllerModuleModuleName extends Controller {
 
 		$this->data['breadcrumbs'][] = array(
 			'text'      => $this->language->get('heading_title'),
-			'href'      => $this->url->link('module/module_name', 'token=' . $this->session->data['token'], 'SSL'),
+			'href'      => $this->url->link('module/teil_flexible_products', 'token=' . $this->session->data['token'], 'SSL'),
 			'separator' => ' :: '
 		);
 
@@ -43,7 +43,7 @@ class ControllerModuleModuleName extends Controller {
 		$this->data['token'] = $this->session->data['token'];
 		$this->data['no_image'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
 
-		$this->template = 'teil/module/module_name.tpl';
+		$this->template = 'teil/module/teil_flexible_products/index.tpl';
 		$this->children = array(
 			'common/header',
 			'common/footer'
@@ -58,9 +58,9 @@ class ControllerModuleModuleName extends Controller {
 	{
 		$this->load->model('tool/image');
 		$this->load->model('setting/setting');
-		$this->language->load('module/module_name');
+		$this->language->load('module/teil_flexible_products');
 		
-		$result = $this->model_setting_setting->getSetting('module_name');
+		$result = $this->model_setting_setting->getSetting('teil_flexible_products');
 
 		// Get image
 		// if (!file_exists(DIR_IMAGE . $result['image']) AND !is_file(DIR_IMAGE . $result['image']))
