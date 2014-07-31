@@ -35,6 +35,7 @@ class ControllerModuleModuleName extends Controller {
 
 		// Language
 		$this->data['heading_title'] = $this->language->get('heading_title');
+		$this->data['text_module'] = $this->language->get('text_module');
 
 		// Local vars
 		$this->data['action'] = $this->url->link('module/watermark', 'token=' . $this->session->data['token'], 'SSL');

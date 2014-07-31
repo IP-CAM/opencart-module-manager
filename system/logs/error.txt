@@ -1,0 +1,67 @@
+2014-07-31 14:17:05 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_title in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 19
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 22
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 23
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_insert_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 33
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_new_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_clear_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_image_width in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 43
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_image_height in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 48
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_offset_controll in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 53
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_top in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 58
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_right in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 63
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_bottom in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 69
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_left in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 73
+2014-07-31 14:17:05 - PHP Notice:  Undefined variable: text_live_preview in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 83
+2014-07-31 14:24:52 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_title in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 19
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 22
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 23
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_insert_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 33
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_new_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_clear_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_image_width in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 43
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_image_height in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 48
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_offset_controll in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 53
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_top in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 58
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_right in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 63
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_bottom in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 69
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_left in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 73
+2014-07-31 14:24:52 - PHP Notice:  Undefined variable: text_live_preview in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 83
+2014-07-31 14:24:53 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_title in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 19
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 22
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 23
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_insert_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 33
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_new_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_clear_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_image_width in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 43
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_image_height in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 48
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_offset_controll in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 53
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_top in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 58
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_right in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 63
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_bottom in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 69
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_left in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 73
+2014-07-31 14:24:53 - PHP Notice:  Undefined variable: text_live_preview in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 83
+2014-07-31 14:25:12 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_title in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 19
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 22
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 23
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_insert_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 33
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_new_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_clear_image in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 38
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_image_width in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 43
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_image_height in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 48
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_offset_controll in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 53
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_top in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 58
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_right in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 63
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_bottom in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 69
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_left in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 73
+2014-07-31 14:25:12 - PHP Notice:  Undefined variable: text_live_preview in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 83
+2014-07-31 14:25:56 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:25:56 - PHP Notice:  Undefined variable: text_title in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 19
+2014-07-31 14:25:56 - PHP Notice:  Undefined variable: text_save in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 22
+2014-07-31 14:25:56 - PHP Notice:  Undefined variable: text_cancel in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\module\module_name.tpl on line 23
+2014-07-31 14:26:19 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:26:58 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
+2014-07-31 14:27:02 - PHP Notice:  Use of undefined constant DIR_TEIL_MODULES - assumed 'DIR_TEIL_MODULES' in C:\xampp\htdocs\opencart-clear.dev\www\admin\view\template\teil\teil-head.php on line 14
