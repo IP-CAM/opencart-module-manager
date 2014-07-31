@@ -942,3 +942,17 @@ border-left-color: #3c763d;
 .module-type-pricing-table .pricing-item.unlocked:first-child:before {
 	display: none;
 }
+.overlay-bg.loading::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  right: 0;
+  background: #000;
+  transition: width 1s ease-in-out, opacity 0.3s ease-out 1.2s;
+  border-radius: 4px;
+  z-index: 5;
+  opacity: 0.6;
+}

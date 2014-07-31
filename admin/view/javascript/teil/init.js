@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-window.teil = angular.module('teil', ['ngCookies', 'pascalprecht.translate'])
+window.teil = angular.module('teil', ['ngCookies', 'pascalprecht.translate', 'ui.sortable', 'ui.autocomplete'])
 	.constant('VERSION', '0.2')
 	.constant('TOKEN', angular.element('#token').val())
 	.constant('ADMIN_LANGUAGE', angular.element('#admin-language').val())
