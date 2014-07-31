@@ -161,8 +161,6 @@ $('input[name=\'product\']').autocomplete({
 		});
 	}, 
 	select: function(event, ui) {
-		$('#featured-product' + ui.item.value).remove();
-		
     var newProductView = '<div id="featured-product' + ui.item.value + '" class="featured-product-item">';
     newProductView += '<div class="featured-main-image"><img src="' + ui.item.thumb + '"></div>';
     newProductView += '<div class="featured-main-name">' + ui.item.label + '</div>';
@@ -173,6 +171,8 @@ $('input[name=\'product\']').autocomplete({
     newProductView += '</div>';
 
 		$('#featured-product').append(newProductView);
+
+    bindChangeProductAutocomplete();
 		
 		data = $.map($('#featured-product input'), function(element){
 			return $(element).attr('value');
@@ -290,47 +290,52 @@ function addModule() {
   });
 
 
-  $('input[name=\'changeproduct\']').autocomplete({
-    delay: 500,
-    source: function(request, response) {
-      $.ajax({
-        url: 'index.php?route=catalog/product/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request.term),
-        dataType: 'json',
-        success: function(json) {   
-          response($.map(json, function(item) {
-            return {
-              label: item.name,
-              value: item.product_id,
-              thumb: item.thumb
-            }
-          }));
-        }
-      });
-    }, 
-    select: function(event, ui) {
-      var newProductView = '<div id="featured-product' + ui.item.value + '" class="featured-product-item">';
-      newProductView += '<div class="featured-main-image"><img src="' + ui.item.thumb + '"></div>';
-      newProductView += '<div class="featured-main-name">' + ui.item.label + '</div>';
-      newProductView += '<img src="view/image/delete.png" class="remove-icon" alt="" />';
-      newProductView += '<div class="edit-icon"><span class="glyphicon glyphicon-edit"></span></div>';
-      newProductView += '<input type="text" value="" class="new-product-input" name="changeproduct">';
-      newProductView += '<input type="hidden" value="' + ui.item.value + '" />';
-      newProductView += '</div>';
-      
-      $(this).closest('.featured-product-item').replaceWith(newProductView);
+  bindChangeProductAutocomplete();
 
-      data = $.map($('#featured-product input'), function(element){
-        return $(element).attr('value');
-      });
+  function bindChangeProductAutocomplete() {
+    $('input[name=\'changeproduct\']').autocomplete({
+      delay: 500,
+      source: function(request, response) {
+        $.ajax({
+          url: 'index.php?route=catalog/product/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request.term),
+          dataType: 'json',
+          success: function(json) {   
+            response($.map(json, function(item) {
+              return {
+                label: item.name,
+                value: item.product_id,
+                thumb: item.thumb
+              }
+            }));
+          }
+        });
+      }, 
+      select: function(event, ui) {
+        var newProductView = '<div id="featured-product' + ui.item.value + '" class="featured-product-item">';
+        newProductView += '<div class="featured-main-image"><img src="' + ui.item.thumb + '"></div>';
+        newProductView += '<div class="featured-main-name">' + ui.item.label + '</div>';
+        newProductView += '<img src="view/image/delete.png" class="remove-icon" alt="" />';
+        newProductView += '<div class="edit-icon"><span class="glyphicon glyphicon-edit"></span></div>';
+        newProductView += '<input type="text" value="" class="new-product-input" name="changeproduct">';
+        newProductView += '<input type="hidden" value="' + ui.item.value + '" />';
+        newProductView += '</div>';
+        
+        $(this).closest('.featured-product-item').replaceWith(newProductView);
+
+        data = $.map($('#featured-product input'), function(element){
+          return $(element).attr('value');
+        });
+                
+        $('input[name=\'featured_product\']').attr('value', data.join());
               
-      $('input[name=\'featured_product\']').attr('value', data.join());
-            
-      return false;
-    },
-    focus: function(event, ui) {
-          return false;
-      }
-  });
+        return false;
+      },
+      focus: function(event, ui) {
+            return false;
+        }
+    });
+  }
+
 </script>
 
 <?php echo $footer; ?>
