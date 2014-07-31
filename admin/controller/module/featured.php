@@ -91,15 +91,26 @@ class ControllerModuleFeatured extends Controller {
 			$products = explode(',', $this->config->get('featured_product'));
 		}
 
+		$this->load->model('tool/image');
+
 		$this->data['products'] = array();
 
 		foreach ($products as $product_id) {
 			$product_info = $this->model_catalog_product->getProduct($product_id);
 
 			if ($product_info) {
+				if ($product_info['image']) {
+					$image = $this->model_tool_image->resize($product_info['image'], 100, 100);
+				} else {
+					$image = false;
+				}
+					
 				$this->data['products'][] = array(
-					'product_id' => $product_info['product_id'],
-					'name'       => $product_info['name']
+					'product_id'    => $product_info['product_id'],
+					'thumb'   	    => $image,
+					'name'    	    => $product_info['name'],
+					'description'   => substr($product_info['description'], 0, 50) . '..',
+					'href'    	    => $this->url->link('product/product', 'product_id=' . $product_info['product_id'])
 				);
 			}
 		}	

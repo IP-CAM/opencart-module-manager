@@ -1376,6 +1376,14 @@ class ControllerCatalogProduct extends Controller {
 			$results = $this->model_catalog_product->getProducts($data);
 
 			foreach ($results as $result) {
+				$this->load->model('tool/image');
+
+				if ($result['image']) {
+					$image = $this->model_tool_image->resize($result['image'], 100, 100);
+				} else {
+					$image = false;
+				}
+
 				$option_data = array();
 
 				$product_options = $this->model_catalog_product->getProductOptions($result['product_id']);	
@@ -1427,7 +1435,8 @@ class ControllerCatalogProduct extends Controller {
 					'name'       => strip_tags(html_entity_decode($result['name'], ENT_QUOTES, 'UTF-8')),	
 					'model'      => $result['model'],
 					'option'     => $option_data,
-					'price'      => $result['price']
+					'price'      => $result['price'],
+					'thumb'      => $image
 				);	
 			}
 		}

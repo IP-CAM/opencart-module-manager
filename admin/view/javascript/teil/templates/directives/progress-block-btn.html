@@ -1,0 +1,22 @@
+<div 
+	ng-cloak 
+	class="progress-block __has-progress bs-callout bs-callout-warning" 
+	data-progress="0" 
+>
+	<h4>{{ 'NEW_VERSION_TEXT' | translate }}</h4>
+
+	<button 
+		class="aware-action-button progress-btn btn__blue" 
+		ng-class="{animate_loaded: btnAnimationFinished}" 
+		ng-click="update($event)" 
+		ng-disabled="disabled" 
+	>
+		<span class="text">{{ 'UPDATE_TEXT' | translate }}</span>
+
+		<span class="icon-container">
+			<span><span class="glyphicon glyphicon-ok"></span></span>
+		</span>
+	</button>
+
+	<div class="over"></div>
+</div>

@@ -1,0 +1,27 @@
+<button 
+	class="progress-btn" 
+	ng-class="animate_loaded: btnAnimationFinished}" 
+	ng-disabled="disabled" 
+	ng-click="disable()" 
+>
+	<div class="over"></div>
+
+	<span class="icon-container" ng-if="!update">
+		<span ng-if="module.installed"><span class="glyphicon glyphicon-remove"></span></span>
+		<span ng-if="!module.installed"><span class="glyphicon glyphicon-ok"></span></span>
+	</span>
+
+	<span class="icon-container" ng-if="update">
+		<span><span class="glyphicon glyphicon-ok"></span></span>
+	</span>
+
+	<span class="text" ng-if="!update">
+		<span ng-if="module.installed">{{ 'REMOVE_BTN_TEXT' | translate }}</span>
+		<span ng-if="!module.installed">{{ 'INSTALL_MODULE_TEXT' | translate }}</span>
+	</span>
+
+	<span class="text" ng-if="update">
+		<span>{{ 'UPDATE_BTN_TEXT' | translate }}</span>
+	</span>
+
+</button>
