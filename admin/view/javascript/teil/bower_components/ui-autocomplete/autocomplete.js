@@ -158,7 +158,7 @@ angular.module('ui.autocomplete', [])
               status = false;
             },
             select: function (event, ui) {
-              selectItem = ui;
+              // selectItem = ui;
               $timeout(function () {
                 element.blur();
               }, 0);

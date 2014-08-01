@@ -715,7 +715,7 @@ margin: 20px 0;
 border: 1px solid #eee;
 border-left-width: 5px;
 border-radius: 3px;
-position: relative;
+position: relative;                 
 }
 .bs-callout .aware-action-button {
     position: absolute;
@@ -942,7 +942,7 @@ border-left-color: #3c763d;
 .module-type-pricing-table .pricing-item.unlocked:first-child:before {
 	display: none;
 }
-.overlay-bg.loading::before {
+.overlay-bg::before {
   content: "";
   display: block;
   position: absolute;
@@ -950,8 +950,8 @@ border-left-color: #3c763d;
   top: 0px;
   bottom: 0px;
   right: 0;
-  background: #000;
-  transition: width 1s ease-in-out, opacity 0.3s ease-out 1.2s;
+  background: #fff;
+  transition: opacity 0.3s ease-out;
   border-radius: 4px;
   z-index: 5;
   opacity: 0.6;

@@ -65,3 +65,39 @@ white-space: nowrap;
 .sortable-product-list .flexible-product-item.change-product-view .new-product-input {
 	display: block;
 }
+.text-center {
+	text-align: center;
+}
+.has-error {
+    background: #f2dede !important;
+}
+.has-error input {
+    border: 1px solid #a94442;
+}
+.product-insert {
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    padding: 0 0 10px;
+}
+.product-insert input {
+    width: 420px;
+    padding: 8px 50px 8px 10px;
+    font-size: 18px;
+    border: 1px solid #ddd;
+}
+.product-insert input.loading {
+	background: url(/admin/view/image/teil/loading.gif) no-repeat 97% 50%;
+}
+.ui-state-highlight{
+float: left;
+width: 145px;
+height: 145px;
+border: 1px dashed #ccc;
+margin: 4px;
+position: relative;
+padding: 5px;
+background: #F9F9F9;
+}
+.hide-me {
+	display: none;
+}
