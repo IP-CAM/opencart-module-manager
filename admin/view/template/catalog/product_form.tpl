@@ -1,4 +1,14 @@
 <?php echo $header; ?>
+
+<link rel="stylesheet" href="/admin/view/javascript/teil/bower_components/sass-bootstrap-glyphicons/css/bootstrap-glyphicons.css">
+<link rel="stylesheet" type="text/css" href="/admin/view/stylesheet/teil/modules-list.css">
+
+<link rel="stylesheet" href="/admin/view/javascript/teil/modules/product_image_upoad/vendor/css/bootstrap.css">
+<link rel="stylesheet" href="/admin/view/javascript/teil/modules/product_image_upoad/vendor/css/jquery.fileupload.css">
+<link rel="stylesheet" href="/admin/view/javascript/teil/modules/product_image_upoad/vendor/css/jquery.fileupload-ui.css">
+
+<input type="hidden" value="<?php echo $this->request->get['product_id'] ?>" id="product_id">
+
 <div id="content">
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
@@ -155,12 +165,6 @@
             <tr>
               <td><?php echo $entry_keyword; ?></td>
               <td><input type="text" name="keyword" value="<?php echo $keyword; ?>" /></td>
-            </tr>
-            <tr>
-              <td><?php echo $entry_image; ?></td>
-              <td><div class="image"><img src="<?php echo $thumb; ?>" alt="" id="thumb" /><br />
-                  <input type="hidden" name="image" value="<?php echo $image; ?>" id="image" />
-                  <a onclick="image_upload('image', 'thumb');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$('#thumb').attr('src', '<?php echo $no_image; ?>'); $('#image').attr('value', '');"><?php echo $text_clear; ?></a></div></td>
             </tr>
             <tr>
               <td><?php echo $entry_date_available; ?></td>
@@ -657,35 +661,91 @@
           </table>
         </div>
         <div id="tab-image">
-          <table id="images" class="list">
-            <thead>
-              <tr>
-                <td class="left"><?php echo $entry_image; ?></td>
-                <td class="right"><?php echo $entry_sort_order; ?></td>
-                <td></td>
-              </tr>
-            </thead>
-            <?php $image_row = 0; ?>
-            <?php foreach ($product_images as $product_image) { ?>
-            <tbody id="image-row<?php echo $image_row; ?>">
-              <tr>
-                <td class="left"><div class="image"><img src="<?php echo $product_image['thumb']; ?>" alt="" id="thumb<?php echo $image_row; ?>" />
-                    <input type="hidden" name="product_image[<?php echo $image_row; ?>][image]" value="<?php echo $product_image['image']; ?>" id="image<?php echo $image_row; ?>" />
-                    <br />
-                    <a onclick="image_upload('image<?php echo $image_row; ?>', 'thumb<?php echo $image_row; ?>');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$('#thumb<?php echo $image_row; ?>').attr('src', '<?php echo $no_image; ?>'); $('#image<?php echo $image_row; ?>').attr('value', '');"><?php echo $text_clear; ?></a></div></td>
-                <td class="right"><input type="text" name="product_image[<?php echo $image_row; ?>][sort_order]" value="<?php echo $product_image['sort_order']; ?>" size="2" /></td>
-                <td class="left"><a onclick="$('#image-row<?php echo $image_row; ?>').remove();" class="button"><?php echo $button_remove; ?></a></td>
-              </tr>
-            </tbody>
-            <?php $image_row++; ?>
-            <?php } ?>
-            <tfoot>
-              <tr>
-                <td colspan="2"></td>
-                <td class="left"><a onclick="addImage();" class="button"><?php echo $button_add_image; ?></a></td>
-              </tr>
-            </tfoot>
-          </table>
+          <div id="fileupload" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
+                <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                <noscript><input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"></noscript>
+                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                <div class="row fileupload-buttonbar">
+                    <div>
+                        
+                        <!-- The fileinput-button span is used to style the file input field as button -->
+                        <span class="btn btn-success fileinput-button" ng-class="{disabled: disabled}">
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span>Add files...</span>
+                            <input type="file" name="files[]" multiple ng-disabled="disabled">
+                        </span>
+
+                        <button type="button" class="btn btn-primary start" data-ng-click="submit()">
+                            <i class="glyphicon glyphicon-upload"></i>
+                            <span>Start upload</span>
+                        </button>
+
+                        <button type="button" class="btn btn-warning cancel" data-ng-click="cancel()">
+                            <i class="glyphicon glyphicon-ban-circle"></i>
+                            <span>Cancel upload</span>
+                        </button>
+
+                        <!-- The global file processing state -->
+                        <span class="fileupload-process"></span>
+                    </div>
+                    <!-- The global progress state -->
+                    <div class="col-lg-5 fade" data-ng-class="{in: active()}">
+                        <!-- The global progress bar -->
+                        <div class="progress progress-striped active" data-file-upload-progress="progress()"><div class="progress-bar progress-bar-success" data-ng-style="{width: num + '%'}"></div></div>
+                        <!-- The extended global progress state -->
+                        <div class="progress-extended">&nbsp;</div>
+                    </div>
+                </div>
+
+                <div ng-if="!queue.length">
+                    <div class="boxed-block show-me" ng-class="{'show-me': !totalInstalledModules}" style="margin-top: 0;">
+                      <span class="glyphicon glyphicon-picture"></span>
+                      <h5 class="__h2 ng-binding">Нет добавленных изображений</h5>
+                      <div class="info__small ng-binding">Попробуйте добавить несколько</div>
+                    </div>
+                </div>
+
+                <!-- The table listing the files available for upload/download -->
+                <div class="ng-cloak" id="sortable">
+                    <div class="image-el-item" data-ng-repeat="file in queue" data-ng-class="{'processing': file.$processing()}">
+                        <div class="el-image">
+                            <p class="name" data-ng-switch data-on="!!file.url">
+                                <span data-ng-switch-when="true" data-ng-switch data-on="!!file.thumbnailUrl">
+                                    <img width="80" style="margin-right: 15px;" ng-src="/image/data/{{ file.name }}">
+
+                                    <a data-ng-switch-when="true" data-ng-href="{{file.url}}" title="{{file.name}}" download="{{file.name}}" data-gallery>{{file.name}}</a>
+                                    <a data-ng-switch-default data-ng-href="{{file.url}}" title="{{file.name}}" download="{{file.name}}">{{file.name}}</a>
+
+                                    <input class="__hide" type="text" name="product_image[{{ $index }}][image]" value="{{ file.url_to_store }}">
+                                </span>
+                                <span data-ng-switch-default>{{file.name}}</span>
+                            </p>
+                            <strong data-ng-show="file.error" class="error text-danger">{{file.error}}</strong>
+                        </div>
+                        <div class="el-size">
+                            <p class="size">{{file.size | formatFileSize}}</p>
+                            <div class="progress progress-striped active fade" data-ng-class="{pending: 'in'}[file.$state()]" data-file-upload-progress="file.$progress()"><div class="progress-bar progress-bar-success" data-ng-style="{width: num + '%'}"></div></div>
+                        </div>
+                        <div class="el-action">
+                            <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit || options.autoUpload" data-ng-disabled="file.$state() == 'pending' || file.$state() == 'rejected'">
+                                <i class="glyphicon glyphicon-upload"></i>
+                                <span>Start</span>
+                            </button>
+                            <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+                                <i class="glyphicon glyphicon-ban-circle"></i>
+                                <span>Cancel</span>
+                            </button>
+
+                            <input size="3" type="text" name="product_image[{{ $index }}][sort_order]" value="{{ file.sort_order || 1000 }}" class="product-sort-order" data-ng-show="!file.$submit || options.autoUpload">
+
+                            <button data-ng-controller="FileDestroyController" type="button" class="btn btn-danger destroy" data-ng-click="file.$destroy()" data-ng-hide="!file.$destroy">
+                                <i class="glyphicon glyphicon-trash"></i>
+                                <span>Delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="tab-reward">
           <table class="form">
@@ -1282,23 +1342,7 @@ function image_upload(field, thumb) {
 	});
 };
 //--></script> 
-<script type="text/javascript"><!--
-var image_row = <?php echo $image_row; ?>;
 
-function addImage() {
-    html  = '<tbody id="image-row' + image_row + '">';
-	html += '  <tr>';
-	html += '    <td class="left"><div class="image"><img src="<?php echo $no_image; ?>" alt="" id="thumb' + image_row + '" /><input type="hidden" name="product_image[' + image_row + '][image]" value="" id="image' + image_row + '" /><br /><a onclick="image_upload(\'image' + image_row + '\', \'thumb' + image_row + '\');"><?php echo $text_browse; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a onclick="$(\'#thumb' + image_row + '\').attr(\'src\', \'<?php echo $no_image; ?>\'); $(\'#image' + image_row + '\').attr(\'value\', \'\');"><?php echo $text_clear; ?></a></div></td>';
-	html += '    <td class="right"><input type="text" name="product_image[' + image_row + '][sort_order]" value="" size="2" /></td>';
-	html += '    <td class="left"><a onclick="$(\'#image-row' + image_row  + '\').remove();" class="button"><?php echo $button_remove; ?></a></td>';
-	html += '  </tr>';
-	html += '</tbody>';
-	
-	$('#images tfoot').before(html);
-	
-	image_row++;
-}
-//--></script> 
 <script type="text/javascript" src="view/javascript/jquery/ui/jquery-ui-timepicker-addon.js"></script> 
 <script type="text/javascript"><!--
 $('.date').datepicker({dateFormat: 'yy-mm-dd'});
@@ -1369,6 +1413,31 @@ function addProfile() {
     });
 <?php } ?>
 
+$('#sortable').sortable({
+  stop: function() {
+    $('#sortable .image-el-item .product-sort-order').each(function(index, el) {
+      $(el).val(index * 10);
+    });
+  }
+});
 //--></script>
+
+<?php require DIR_APPLICATION . '/view/template/teil/teil-scripts.php' ?>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/controller.js"></script>
+
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/vendor/jquery.ui.widget.js"></script>
+<script src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
+<script src="http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.iframe-transport.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.fileupload.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.fileupload-process.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.fileupload-image.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.fileupload-audio.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.fileupload-video.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.fileupload-validate.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/jquery.fileupload-angular.js"></script>
+<script src="/admin/view/javascript/teil/modules/product_image_upoad/vendor/js/app.js"></script>
 
 <?php echo $footer; ?>
