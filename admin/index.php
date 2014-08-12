@@ -25,6 +25,9 @@ require_once(DIR_SYSTEM . 'library/length.php');
 // Registry
 $registry = new Registry();
 
+// Add registry to the teil system
+$app->instance('registry', $registry);
+
 // Loader
 $loader = new Loader($registry);
 $registry->set('load', $loader);

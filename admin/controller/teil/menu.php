@@ -3,7 +3,7 @@ class ControllerTeilMenu extends Controller {
  
 
     public function index() {
-        $this->template = 'teil/modules/menu/menu.tpl';
+        $this->template = 'teil/modules/menu/index.tpl';
         
         // If form submited
         if ($this->request->server['REQUEST_METHOD'] == 'POST' 
@@ -44,8 +44,6 @@ class ControllerTeilMenu extends Controller {
             'common/header',
             'common/footer'
         );
-
-
         
         $this->response->setOutput($this->render());
 	}
