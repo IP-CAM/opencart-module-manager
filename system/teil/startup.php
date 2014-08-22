@@ -36,12 +36,3 @@ $app->instance('security', new Teil\Lib\Security);
  */
 Teil\Core\Facade::clearResolvedInstances();
 Teil\Core\Facade::setFacadeApplication($app);
-
-
-/**
- * Register providers.
- * 
- * WARNING: see /vendor/teil/framework/providers.php
- *
- */
-$app->getProviderRepository()->load($app);

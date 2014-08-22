@@ -5,6 +5,13 @@ class ControllerCheckoutCheckout extends Controller {
 		if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
 			$this->redirect($this->url->link('checkout/cart'));
 		}
+		
+		if ($this->request->server['REQUEST_METHOD'] == 'POST')
+		{
+			Checkout::createOrder($this->request->post);
+
+			die('Add new order. REQUEST_METHOD: post');
+		}
 
 		// Validate minimum quantity requirments.			
 		$products = $this->cart->getProducts();
@@ -68,6 +75,10 @@ class ControllerCheckoutCheckout extends Controller {
 		} else {
 			$this->template = 'default/template/checkout/checkout.tpl';
 		}
+
+		
+		$this->template = 'default/template/checkout/simple-checkout.tpl';
+
 
 		$this->children = array(
 			'common/column_left',

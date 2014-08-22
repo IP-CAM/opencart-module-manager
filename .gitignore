@@ -6,3 +6,7 @@
 
 # Logs
 /system/logs/*
+
+# Images 
+/image/cache/
+/image/cache/*

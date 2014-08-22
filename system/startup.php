@@ -105,4 +105,7 @@ require_once(DIR_SYSTEM . 'library/openbay.php');
 require_once(DIR_SYSTEM . 'library/ebay.php');
 require_once(DIR_SYSTEM . 'library/amazon.php');
 require_once(DIR_SYSTEM . 'library/amazonus.php');
+
+// Teil
+require_once(DIR_SYSTEM . 'teil/autoload.php');
 ?>

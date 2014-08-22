@@ -44,7 +44,7 @@ abstract class ServiceProvider {
 	 * @return void
 	 */
 	protected function register() {
-		$this->checkLicense();
+		// $this->checkLicense();
 	}
 
 
@@ -73,6 +73,7 @@ abstract class ServiceProvider {
 				$this->KEY_INFO = $validationResult['info'];
 			}
 		} catch (\Exception $e) {
+			print_r($e);
 			echo "License file not found! Module name is - <b>" . $this->MODULE_CODE . "</b>";
 		}
 	}

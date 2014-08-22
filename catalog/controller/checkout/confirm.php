@@ -324,7 +324,7 @@ class ControllerCheckoutConfirm extends Controller {
 			}
 
 			$this->load->model('checkout/order');
-
+			
 			$this->session->data['order_id'] = $this->model_checkout_order->addOrder($data);
 
 			$this->data['column_name'] = $this->language->get('column_name');
