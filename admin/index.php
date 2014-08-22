@@ -145,6 +145,9 @@ $registry->set('user', new User($registry));
 //OpenBay Pro
 $registry->set('openbay', new Openbay($registry));
 
+// Register teil providers
+$app->getProviderRepository()->load($app);
+
 // Front Controller
 $controller = new Front($registry);
 

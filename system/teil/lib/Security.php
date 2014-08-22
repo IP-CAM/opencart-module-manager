@@ -13,7 +13,7 @@ class Security
 	 *
 	 * @const string
 	 */
-	const SERVER_URL = 'http://dev.website-builder.ru/';
+	const SERVER_URL = 'http://dev.website-builder.ru/modules/';
 	
 	
 	function __construct() {}

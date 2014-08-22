@@ -4,14 +4,14 @@
 use Teil\Core\ServiceProvider;
 
 
-class MenuServiceProvider extends ServiceProvider {
+class CheckoutServiceProvider extends ServiceProvider {
 
 
 	public function __construct($app)
 	{
 		parent::__construct($app);
 
-		$this->MODULE_CODE = 'menu';
+		$this->MODULE_CODE = 'checkout';
 	}
 
 
@@ -27,8 +27,8 @@ class MenuServiceProvider extends ServiceProvider {
 		// If module licence is ok, we will register it
 		if ($this->MODULE_STATUS)
 		{
-			$this->registerMenuBuilder();
 		}
+			$this->registerCheckoutBuilder();
 	}
 
 
@@ -37,9 +37,9 @@ class MenuServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	protected function registerMenuBuilder()
+	protected function registerCheckoutBuilder()
 	{
-		$this->app->instance('menu', new MenuBuilder($this->app, $this->KEY_INFO));
+		$this->app->instance('checkout', new CheckoutFactory($this->app, $this->KEY_INFO));
 	}
 
 
@@ -50,7 +50,7 @@ class MenuServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('Menu');
+		return array('checkout');
 	}
 
 
