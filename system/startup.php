@@ -107,5 +107,32 @@ require_once(DIR_SYSTEM . 'library/amazon.php');
 require_once(DIR_SYSTEM . 'library/amazonus.php');
 
 // Teil
-require_once(DIR_SYSTEM . 'teil/autoload.php');
-?>
+// require_once(DIR_SYSTEM . 'teil/autoload.php');
+// require_once(DIR_SYSTEM . 'filter.php');
+
+
+
+
+
+// Filter cases
+require_once(DIR_SYSTEM . 'filter/cases/FilterCaseInterface.php');
+require_once(DIR_SYSTEM . 'filter/cases/FilterCase.php');
+require_once(DIR_SYSTEM . 'filter/cases/FilterCaseAttributes.php');
+require_once(DIR_SYSTEM . 'filter/cases/FilterCaseOptions.php');
+
+// Filter builders
+require_once(DIR_SYSTEM . 'filter/builders/FilterBuilderInterface.php');
+require_once(DIR_SYSTEM . 'filter/builders/FilterBuilder.php');
+
+// Filter formatters
+require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterInterface.php');
+require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAttributes.php');
+require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterOptions.php');
+
+// Filter utils
+require_once(DIR_SYSTEM . 'filter/utils/FilterSqlConverter.php');
+require_once(DIR_SYSTEM . 'filter/utils/SameFilterOptions.php');
+
+// Filter managers
+require_once(DIR_SYSTEM . 'filter/FilterFactory.php');
+require_once(DIR_SYSTEM . 'filter/FilterManager.php');

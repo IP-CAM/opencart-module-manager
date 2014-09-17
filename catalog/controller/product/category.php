@@ -384,6 +384,10 @@ class ControllerProductCategory extends Controller {
 				$this->template = 'default/template/product/category.tpl';
 			}
 
+			// Filter
+			$filter_manager = new FilterManager($this->db);
+			
+
 			$this->children = array(
 				'common/column_left',
 				'common/column_right',

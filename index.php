@@ -216,7 +216,7 @@ $registry->set('openbay', new Openbay($registry));
 
 // Encryption
 $registry->set('encryption', new Encryption($config->get('config_encryption')));
-		
+
 // Front Controller 
 $controller = new Front($registry);
 
