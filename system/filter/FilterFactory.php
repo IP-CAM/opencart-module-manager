@@ -35,9 +35,16 @@ class FilterFactory
 	 *
 	 * @return mixed
 	 */
-	public function resolve($db)
+	public function resolve($db, $settings, $key)
 	{
-		return $this->filter->fetch($db);
+		if (is_array($settings[$key]) AND count($settings[$key]) > 1)
+		{
+			return $this->resolveArray($db, $settings, $key);
+		}
+		else
+		{
+			return $this->filter->fetch($db);
+		}
 	}
 
 
@@ -47,7 +54,7 @@ class FilterFactory
 	 *
 	 * @return mixed
 	 */
-	public function resolveArray($db, $settings, $key)
+	protected function resolveArray($db, $settings, $key)
 	{
 		$same_options = array();
 
@@ -59,7 +66,7 @@ class FilterFactory
 				'options' => array($id)
 			);
 
-			$same_options[] = $this->make($settings)->resolve($db);
+			$same_options[] = $this->make($settings)->resolve($db, $settings, $key);
 		}
 
 		// Leave items only with same ID

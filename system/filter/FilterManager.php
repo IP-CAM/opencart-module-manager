@@ -15,22 +15,22 @@ class FilterManager
 	protected function filterAttributes($db)
 	{
 		$builder = new FilterBuilder(
-			// new FilterCaseAttributes,
-			// new FilterFormatterAttributes
-			new FilterCaseOptions,
-			new FilterFormatterOptions
+			new FilterCaseAttributes,
+			new FilterFormatterAttributes
+			// new FilterCaseOptions,
+			// new FilterFormatterOptions
 		);
 		$factory = new FilterFactory($builder);
 
 		$settings = array(
 			'category_id' => 24,
-			'attributes' => array(),
-			'options' => array(43, 40)
+			'attributes' => array(3),
+			'options' => array(40, 43)
 		);
 
 		$same_options = $factory
 			->make($settings)
-			->resolveArray($db, $settings, 'options');
+			->resolve($db, $settings, 'options');
 
 		print_r($same_options); die();
 	}

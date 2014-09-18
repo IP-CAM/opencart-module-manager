@@ -66,8 +66,8 @@ class FilterCase implements FilterCaseInterface
 		if (count($options))
 		{
 			$this->where['product_filter']['where']['options'] = 'sub_pov.option_value_id IN (' . implode(",", $options) . ')';
-			$this->where['product_filter']['where']['options_filter'] = 'ov.option_value_id IN (select option_value_id from product_option_value where product_id = po.product_id)';
 		}
+		$this->where['product_filter']['where']['options_filter'] = 'ov.option_value_id IN (select option_value_id from product_option_value where product_id = po.product_id)';
 		$this->where['product_filter']['join']['options'] = ' join product_option_value AS sub_pov on (sub_ptc.product_id = sub_pov.product_id) ';
 	}
 

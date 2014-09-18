@@ -26,6 +26,8 @@ class SameFilterOptions
 			}
 		}
 
+		if ( ! count($same_options)) return array();
+		
 		// Leave only same ID's
 		$result = $same_options[0];
 		foreach ($same_options as $same_options_array)
