@@ -15,26 +15,126 @@
 
   <h1><?php echo $heading_title; ?></h1>
 
-  <div class="filter">
 
-<div>
-  <?php foreach ($filter_groups as $filter_group): ?>
-    <div class="filter_group">
-      <h4><?php echo $filter_group['name'] ?></h4>
+  <div class="filter" ng-app="filterApp" ng-controller="FilterCtrl">
 
-      <?php foreach ($filter_group['items'] as $filter): ?>
-        <label>
-          <input type="checkbox" value="<?php echo $filter['attr_id'] ?>" name="filter[attributes][]">
-          <?php echo $filter['attr_text'] ?>
-        </label>
-      <?php endforeach ?>
+  {{ test }}
+
+  <div class="filter-container" ng-show="filterData">
+    <div 
+      class="filterGroup" 
+      style="border: 1px dashed #e2e2e2; padding: 10px;" 
+      ng-repeat="attrGroup in filterData.attributes" 
+    >
+      <h4>{{ attrGroup.name }}</h4>
+
+      <label ng-repeat="attr in attrGroup.items">
+        <input type="checkbox" ng-model="attr.selected"> 
+        {{ attr.attr_text }}<br>
+      </label>
+
     </div>
-  <?php endforeach ?>
-</div>
+
+    <div 
+      class="filterGroup" 
+      style="border: 1px dashed #e2e2e2; padding: 10px;" 
+      ng-repeat="optionGroup in filterData.options" 
+    >
+      <h4>{{ optionGroup.name }}</h4>
+
+      <label ng-repeat="option in optionGroup.items">
+        <input type="checkbox" ng-model="option.selected"> 
+        {{ option.name }}<br>
+      </label>
+
+    </div>
+
+  </div>
+
+  </div>
 
 <br><br><br><br>
 
-</div>
+
+<script src="/admin/view/javascript/teil/bower_components/angular/angular.js"></script>
+<script type="text/javascript">
+
+  window.filterApp = angular.module('filterApp', []);
+
+  filterApp.controller('FilterCtrl', function FilterCtrl($scope, $http, $timeout) {
+    var updateFilterTimer = 0;
+
+    $scope.test = 'hello';
+    $scope.filterData = false;
+
+    $scope.$watch('filterData.attributes.items', function(val, old) {
+      console.log('watch');
+      // $timeout.cancel(updateFilterTimer);
+
+      // updateFilterTimer = $timeout(function() {
+      //   $scope.makeFilter();
+        
+      //   $timeout.cancel(updateFilterTimer);
+      // }, 300);
+    }, true);
+
+    $scope.makeFilter = function() {
+      $http({
+        url: '/index.php?route=product/category/filter',
+        method: 'post',
+        responseType: 'json',
+        data: $.param({
+          attributes: $scope.listAttributes(),
+          options: $scope.listOptions()
+        }),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      })
+        .success(function(resp) {
+          $scope.filterData = resp;
+        });
+    };
+
+    $scope.listAttributes = function(key) {
+      var result = [];
+
+      angular.forEach($scope.filterData.attributes, function(el) {
+        angular.forEach(el.items, function(item) {
+          if (item.selected) {
+            result.push(item.attr_id);
+          };
+        });
+      });
+
+      return result;
+    };
+
+    $scope.listOptions = function(key) {
+      var result = [];
+
+      angular.forEach($scope.filterData.options, function(el) {
+        angular.forEach(el.items, function(item) {
+          if (item.selected) {
+            result.push(item.option_value_id);
+          };
+        });
+      });
+
+      return result;
+    };
+
+    $scope.makeFilter();
+
+  });
+
+</script>
+
+
+
+
+
+
+
+
 
   <?php if ($thumb || $description) { ?>
   <div class="category-info">
@@ -228,4 +328,5 @@ if (view) {
 	display('list');
 }
 //--></script> 
+
 <?php echo $footer; ?>

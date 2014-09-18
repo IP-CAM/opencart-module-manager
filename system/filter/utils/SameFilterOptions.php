@@ -11,7 +11,7 @@ class SameFilterOptions
 	 *
 	 * @return array
 	 */
-	public function filter($options)
+	public function filter($options, $filter_key)
 	{
 		$same_options = array();
 
@@ -22,7 +22,7 @@ class SameFilterOptions
 
 			foreach ($option_result as $option_key => $option)
 			{
-				$same_options[$key][$option_key] = $option['option_value_id'];
+				$same_options[$key][$option_key] = $option[$filter_key];
 			}
 		}
 
@@ -36,7 +36,7 @@ class SameFilterOptions
 		}
 
 		// Compose options array back from result same ID's
-		return $this->composeSame($options, $result);
+		return $this->composeSame($options, $result, $filter_key);
 	}
 
 
@@ -45,7 +45,7 @@ class SameFilterOptions
 	 *
 	 * @return mixed
 	 */
-	private function composeSame($original, $same_options)
+	private function composeSame($original, $same_options, $filter_key)
 	{
 		$result = array();
 
@@ -53,9 +53,9 @@ class SameFilterOptions
 		{
 			foreach ($option_result as $option)
 			{
-				if (in_array($option['option_value_id'], $same_options))
+				if (in_array($option[$filter_key], $same_options))
 				{
-					$key = 'option_value_id_' . $option['option_value_id'];
+					$key = $filter_key . '_' . $option[$filter_key];
 					$result[$key] = $option;
 				}
 			}

@@ -384,10 +384,6 @@ class ControllerProductCategory extends Controller {
 				$this->template = 'default/template/product/category.tpl';
 			}
 
-			// Filter
-			$filter_manager = new FilterManager($this->db);
-			
-
 			$this->children = array(
 				'common/column_left',
 				'common/column_right',
@@ -461,5 +457,25 @@ class ControllerProductCategory extends Controller {
 			$this->response->setOutput($this->render());
 		}
 	}
+
+
+	public function filter()
+	{
+		$attributes = empty($_POST['attributes']) ? array() : $_POST['attributes'];
+		$options = empty($_POST['options']) ? array() : $_POST['options'];
+
+		// Filter
+		$settings = array(
+			'category_id' => 24,
+			'attributes' => $attributes,
+			'options' => $options
+		);
+
+		$filter_manager = new FilterManager($this->db, $settings);
+		$result = $filter_manager->filter($this->db, $settings);
+		
+		echo json_encode($result); die();
+	}
+
 }
 ?>

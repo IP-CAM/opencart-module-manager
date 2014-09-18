@@ -6,10 +6,10 @@ class FilterCaseOptions extends FilterCase implements FilterCaseInterface
 	
 	// SQL data
 	public $select = array(
-		"po.product_option_id",
-		"po.product_id",
-		"po.option_id",
-		"po.option_value",
+		"main_po.product_option_id",
+		"main_po.product_id",
+		"main_po.option_id",
+		"main_po.option_value",
 		"o.type AS option_type",
 		"o.sort_order as option_sort_order",
 		"od.name as option_name",
@@ -19,14 +19,9 @@ class FilterCaseOptions extends FilterCase implements FilterCaseInterface
 		"ovd.name" 
 	);
 
-	public $from = "product_option as po";
+	public $from = "product_option as main";
 
-	public $join = array(
-		" JOIN `option` AS o ON (o.option_id = po.option_id) ",
-		" JOIN option_description AS od ON (od.option_id = po.option_id) ",
-		" JOIN option_value AS ov ON (ov.option_id = po.option_id) ",
-		" JOIN option_value_description AS ovd ON (ovd.option_value_id = ov.option_value_id) "
-	);
+	public $join = array();
 
 	public $where = array(
 		"language_filter" => "ovd.language_id = 1",
@@ -43,7 +38,7 @@ class FilterCaseOptions extends FilterCase implements FilterCaseInterface
 	);
 
 	public $order_by = array(
-		"po.option_id ASC"
+		"main_po.option_id ASC"
 	);
 
 }

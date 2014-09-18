@@ -73,7 +73,7 @@ class FilterSqlConverter
 		// Resolve sub where
 		if (isset($where['product_filter']) AND is_array($where['product_filter']))
 		{
-			$product_filter = " product_id IN ( ";
+			$product_filter = " main.product_id IN ( ";
 			$product_filter .= $this->make(
 				$where['product_filter']['select'],
 				$where['product_filter']['from'],

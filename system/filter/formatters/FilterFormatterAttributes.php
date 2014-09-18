@@ -53,7 +53,7 @@ class FilterFormatterAttributes implements FilterFormatterInterface
 	{
 		$result = array();
 
-		foreach ($items->rows as $attribute)
+		foreach ($items as $attribute)
 		{
 			$key = 'attribute_group_id_' . $attribute['attr_group_id'];
 

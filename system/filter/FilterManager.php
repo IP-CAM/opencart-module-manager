@@ -4,35 +4,52 @@
 
 class FilterManager 
 {
-	
 
-	function __construct($db)
+
+	public function filter($db, $settings)
 	{
-		$this->filterAttributes($db);
+		return array(
+			'attributes' => $this->filterAttributes($db, $settings),
+			'options' => $this->filterOptions($db, $settings)
+		);
 	}
 
 
-	protected function filterAttributes($db)
+	protected function filterAttributes($db, $settings)
 	{
 		$builder = new FilterBuilder(
 			new FilterCaseAttributes,
 			new FilterFormatterAttributes
-			// new FilterCaseOptions,
-			// new FilterFormatterOptions
 		);
 		$factory = new FilterFactory($builder);
 
-		$settings = array(
-			'category_id' => 24,
-			'attributes' => array(3),
-			'options' => array(40, 43)
-		);
-
-		$same_options = $factory
+		$options = $factory
 			->make($settings)
-			->resolve($db, $settings, 'options');
+			->resolve($db, $settings, 'attributes', 'attr_id');
 
-		print_r($same_options); die();
+		$formatter = new FilterFormatterAttributes;
+		$options = $formatter->make($options);
+
+		return $options;
+	}
+
+
+	protected function filterOptions($db, $settings)
+	{
+		$builder = new FilterBuilder(
+			new FilterCaseOptions,
+			new FilterFormatterOptions
+		);
+		$factory = new FilterFactory($builder);
+
+		$attributes = $factory
+			->make($settings)
+			->resolve($db, $settings, 'options', 'option_value_id');
+
+		$formatter = new FilterFormatterOptions;
+		$attributes = $formatter->make($attributes);
+
+		return $attributes;
 	}
 
 
