@@ -8,10 +8,10 @@
 	"buffers":
 	[
 		{
-			"file": "config.php",
+			"file": "catalog/view/theme/default/template/product/category.tpl",
 			"settings":
 			{
-				"buffer_size": 2469,
+				"buffer_size": 10511,
 				"line_ending": "Unix"
 			}
 		}
@@ -55,6 +55,23 @@
 	],
 	"file_history":
 	[
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/product/product.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/payment/pp_payflow_iframe_return.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/javascript/DD_belatedPNG_0.0.8a-min.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/javascript/common.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/stylesheet/ie6.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/voucher.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/transaction.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/catalog/category.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/payment/amazon_checkout_address.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/config.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/config.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/config-dist.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/directives/module-min-price.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/html5-boilerplate/doc/misc.md",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/directives/module-popup.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/address.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/engine/action.php",
 		"/Users/yuriikrevnyi/.bash_profile",
 		"/Users/yuriikrevnyi/sites/presento.dev/www/index.html",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/config",
@@ -79,6 +96,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"test",
+			"C:\\xampp\\htdocs\\",
 			"\\",
 			"C:\\xampp\\htdocs\\",
 			"presento",
@@ -113,28 +132,29 @@
 			[
 				{
 					"buffer": 0,
-					"file": "config.php",
+					"file": "catalog/view/theme/default/template/product/category.tpl",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2469,
+						"buffer_size": 10511,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1010,
-								1010
+								1802,
+								1802
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 28.0,
+						"translation.y": 660.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -189,6 +209,14 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"cat/view/produ/categp",
+				"www/catalog/view/theme/default/template/product/category.tpl"
+			],
+			[
+				"admin/config",
+				"www/admin/config.php"
+			]
 		],
 		"width": 0.0
 	},

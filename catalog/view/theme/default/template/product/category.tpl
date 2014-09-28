@@ -18,8 +18,6 @@
 
   <div class="filter" ng-app="filterApp" ng-controller="FilterCtrl">
 
-  {{ test }}
-
   <div class="filter-container" ng-show="filterData">
     <div 
       class="filterGroup" 
@@ -29,7 +27,7 @@
       <h4>{{ attrGroup.name }}</h4>
 
       <label ng-repeat="attr in attrGroup.items">
-        <input type="checkbox" ng-model="attr.selected"> 
+        <input type="checkbox" ng-model="attr.selected" ng-change="makeFilter()"> 
         {{ attr.attr_text }}<br>
       </label>
 
@@ -64,19 +62,20 @@
   filterApp.controller('FilterCtrl', function FilterCtrl($scope, $http, $timeout) {
     var updateFilterTimer = 0;
 
-    $scope.test = 'hello';
+    $scope.test = 0;
     $scope.filterData = false;
 
-    $scope.$watch('filterData.attributes.items', function(val, old) {
-      console.log('watch');
-      // $timeout.cancel(updateFilterTimer);
+    // $scope.$watch('filterData.attributes', function(val, old) {
+    //   if ($scope.test >= 3) return false;
 
-      // updateFilterTimer = $timeout(function() {
-      //   $scope.makeFilter();
-        
-      //   $timeout.cancel(updateFilterTimer);
-      // }, 300);
-    }, true);
+    //   $scope.test++;
+    //   $scope.makeFilter();
+    // }, true);
+
+    // $scope.$watchCollection('filterData.attributes', function(val, old) {
+    //   // $scope.makeFilter();
+    //   console.log('$watchCollection');
+    // }, true);
 
     $scope.makeFilter = function() {
       $http({
@@ -100,7 +99,7 @@
       angular.forEach($scope.filterData.attributes, function(el) {
         angular.forEach(el.items, function(item) {
           if (item.selected) {
-            result.push(item.attr_id);
+            result.push(item.attr_text);
           };
         });
       });

@@ -27,12 +27,12 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 	);
 
 	public $join = array(
-		" JOIN attribute AS a ON (a.attribute_id = main.attribute_id) ",
-		" JOIN attribute_group_description AS agd ON (a.attribute_group_id = agd.attribute_group_id) "
+		" LEFT JOIN attribute AS a ON (a.attribute_id = main.attribute_id) ",
+		" LEFT JOIN attribute_group_description AS agd ON (a.attribute_group_id = agd.attribute_group_id) "
 	);
 
 	public $group_by = array(
-		"attr_id"
+		"attr_text"
 	);
 
 	public $order_by = array(

@@ -471,7 +471,7 @@ class ControllerProductCategory extends Controller {
 			'options' => $options
 		);
 
-		$filter_manager = new FilterManager($this->db, $settings);
+		$filter_manager = new FilterManager;
 		$result = $filter_manager->filter($this->db, $settings);
 		
 		echo json_encode($result); die();
