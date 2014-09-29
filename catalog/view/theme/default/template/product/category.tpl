@@ -27,7 +27,13 @@
       <h4>{{ attrGroup.name }}</h4>
 
       <label ng-repeat="attr in attrGroup.items">
-        <input type="checkbox" ng-model="attr.selected" ng-change="makeFilter()"> 
+        <input 
+          type="checkbox" 
+          ng-model="attr.selected" 
+          ng-disabled="attr.disabled" 
+          ng-checked="attr.selected" 
+          ng-change="makeFilter()" 
+        > 
         {{ attr.attr_text }}<br>
       </label>
 
@@ -41,7 +47,13 @@
       <h4>{{ optionGroup.name }}</h4>
 
       <label ng-repeat="option in optionGroup.items">
-        <input type="checkbox" ng-model="option.selected"> 
+        <input 
+          type="checkbox" 
+          ng-model="option.selected" 
+          ng-disabled="option.disabled" 
+          ng-checked="option.selected" 
+          ng-change="makeFilter()" 
+        > 
         {{ option.name }}<br>
       </label>
 

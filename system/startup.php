@@ -133,6 +133,7 @@ require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterOptions.php');
 require_once(DIR_SYSTEM . 'filter/utils/FilterSqlConverter.php');
 require_once(DIR_SYSTEM . 'filter/utils/SameFilterOptions.php');
 require_once(DIR_SYSTEM . 'filter/utils/FilterSettingResolver.php');
+require_once(DIR_SYSTEM . 'filter/utils/FilterComposer.php');
 
 // Filter managers
 require_once(DIR_SYSTEM . 'filter/FilterFactory.php');

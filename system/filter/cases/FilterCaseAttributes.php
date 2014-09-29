@@ -10,6 +10,7 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 		"main.attribute_id AS attr_id",
 		"main.text AS attr_text",
 		"a.attribute_group_id AS attr_group_id",
+		"ad.name AS attr_name",
 		"a.sort_order AS attr_group_order",
 		"agd.name AS attr_group_name" 
 	);
@@ -28,6 +29,7 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 
 	public $join = array(
 		" LEFT JOIN attribute AS a ON (a.attribute_id = main.attribute_id) ",
+		" LEFT JOIN attribute_description AS ad ON (ad.attribute_id = main.attribute_id) ",
 		" LEFT JOIN attribute_group_description AS agd ON (a.attribute_group_id = agd.attribute_group_id) "
 	);
 

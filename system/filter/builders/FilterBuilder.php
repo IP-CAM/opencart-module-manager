@@ -34,6 +34,8 @@ class FilterBuilder implements FilterBuilderInterface
 			$this->filter_case->group_by,
 			$this->filter_case->order_by
 		);
+
+		// echo $sql; echo "\n\n\n";
 		
 		// Get result item list
 		return $db->query($sql)->rows;

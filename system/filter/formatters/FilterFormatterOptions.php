@@ -22,6 +22,8 @@ class FilterFormatterOptions implements FilterFormatterInterface
 		foreach ($items as $option)
 		{
 			$key = 'option_id_' . $option['option_id'];
+			$disabled = empty($option['disabled']) ? false : true;
+			$selected = empty($option['selected']) ? false : true;
 
 			$result[$key]['id'] = $option['option_id'];
 			$result[$key]['name'] = $option['option_name'];
@@ -30,7 +32,9 @@ class FilterFormatterOptions implements FilterFormatterInterface
 			$result[$key]['items'][] = array(
 				'product_id' => $option['product_id'],
 				'option_value_id' => $option['option_value_id'],
-				'name' => $option['name']
+				'name' => $option['name'],
+				'selected' => $selected,
+				'disabled' => $disabled
 			);
 		}
 
