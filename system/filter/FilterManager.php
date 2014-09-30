@@ -192,3 +192,52 @@ class FilterManager
 
 
 }
+
+
+
+
+
+/*
+
+
+SELECT main_po.product_option_id,
+       main_po.product_id,
+       main_po.option_id,
+       main_po.option_value,
+       o.type AS option_type,
+       o.sort_order AS option_sort_order,
+       od.name AS option_name,
+       ov.option_value_id,
+       ov.image AS option_value_image,
+       ov.sort_order AS option_value_sort_order,
+       ovd.name 
+FROM product_option AS main
+LEFT JOIN product_option AS main_po ON (main_po.product_id = main.product_id)
+LEFT JOIN `option` AS o ON (o.option_id = main_po.option_id)
+LEFT JOIN option_description AS od ON (od.option_id = main_po.option_id)
+LEFT JOIN option_value AS ov ON (ov.option_id = main_po.option_id)
+LEFT JOIN option_value_description AS ovd ON (ovd.option_value_id = ov.option_value_id)
+
+WHERE ovd.language_id = 1
+  AND main.product_id IN
+    (
+    
+
+SELECT sub_ptc.product_id 
+FROM product_to_category AS sub_ptc
+LEFT JOIN product_attribute AS sub_pa ON (sub_pa.product_id = sub_ptc.product_id)
+#LEFT JOIN product_option_value AS sub_pov ON (sub_ptc.product_id = sub_pov.product_id)
+WHERE sub_ptc.category_id = 24
+  AND sub_pa.text IN ("Description palm", "test1 palm + iphone + htc")
+  group by sub_ptc.product_id
+  HAVING COUNT(DISTINCT sub_pa.text) = 2)
+
+AND ov.option_value_id IN
+         (SELECT option_value_id
+          FROM product_option_value
+          WHERE product_id = main_po.product_id)
+  
+#GROUP BY ovd.option_value_id
+ORDER BY main_po.option_id ASC
+
+*/

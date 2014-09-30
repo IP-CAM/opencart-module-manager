@@ -6,19 +6,19 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 	
 	// SQL data
 	public $select = array(
-		"main.product_id AS product_id",
-		"main.attribute_id AS attr_id",
-		"main.text AS attr_text",
+		"main_pa.product_id AS product_id",
+		"main_pa.attribute_id AS attr_id",
+		"main_pa.text AS attr_text",
 		"a.attribute_group_id AS attr_group_id",
 		"ad.name AS attr_name",
 		"a.sort_order AS attr_group_order",
 		"agd.name AS attr_group_name" 
 	);
 
-	public $from = "product_attribute AS main";
+	public $from = "product_attribute AS main_pa";
 
 	public $where = array(
-		"language_filter" => "main.language_id = 1",
+		"language_filter" => "main_pa.language_id = 1",
 		"product_filter"  => array(
 			'select' => array('sub_ptc.product_id'),
 			'from' => 'product_to_category AS sub_ptc',
@@ -28,9 +28,6 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 	);
 
 	public $join = array(
-		" LEFT JOIN attribute AS a ON (a.attribute_id = main.attribute_id) ",
-		" LEFT JOIN attribute_description AS ad ON (ad.attribute_id = main.attribute_id) ",
-		" LEFT JOIN attribute_group_description AS agd ON (a.attribute_group_id = agd.attribute_group_id) "
 	);
 
 	public $group_by = array(
@@ -40,6 +37,14 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 	public $order_by = array(
 		"attr_id ASC"
 	);
+
+
+	public function setOptions($attributes = array())
+	{
+		$this->join['options_1'] = " LEFT JOIN product_option AS main_po ON (main_po.product_id = main_pa.product_id) ";
+		
+		parent::setOptions($attributes);
+	}
 
 
 }

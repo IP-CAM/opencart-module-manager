@@ -35,7 +35,13 @@ class FilterBuilder implements FilterBuilderInterface
 			$this->filter_case->order_by
 		);
 
-		// echo $sql; echo "\n\n\n";
+		// print_r($this->filter_case->select);
+		// print_r($this->filter_case->from);
+		// print_r($this->filter_case->join);
+		// print_r($this->filter_case->where);
+		// print_r($this->filter_case->group_by);
+		// print_r($this->filter_case->order_by);
+		// echo $sql . "\n\n";
 		
 		// Get result item list
 		return $db->query($sql)->rows;

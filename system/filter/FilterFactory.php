@@ -37,14 +37,7 @@ class FilterFactory
 	 */
 	public function resolve($db, $settings, $key, $filter_key)
 	{
-		if (is_array($settings[$key]) AND count($settings[$key]) > 1)
-		{
-			return $this->resolveArray($db, $settings, $key, $filter_key);
-		}
-		else
-		{
-			return $this->filter->fetch($db);
-		}
+		return $this->filter->fetch($db);
 	}
 
 

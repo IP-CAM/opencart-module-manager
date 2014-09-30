@@ -10,7 +10,15 @@ class FilterSqlConverter
 	 *
 	 * @return string
 	 */
-	public function make($select, $from, $join = NULL, $where = NULL, $group_by = NULL, $order_by = NULL)
+	public function make(
+		$select, 
+		$from, 
+		$join = NULL, 
+		$where = NULL, 
+		$group_by = NULL, 
+		$order_by = NULL,
+		$having = NULL
+	)
 	{
 		$result = $this->select($select);
 		$result .= $this->getFrom($from);
@@ -18,6 +26,7 @@ class FilterSqlConverter
 		$result .= $this->getWhere($where);
 		$result .= $this->getGroupBy($group_by);
 		$result .= $this->getOrderBy($order_by);
+		$result .= $this->getHaving($having);
 
 		return $result;
 	}
@@ -73,12 +82,18 @@ class FilterSqlConverter
 		// Resolve sub where
 		if (isset($where['product_filter']) AND is_array($where['product_filter']))
 		{
-			$product_filter = " main.product_id IN ( ";
+			$group_by = empty($where['product_filter']['group_by']) ? array() : $where['product_filter']['group_by'];
+			$having = empty($where['product_filter']['having']) ? array() : $where['product_filter']['having'];
+
+			$product_filter = " main_pa.product_id IN ( ";
 			$product_filter .= $this->make(
 				$where['product_filter']['select'],
 				$where['product_filter']['from'],
 				$where['product_filter']['join'],
-				$where['product_filter']['where']
+				$where['product_filter']['where'],
+				$group_by,
+				NULL,
+				$having
 			);
 			$product_filter .= " ) ";
 
@@ -119,6 +134,22 @@ class FilterSqlConverter
 
 		$result = " ORDER BY ";
 		$result .= implode(", ", $order_by);
+
+		return $result;
+	}
+
+
+	/**
+	 * Generate `having` sql statement
+	 *
+	 * @return string
+	 */
+	public function getHaving($having)
+	{
+		if (empty($having)) return;
+
+		$result = " HAVING ";
+		$result .= implode(" AND ", $having);
 
 		return $result;
 	}

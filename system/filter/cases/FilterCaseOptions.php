@@ -19,7 +19,7 @@ class FilterCaseOptions extends FilterCase implements FilterCaseInterface
 		"ovd.name" 
 	);
 
-	public $from = "product_option as main";
+	public $from = "product_option as main_po";
 
 	public $join = array();
 
@@ -40,5 +40,14 @@ class FilterCaseOptions extends FilterCase implements FilterCaseInterface
 	public $order_by = array(
 		"main_po.option_id ASC"
 	);
+
+
+	public function setAttributes($options = array())
+	{
+		$this->join['attributes_1'] = " LEFT JOIN product_attribute AS main_pa ON (main_pa.product_id = main_po.product_id) ";
+		
+		parent::setAttributes($options);
+	}
+
 
 }
