@@ -56,7 +56,7 @@ class FilterCase implements FilterCaseInterface
 		{
 			$this->where['product_filter']['where']['attributes'] = 'sub_pa.text IN (' . implode(',', array_map("quote_escape", $this->attributes['filters'])) . ')';
 			$this->where['product_filter']['group_by'][] = ' sub_ptc.product_id ';
-			$this->where['product_filter']['having'][] = ' COUNT(DISTINCT sub_pa.text) = ' . count($this->attributes['filters']) . ' ';
+			// $this->where['product_filter']['having'][] = ' COUNT(DISTINCT sub_pa.text) = ' . count($this->attributes['filters']) . ' ';
 		}
 		
 		$this->where['product_filter']['join']['attributes'] = ' LEFT JOIN product_attribute AS sub_pa ON (sub_pa.product_id = sub_ptc.product_id) ';

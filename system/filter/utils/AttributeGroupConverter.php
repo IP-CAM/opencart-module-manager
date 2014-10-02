@@ -59,12 +59,19 @@ class AttributeGroupConverter
 	 *
 	 * @return array
 	 */
-	public function compose($attributes)
+	public function compose($attributes, $settings)
 	{
+		// Loop through attribute groups
 		foreach ($attributes as & $attribute)
 		{
+
+			// Loop through all attributes from attribute group
 			foreach ($attribute['items'] as & $original_attr)
 			{
+				$original_attr['disabled'] = true;
+
+				// Loop through filtered attributes and compare their 
+				// values
 				foreach ($attribute['attributes'] as $filtered_attr)
 				{
 					if ($original_attr['text'] != $filtered_attr['text'])
@@ -76,12 +83,20 @@ class AttributeGroupConverter
 					$original_attr['disabled'] = false;
 					break;
 				}
+
+				// Set `selected` state
+				foreach ($settings as $setting)
+				{
+					if (in_array($original_attr['text'], $setting['items']))
+					{
+						$original_attr['selected'] = true;
+					}
+				}
 			}
 		}
 
 		return $attributes;
 	}
-
 
 
 }

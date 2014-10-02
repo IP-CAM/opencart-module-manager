@@ -116,6 +116,7 @@ class FilterManagerTest extends \PHPUnit_Framework_TestCase
 				'items' => array(
 					array(
 						'text' => 'Метал',
+						'selected' => true,
 						'disabled' => false
 					),
 					array(

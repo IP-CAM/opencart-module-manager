@@ -9,7 +9,7 @@ class FilterManager
 	public function filter($db, $settings)
 	{
 		return array(
-			'attributes' => $this->getCategoryAttributes($db, $settings),
+			'attributes' => $this->getFilteredAttributes($db, $settings),
 			// 'options' => $this->getCategoryOptions($db, $settings)
 		);
 	}
@@ -155,7 +155,7 @@ class FilterManager
 		}
 
 		$converter = new AttributeGroupConverter;
-		$result = $converter->compose($attribute_groups);
+		$result = $converter->compose($attribute_groups, $settings['attributes']);
 
 		return $result;
 	}

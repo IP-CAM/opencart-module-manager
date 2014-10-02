@@ -31,15 +31,16 @@
       <h4>{{ attrGroup.attr_name }}</h4>
 
       <label 
-        ng-repeat="attr in attrGroup.attributes" 
+        ng-repeat="attr in attrGroup.items" 
         ng-class="{'disabled': attr.disabled}" 
       >
         <input 
           type="checkbox" 
           ng-model="attr.selected" 
+          ng-disabled="attr.disabled" 
           ng-change="makeFilter()" 
         > 
-        {{ attr.attr_text }}<br>
+        {{ attr.text }}<br>
       </label>
 
     </div>
@@ -98,6 +99,8 @@
       })
         .success(function(resp) {
           $scope.filterData = resp;
+
+          $scope.needRefilter();
         });
     };
 
@@ -110,9 +113,9 @@
           items: []
         };
         
-        angular.forEach(el.attributes, function(item) {
+        angular.forEach(el.items, function(item) {
           if (item.selected) {
-            subresult.items.push(item.attr_text);
+            subresult.items.push(item.text);
           };
         });
 
@@ -134,6 +137,20 @@
       });
 
       return result;
+    };
+
+    // If one of already filtered attributes has `selected` 
+    // and `disabled` we will refilter
+    $scope.needRefilter = function() {
+      angular.forEach($scope.filterData.attributes, function(el) {
+        angular.forEach(el.items, function(item) {
+          if (item.disabled && item.selected) {
+            item.selected = false;
+            
+            $scope.makeFilter();
+          };
+        });
+      });
     };
 
     $scope.makeFilter();
