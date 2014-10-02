@@ -35,7 +35,7 @@ class FilterFactory
 	 *
 	 * @return mixed
 	 */
-	public function resolve($db, $settings, $key, $filter_key)
+	public function resolve($db)
 	{
 		return $this->filter->fetch($db);
 	}

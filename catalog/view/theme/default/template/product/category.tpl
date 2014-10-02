@@ -15,7 +15,11 @@
 
   <h1><?php echo $heading_title; ?></h1>
 
-
+<style type="text/css">
+  .disabled {
+    opacity: 0.5;
+  }
+</style>
   <div class="filter" ng-app="filterApp" ng-controller="FilterCtrl">
 
   <div class="filter-container" ng-show="filterData">
@@ -24,14 +28,15 @@
       style="border: 1px dashed #e2e2e2; padding: 10px;" 
       ng-repeat="attrGroup in filterData.attributes" 
     >
-      <h4>{{ attrGroup.name }}</h4>
+      <h4>{{ attrGroup.attr_name }}</h4>
 
-      <label ng-repeat="attr in attrGroup.items">
+      <label 
+        ng-repeat="attr in attrGroup.attributes" 
+        ng-class="{'disabled': attr.disabled}" 
+      >
         <input 
           type="checkbox" 
           ng-model="attr.selected" 
-          ng-disabled="attr.disabled" 
-          ng-checked="attr.selected" 
           ng-change="makeFilter()" 
         > 
         {{ attr.attr_text }}<br>
@@ -76,20 +81,11 @@
 
     $scope.test = 0;
     $scope.filterData = false;
+    $scope.firstChangeGroup = 0;
 
-    // $scope.$watch('filterData.attributes', function(val, old) {
-    //   if ($scope.test >= 3) return false;
+    $scope.makeFilter = function(groupId) {
+      $scope.firstChangeGroup = groupId;
 
-    //   $scope.test++;
-    //   $scope.makeFilter();
-    // }, true);
-
-    // $scope.$watchCollection('filterData.attributes', function(val, old) {
-    //   // $scope.makeFilter();
-    //   console.log('$watchCollection');
-    // }, true);
-
-    $scope.makeFilter = function() {
       $http({
         url: '/index.php?route=product/category/filter',
         method: 'post',
@@ -109,11 +105,18 @@
       var result = [];
 
       angular.forEach($scope.filterData.attributes, function(el) {
-        angular.forEach(el.items, function(item) {
+        var subresult = {
+          attr_group_id: el.attr_id,
+          items: []
+        };
+        
+        angular.forEach(el.attributes, function(item) {
           if (item.selected) {
-            result.push(item.attr_text);
+            subresult.items.push(item.attr_text);
           };
         });
+
+        if (subresult.items.length) result.push(subresult);
       });
 
       return result;

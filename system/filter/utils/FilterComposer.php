@@ -38,11 +38,13 @@ class FilterComposer
 			// Here we are looping through filtered array
 			foreach ($filtered as $filtered_item)
 			{
+				if ($this->selected($original_item, $setting))
+				{
+					$original_item['selected'] = true;
+				}
+
 				if ( ! $this->disabled($original_item, $filtered_item))
 				{
-					if ($this->selected($original_item, $setting))
-						$original_item['selected'] = true;
-
 					$original_item['disabled'] = false;
 
 					// continue;

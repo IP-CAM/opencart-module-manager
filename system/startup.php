@@ -119,6 +119,7 @@ require_once(DIR_SYSTEM . 'filter/cases/FilterCaseInterface.php');
 require_once(DIR_SYSTEM . 'filter/cases/FilterCase.php');
 require_once(DIR_SYSTEM . 'filter/cases/FilterCaseAttributes.php');
 require_once(DIR_SYSTEM . 'filter/cases/FilterCaseOptions.php');
+require_once(DIR_SYSTEM . 'filter/cases/FilterCaseAttributesGroup.php');
 
 // Filter builders
 require_once(DIR_SYSTEM . 'filter/builders/FilterBuilderInterface.php');
@@ -138,3 +139,5 @@ require_once(DIR_SYSTEM . 'filter/utils/FilterComposer.php');
 // Filter managers
 require_once(DIR_SYSTEM . 'filter/FilterFactory.php');
 require_once(DIR_SYSTEM . 'filter/FilterManager.php');
+
+// require_once(DIR_SYSTEM . '../vendor/autoload.php');

@@ -20,7 +20,7 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 	public $where = array(
 		"language_filter" => "main_pa.language_id = 1",
 		"product_filter"  => array(
-			'select' => array('sub_ptc.product_id'),
+			'select' => array('DISTINCT sub_ptc.product_id'),
 			'from' => 'product_to_category AS sub_ptc',
 			'join' => array(),
 			'where' => array()

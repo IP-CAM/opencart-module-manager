@@ -10,7 +10,7 @@ class FilterManager
 	{
 		return array(
 			'attributes' => $this->getCategoryAttributes($db, $settings),
-			'options' => $this->getCategoryOptions($db, $settings)
+			// 'options' => $this->getCategoryOptions($db, $settings)
 		);
 	}
 
@@ -23,11 +23,11 @@ class FilterManager
 	protected function getCategoryAttributes($db, $settings)
 	{
 		// Get all category attributes
-		$category_builder = new FilterBuilder(
-			new FilterCaseAttributes,
+		$builder = new FilterBuilder(
+			new FilterCaseAttributesGroup,
 			new FilterFormatterAttributes
 		);
-		$factory = new FilterFactory($category_builder);
+		$factory = new FilterFactory($builder);
 
 		$fake_settings = array(
 			'category_id' => $settings['category_id'],
@@ -35,49 +35,52 @@ class FilterManager
 			'options' => array()
 		);
 
-		$attributes = $factory
-			->make($fake_settings)
-			->resolve($db, $fake_settings, 'attributes', 'attr_text');
+		$attribute_groups = $factory->make($fake_settings)->resolve($db);
 
 		// echo "\n\nOriginal attributes:\n";
-		// print_r($attributes);
+		// print_r($attribute_groups);
 
 
 
 
 
-		// Get filtered category attributes
-		$builder = new FilterBuilder(
-			new FilterCaseAttributes,
-			new FilterFormatterAttributes
-		);
-		$factory = new FilterFactory($builder);
+		// Get attribute groups attributes
+		$res = array();
 
-		$category_filtered_attributes = $factory
-			->make($settings)->resolve($db, $settings, 'attributes', 'attr_text');
+		foreach ($attribute_groups as & $group)
+		{
+			$group['filters'] = array();
 
-		// echo "\n\nFiltered attributes:\n";
-		// print_r($category_filtered_attributes);
+			foreach ($settings['attributes'] as $setting_attribute_group)
+			{
+				if ($group['attr_id'] != $setting_attribute_group['attr_group_id'])
+				{
+					$group['filters'] = array_merge($group['filters'], $setting_attribute_group['items']);
+				}
+			}
 
-		// Composer filter params
-		$filter_composer = new FilterComposer('attr_text');
+			$filter_settings = array(
+				'category_id' => $settings['category_id'],
+				'attributes' => $group,
+				'options' => $settings['options']
+			);
 
-		$attributes = $filter_composer->compose(
-			$attributes, 
-			$category_filtered_attributes, 
-			$settings['attributes']
-		);
+			$builder = new FilterBuilder(
+				new FilterCaseAttributes,
+				new FilterFormatterAttributes
+			);
+			$factory = new FilterFactory($builder);
 
-		// echo "\n\nComposed attributes:\n";
-		// print_r($attributes); die();
+			$group['attributes'] = $factory
+				->make($filter_settings)
+				->resolve($db);
+		}
 
+		// print_r($attribute_groups); 
 
+		// die();
 
-		// Format
-		$formatter = new FilterFormatterAttributes;
-		$attributes = $formatter->make($attributes);
-
-		return $attributes;
+		return $attribute_groups;
 	}
 
 
