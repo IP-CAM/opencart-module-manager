@@ -56,23 +56,12 @@ class FilterFormatterAttributes implements FilterFormatterInterface
 		foreach ($items as $attribute)
 		{
 			$key = 'attribute_id_' . $attribute['attr_id'];
-			$disabled = empty($attribute['disabled']) ? false : true;
-			$selected = empty($attribute['selected']) ? false : true;
 
-			$result[$key]['id'] = $attribute['attr_id'];
-			$result[$key]['name'] = $attribute['attr_name'];
-			$result[$key]['items'][] = array(
-				'product_id' => $attribute['product_id'],
-				'attr_id' => $attribute['attr_id'],
-				'attr_text' => $attribute['attr_text'],
-				'attr_group_id' => $attribute['attr_group_id'],
-				'attr_group_order' => $attribute['attr_group_order'],
-				'attr_group_name' => $attribute['attr_group_name'],
-				'selected' => $selected,
-				'disabled' => $disabled
-			);
+			$result[$key]['attr_id'] = $attribute['attr_id'];
+
+			$result[$key]['items'][] = $attribute['attr_text'];
 		}
-
+		
 		return $result;
 	}
 

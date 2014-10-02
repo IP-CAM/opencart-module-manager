@@ -135,9 +135,8 @@ require_once(DIR_SYSTEM . 'filter/utils/FilterSqlConverter.php');
 require_once(DIR_SYSTEM . 'filter/utils/SameFilterOptions.php');
 require_once(DIR_SYSTEM . 'filter/utils/FilterSettingResolver.php');
 require_once(DIR_SYSTEM . 'filter/utils/FilterComposer.php');
+require_once(DIR_SYSTEM . 'filter/utils/AttributeGroupConverter.php');
 
 // Filter managers
 require_once(DIR_SYSTEM . 'filter/FilterFactory.php');
 require_once(DIR_SYSTEM . 'filter/FilterManager.php');
-
-// require_once(DIR_SYSTEM . '../vendor/autoload.php');

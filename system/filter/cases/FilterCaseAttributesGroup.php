@@ -6,10 +6,9 @@ class FilterCaseAttributesGroup extends FilterCase implements FilterCaseInterfac
 	
 	// SQL data
 	public $select = array(
-		"main_pa.attribute_id AS attr_id",
-		"a.attribute_group_id AS attr_group_id",
-		"ad.name AS attr_name",
-		"a.sort_order AS attr_sort_order"
+		"main_pa.attribute_id as attr_id",
+		"main_pa.text as attr_text",
+		"ad.name as attr_name"
 	);
 
 	public $from = "product_attribute AS main_pa";
@@ -28,16 +27,15 @@ class FilterCaseAttributesGroup extends FilterCase implements FilterCaseInterfac
 	);
 
 	public $join = array(
-		" LEFT JOIN attribute AS a ON (a.attribute_id = main_pa.attribute_id) ",
-		" LEFT JOIN attribute_description AS ad ON (ad.attribute_id = main_pa.attribute_id) "
+		" JOIN attribute_description AS ad ON ad.attribute_id = main_pa.attribute_id "
 	);
 
 	public $group_by = array(
-		"attr_id"
+		"main_pa.text"
 	);
 
 	public $order_by = array(
-		"attr_id ASC"
+		"main_pa.attribute_id ASC"
 	);
 
 

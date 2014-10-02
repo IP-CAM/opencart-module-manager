@@ -86,6 +86,110 @@ class FilterManager
 
 
 	/**
+	 * Get all the category attributes
+	 *
+	 * @return array
+	 */
+	public function getRealAttributes($db, $settings)
+	{
+		// Get all category attributes
+		$builder = new FilterBuilder(
+			new FilterCaseAttributesGroup,
+			new FilterFormatterAttributes
+		);
+		$factory = new FilterFactory($builder);
+		$attributes = $factory->make(array(
+				'category_id' => $settings['category_id'],
+				'attributes' => array(),
+				'options' => array()
+			))
+			->resolve($db);
+
+		// Convert attributes to groups
+		$converter = new AttributeGroupConverter;
+		$result = $converter->toGroup($attributes);
+
+		return $result;
+	}
+
+
+	/**
+	 * Get all the filtered attributes
+	 *
+	 * @return array
+	 */
+	public function getFilteredAttributes($db, $settings)
+	{
+		$attribute_groups = $this->getRealAttributes($db, $settings);
+
+		// Get filtered attributes
+		foreach ($attribute_groups as & $group)
+		{
+			$group['filters'] = array();
+
+			foreach ($settings['attributes'] as $setting_attribute_group)
+			{
+				if ($group['attr_id'] != $setting_attribute_group['attr_group_id'])
+				{
+					$group['filters'] = array_merge($group['filters'], $setting_attribute_group['items']);
+				}
+			}
+
+			$filter_settings = array(
+				'category_id' => $settings['category_id'],
+				'attributes' => $group,
+				'options' => $settings['options']
+			);
+
+			$builder = new FilterBuilder(
+				new FilterCaseAttributes,
+				new FilterFormatterAttributes
+			);
+			$factory = new FilterFactory($builder);
+
+			$converter = new AttributeGroupConverter;
+
+			$group['attributes'] = $converter->pluckAttributeTextArray(
+				$factory->make($filter_settings)->resolve($db)
+			);
+		}
+
+		$converter = new AttributeGroupConverter;
+		$result = $converter->compose($attribute_groups);
+
+		return $result;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
 	 * Get all category attributes
 	 *
 	 * @return array
@@ -195,52 +299,3 @@ class FilterManager
 
 
 }
-
-
-
-
-
-/*
-
-
-SELECT main_po.product_option_id,
-       main_po.product_id,
-       main_po.option_id,
-       main_po.option_value,
-       o.type AS option_type,
-       o.sort_order AS option_sort_order,
-       od.name AS option_name,
-       ov.option_value_id,
-       ov.image AS option_value_image,
-       ov.sort_order AS option_value_sort_order,
-       ovd.name 
-FROM product_option AS main
-LEFT JOIN product_option AS main_po ON (main_po.product_id = main.product_id)
-LEFT JOIN `option` AS o ON (o.option_id = main_po.option_id)
-LEFT JOIN option_description AS od ON (od.option_id = main_po.option_id)
-LEFT JOIN option_value AS ov ON (ov.option_id = main_po.option_id)
-LEFT JOIN option_value_description AS ovd ON (ovd.option_value_id = ov.option_value_id)
-
-WHERE ovd.language_id = 1
-  AND main.product_id IN
-    (
-    
-
-SELECT sub_ptc.product_id 
-FROM product_to_category AS sub_ptc
-LEFT JOIN product_attribute AS sub_pa ON (sub_pa.product_id = sub_ptc.product_id)
-#LEFT JOIN product_option_value AS sub_pov ON (sub_ptc.product_id = sub_pov.product_id)
-WHERE sub_ptc.category_id = 24
-  AND sub_pa.text IN ("Description palm", "test1 palm + iphone + htc")
-  group by sub_ptc.product_id
-  HAVING COUNT(DISTINCT sub_pa.text) = 2)
-
-AND ov.option_value_id IN
-         (SELECT option_value_id
-          FROM product_option_value
-          WHERE product_id = main_po.product_id)
-  
-#GROUP BY ovd.option_value_id
-ORDER BY main_po.option_id ASC
-
-*/

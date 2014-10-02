@@ -41,31 +41,4 @@ class FilterFactory
 	}
 
 
-	/**
-	 * Get all the products, attributes, manufacturers.. 
-	 * Resolves catalog data in array for every single option, attribute ect.
-	 *
-	 * @return mixed
-	 */
-	protected function resolveArray($db, $settings, $key, $filter_key)
-	{
-		$same_options = array();
-		$settings_resolver = new FilterSettingResolver;
-
-		foreach ($settings[$key] as $id)
-		{
-			$settings = $settings_resolver->resolve($settings, $key, $id);
-
-			$same_options[] = $this
-				->make($settings)
-				->resolve($db, $settings, $key, $filter_key);
-		}
-
-		// Leave items only with same ID
-		$same = new SameFilterOptions;
-		
-		return $same->filter($same_options, $filter_key);
-	}
-
-
 }
