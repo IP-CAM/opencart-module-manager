@@ -18,7 +18,7 @@ class FilterFactory
 	/**
 	 * Set all needle data for filtering
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function make($data)
 	{

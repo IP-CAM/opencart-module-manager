@@ -54,6 +54,7 @@ class FilterManagerTest extends \PHPUnit_Framework_TestCase
 				'attr_name' => 'Диагональ экрана',
 				'items' => array(
 					array('text' => '5.5'),
+					array('text' => '10'),
 					array('text' => '4')
 				)
 			),
@@ -136,6 +137,10 @@ class FilterManagerTest extends \PHPUnit_Framework_TestCase
 				'items' => array(
 					array(
 						'text' => '5.5',
+						'disabled' => true
+					),
+					array(
+						'text' => '10',
 						'disabled' => true
 					),
 					array(

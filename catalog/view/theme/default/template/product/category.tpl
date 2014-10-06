@@ -37,7 +37,6 @@
         <input 
           type="checkbox" 
           ng-model="attr.selected" 
-          ng-disabled="attr.disabled" 
           ng-change="makeFilter()" 
         > 
         {{ attr.text }}<br>
@@ -146,7 +145,7 @@
         angular.forEach(el.items, function(item) {
           if (item.disabled && item.selected) {
             item.selected = false;
-            
+
             $scope.makeFilter();
           };
         });

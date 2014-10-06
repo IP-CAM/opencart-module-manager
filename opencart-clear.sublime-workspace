@@ -4,6 +4,30 @@
 		"selected_items":
 		[
 			[
+				"AttG",
+				"AttributeGroupConverter"
+			],
+			[
+				"attis",
+				"attributes"
+			],
+			[
+				"test",
+				"test	test"
+			],
+			[
+				"te",
+				"teardown	teardown"
+			],
+			[
+				"settg",
+				"setting"
+			],
+			[
+				"sett",
+				"settings"
+			],
+			[
 				"grop",
 				"group_by"
 			],
@@ -24,14 +48,6 @@
 	"buffers":
 	[
 		{
-			"file": "catalog/view/theme/default/template/product/category.tpl",
-			"settings":
-			{
-				"buffer_size": 10664,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "catalog/controller/product/category.php",
 			"settings":
 			{
@@ -40,18 +56,34 @@
 			}
 		},
 		{
-			"file": "system/filter/FilterManager.php",
+			"file": "tests/FilterManagerTest.php",
 			"settings":
 			{
-				"buffer_size": 5368,
+				"buffer_size": 3911,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "system/filter/FilterFactory.php",
+			"file": "catalog/view/theme/default/template/product/category.tpl",
 			"settings":
 			{
-				"buffer_size": 1291,
+				"buffer_size": 11228,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "tests/AttributeGroupConverterTest.php",
+			"settings":
+			{
+				"buffer_size": 2220,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "system/filter/FilterManager.php",
+			"settings":
+			{
+				"buffer_size": 6123,
 				"line_ending": "Unix"
 			}
 		},
@@ -59,15 +91,31 @@
 			"file": "system/filter/builders/FilterBuilder.php",
 			"settings":
 			{
-				"buffer_size": 1499,
+				"buffer_size": 1248,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "system/filter/utils/FilterComposer.php",
+			"file": "system/filter/FilterFactory.php",
 			"settings":
 			{
-				"buffer_size": 1597,
+				"buffer_size": 613,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "system/filter/utils/AttributeGroupConverter.php",
+			"settings":
+			{
+				"buffer_size": 1866,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "system/filter/formatters/FilterFormatterOptions.php",
+			"settings":
+			{
+				"buffer_size": 828,
 				"line_ending": "Unix"
 			}
 		},
@@ -75,23 +123,7 @@
 			"file": "system/filter/cases/FilterCase.php",
 			"settings":
 			{
-				"buffer_size": 3061,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "system/filter/utils/FilterSqlConverter.php",
-			"settings":
-			{
-				"buffer_size": 2650,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "",
-			"settings":
-			{
-				"buffer_size": 0,
+				"buffer_size": 3268,
 				"line_ending": "Unix"
 			}
 		}
@@ -99,12 +131,28 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 87.0,
+		"height": 392.0,
 		"selected_items":
 		[
 			[
 				"sql",
 				"SQL Beautifier: Format Current SQL File"
+			],
+			[
+				"ref",
+				"Project: Refresh Folders"
+			],
+			[
+				"refresh",
+				"Project: Refresh Folders"
+			],
+			[
+				"refre",
+				"Project: Refresh Folders"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
 			],
 			[
 				"swl",
@@ -123,7 +171,7 @@
 				"Project: Add Folder"
 			]
 		],
-		"width": 449.0
+		"width": 512.0
 	},
 	"console":
 	{
@@ -147,30 +195,87 @@
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/logs"
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/logs",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/tests"
 	],
 	"file_history":
 	[
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseAttributes.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/FilterComposer.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeInUp.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseAttributes.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit-mock-objects/tests/_fixture/MethodCallbackByReference.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/localisation/return_reason_form.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/catalog/review_form.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/src/Framework/RiskyTestError.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/engine/registry.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCase.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/report/affiliate_commission.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseOptions.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/transaction.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/config.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/autoload.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterAttributes.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseAttributesGroup.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/total/tax.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/FilterSqlConverter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterOptions.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/FilterFactory.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterInterface.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-number-isolation.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-number.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/tests/FilterManagerTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/common/filemanager.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/tests/AttributeGroupConverterTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/AttributeGroupConverter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/startup.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/localisation/stock_status.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/builders/FilterBuilder.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/testable.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/src/Framework/TestSuite.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/Util/TestTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/get-size/test/index.html",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/index.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/encryption.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/database/mysqli.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/startup.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/product/category.tpl",
+		"/Users/yuriikrevnyi/.bash_profile",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/phpunit.xml",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/php.ini",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/language/english/openbay/ebay_new.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/ebay.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/core/interface/CommandInterface.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-only-range.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseOptions.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/database/mysql.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/payment/sagepay_direct.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/database/mmsql.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/symfony/yaml/Symfony/Component/Yaml/Tests/Fixtures/sfQuotes.yml",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/flippers/flipInY.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/payment/nochex.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/_files/ThrowExceptionTestCase.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-classname-and-range-isolation.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-classname-and-range.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/dataprovider-testdox.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/ckeditor/lang/da.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/db.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/ckeditor/plugins/codemirror/js/util/pig-hint.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/php-token-stream/tests/Token/IncludeTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/_files/ExceptionInTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/composer.json",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/sass-bootstrap-glyphicons/composer.json",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/eventEmitter/component.json",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/product/compare.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/common.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/FilterManager.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/builders/FilterBuilderInterface.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/report/affiliate_commission.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/SameFilterOptions.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/ProductFilter.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/core/ProviderRepository.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/php.ini",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/logs/error.txt",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/common/filemanager.tpl",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/FilterFactory.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/builders/FilterBuilderInterface.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterAttributes.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/builders/FilterBuilder.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/FilterManager.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/FilterSqlConverter.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeInLeft.css",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/payment/paypoint_failure.tpl",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeIn.css",
@@ -180,9 +285,6 @@
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/FilterSettingResolver.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/setting/setting.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/session.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/startup.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterOptions.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterInterface.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/catalog/product.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/catalog/category.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/account/address.php",
@@ -191,18 +293,14 @@
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/account/download.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/payment/moneybookers.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/catalog/manufacturer.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/transaction.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseInterface.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/localisation/order_status.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/report/sale_tax.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/checkout/shipping_address.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/startup.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/autoload.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/lib/TeilDownloader.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/template.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/tax.php",
-		"/Users/yuriikrevnyi/.bash_profile",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/index.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeInDown.css",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/catalog/attribute_form.tpl",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/cache/cache.stock_status.1.1411828433",
@@ -211,7 +309,6 @@
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/affiliate/tracking.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/jquery/src/traversing/var/rneedsContext.js",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/report/customer_online.php",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/common/filemanager.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/module/category.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/checkout/confirm.php",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/total/coupon.php",
@@ -232,12 +329,7 @@
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/html5-boilerplate/doc/misc.md",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/directives/module-popup.js",
 		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/address.php",
-		"/Users/yuriikrevnyi/sites/presento.dev/www/index.html",
-		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/config",
-		"/etc/hosts",
-		"/Applications/XAMPP/xamppfiles/etc/extra/httpd-vhosts.conf",
-		"/Applications/XAMPP/xamppfiles/etc/httpd.conf",
-		"/Users/yuriikrevnyi/Applications/XAMPP/xamppfiles/etc/extra/httpd-vhosts.conf"
+		"/Users/yuriikrevnyi/sites/presento.dev/www/index.html"
 	],
 	"find":
 	{
@@ -257,6 +349,64 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"<?",
+			"disabled",
+			"return",
+			"select",
+			"sql",
+			"http",
+			"disable",
+			"http",
+			"getFilteredAttributes",
+			"pluck",
+			"'items' => array(",
+			"),\n\narray(",
+			"attr_id",
+			"[1] => ",
+			"[0] => ",
+			"'attributes' => array\n        (",
+			"attributes] => Array",
+			"[attributes] => Array",
+			"[filters] => Array\n        (\n        )",
+			"'items' => array",
+			"'items' => Array",
+			"[attr_id] =>",
+			"[attr_id]",
+			"attribute_id",
+			"'attr_id",
+			"attribute_id",
+			"'attr_id",
+			"`",
+			"attr_",
+			"id",
+			"filter_settings",
+			"testGetCategoryAttributes",
+			"AttributeGroupConverterTestTest",
+			"[\"product_id\"]",
+			"[product_id]",
+			"),",
+			"=> Array",
+			"[",
+			"pa",
+			"PATH",
+			"Applications/XAMPP",
+			"mcrypt",
+			"local",
+			"mysql.default_socket",
+			",",
+			"attrGroup.id",
+			"items",
+			"group",
+			"setting",
+			"$attributes",
+			"attributes",
+			"attribute_groups",
+			"attribute_grops",
+			"category_builder",
+			"LEFT",
+			"category_id",
+			"setatt",
+			"http",
 			"changeFilter",
 			"group",
 			"makeFilter",
@@ -326,51 +476,7 @@
 			"б",
 			"attributes",
 			"settings",
-			"_item",
-			"category_attributes",
-			"$builder",
-			"builder",
-			"sadjf",
-			"options",
-			"attributes",
-			"options",
-			"subl",
-			"ng-repe",
-			"in (",
-			"in(",
-			"die",
-			"implo",
-			"$scope",
-			"test",
-			"watch",
-			"isfilter",
-			"watch",
-			"attr_te",
-			"attributes",
-			"sub_pa",
-			"scope.filtered",
-			"join",
-			"JOIN ",
-			"join",
-			"JOIN",
-			"join",
-			"di",
-			"filterma",
-			"filter",
-			"test",
-			"C:\\xampp\\htdocs\\",
-			"\\",
-			"C:\\xampp\\htdocs\\",
-			"presento",
-			"mysite.local",
-			"/Users/yourusername/path/to/your/site",
-			"daemon",
-			"dae",
-			"presento.dev",
-			"dummy-host2.example.com",
-			"presento.dev",
-			"httpd-vhosts.conf",
-			"/Applications/XAMPP/xamppfiles/etc/httpd.conf"
+			"_item"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -389,41 +495,11 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "catalog/view/theme/default/template/product/category.tpl",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10664,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								893,
-								893
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 434.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "catalog/controller/product/category.php",
 					"semi_transient": false,
 					"settings":
@@ -435,8 +511,8 @@
 						"selection":
 						[
 							[
-								15508,
-								15508
+								15566,
+								15566
 							]
 						],
 						"settings":
@@ -446,68 +522,64 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 7185.0,
+						"translation.y": 7403.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 9,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 2,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 2,
-					"file": "system/filter/FilterManager.php",
+					"buffer": 1,
+					"file": "tests/FilterManagerTest.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5368,
+						"buffer_size": 3911,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								207,
-								207
+								781,
+								781
 							]
 						],
 						"settings":
 						{
+							"history_list_is_closing": true,
 							"syntax": "Packages/PHP/PHP.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 47.0,
+						"translation.y": 409.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "system/filter/FilterFactory.php",
+					"buffer": 2,
+					"file": "catalog/view/theme/default/template/product/category.tpl",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1291,
+						"buffer_size": 11228,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								635,
-								635
+								988,
+								988
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -517,20 +589,84 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "system/filter/builders/FilterBuilder.php",
+					"buffer": 3,
+					"file": "tests/AttributeGroupConverterTest.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1499,
+						"buffer_size": 2220,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								966,
-								966
+								1551,
+								1551
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1000.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 4,
+					"file": "system/filter/FilterManager.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6123,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2036,
+								2036
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 668.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "system/filter/builders/FilterBuilder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1248,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								699,
+								699
 							]
 						],
 						"settings":
@@ -542,82 +678,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "system/filter/utils/FilterComposer.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1597,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								965,
-								965
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 463.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
 					"buffer": 6,
-					"file": "system/filter/cases/FilterCase.php",
+					"file": "system/filter/FilterFactory.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3061,
+						"buffer_size": 613,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2475,
-								2475
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 225.0,
-						"translation.y": 1128.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "system/filter/utils/FilterSqlConverter.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2650,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1397,
-								1397
+								613,
+								613
 							]
 						],
 						"settings":
@@ -626,18 +704,48 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 796.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 7,
+					"file": "system/filter/utils/AttributeGroupConverter.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 1866,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1442,
+								1442
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 776.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "system/filter/formatters/FilterFormatterOptions.php",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 828,
 						"regions":
 						{
 						},
@@ -650,13 +758,43 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/SQL/SQL.tmLanguage"
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "system/filter/cases/FilterCase.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3268,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								755,
+								755
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 488.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -716,12 +854,164 @@
 		"selected_items":
 		[
 			[
-				"filtercom",
-				"www/system/filter/utils/FilterComposer.php"
+				"fuilterbuil",
+				"www/system/filter/builders/FilterBuilder.php"
 			],
 			[
 				"filtercase",
 				"www/system/filter/cases/FilterCase.php"
+			],
+			[
+				"filterbuil",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filtercaseatt",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"cat/category.tpl",
+				"www/catalog/view/theme/default/template/product/category.tpl"
+			],
+			[
+				"filtercompose",
+				"www/system/filter/utils/FilterComposer.php"
+			],
+			[
+				"filterattg",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filterattrig",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filtercseattg",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filterformaatt",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"filterfac",
+				"www/system/filter/FilterFactory.php"
+			],
+			[
+				"filterattrformatt",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"filettbuildr",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"attributegroupconverter",
+				"www/system/filter/utils/AttributeGroupConverter.php"
+			],
+			[
+				"startup",
+				"www/system/startup.php"
+			],
+			[
+				"filtercaseattg",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"start",
+				"www/system/startup.php"
+			],
+			[
+				"testable",
+				"www/testable.php"
+			],
+			[
+				"tests/",
+				"www/tests/FilterManagerTest.php"
+			],
+			[
+				"tes",
+				"www/testable.php"
+			],
+			[
+				"phpunit",
+				"www/phpunit.xml"
+			],
+			[
+				"inde",
+				"www/index.php"
+			],
+			[
+				"php",
+				"www/php.ini"
+			],
+			[
+				"index",
+				"www/index.php"
+			],
+			[
+				"enc",
+				"www/system/library/encryption.php"
+			],
+			[
+				"config",
+				"www/config.php"
+			],
+			[
+				"php.in",
+				"www/php.ini"
+			],
+			[
+				"mysqli",
+				"www/system/database/mysqli.php"
+			],
+			[
+				"database/myi",
+				"www/system/database/mysqli.php"
+			],
+			[
+				"composer",
+				"www/admin/view/javascript/teil/bower_components/sass-bootstrap-glyphicons/composer.json"
+			],
+			[
+				"filtecase",
+				"www/system/filter/cases/FilterCase.php"
+			],
+			[
+				"filtercae",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filtercaseattr",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"sta",
+				"www/system/startup.php"
+			],
+			[
+				"filtercaseattributes",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filterbuilerinter",
+				"www/system/filter/builders/FilterBuilderInterface.php"
+			],
+			[
+				"filterbuilder",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filtermanage",
+				"www/system/filter/FilterManager.php"
+			],
+			[
+				"filtermana",
+				"www/system/filter/FilterManager.php"
+			],
+			[
+				"filtercom",
+				"www/system/filter/utils/FilterComposer.php"
 			],
 			[
 				"filatecase",
@@ -730,10 +1020,6 @@
 			[
 				"filtercaseop",
 				"www/system/filter/cases/FilterCaseOptions.php"
-			],
-			[
-				"filtercaseatt",
-				"www/system/filter/cases/FilterCaseAttributes.php"
 			],
 			[
 				"filtersql",
@@ -750,10 +1036,6 @@
 			[
 				"filtecaseop",
 				"www/system/filter/cases/FilterCaseOptions.php"
-			],
-			[
-				"filtercaseattr",
-				"www/system/filter/cases/FilterCaseAttributes.php"
 			],
 			[
 				"fitler/sql",
@@ -778,10 +1060,6 @@
 			[
 				"filterbuilter",
 				"www/system/filter/builders/FilterBuilderInterface.php"
-			],
-			[
-				"filtermanage",
-				"www/system/filter/FilterManager.php"
 			],
 			[
 				"filte/sql",
@@ -848,24 +1126,12 @@
 				"www/system/filter/cases/FilterCase.php"
 			],
 			[
-				"startup",
-				"www/system/startup.php"
-			],
-			[
 				"filterreso",
 				"www/system/filter/utils/FilterSettingResolver.php"
 			],
 			[
 				"sql",
 				"www/system/filter/utils/FilterSqlConverter.php"
-			],
-			[
-				"index",
-				"www/index.php"
-			],
-			[
-				"filtecase",
-				"www/system/filter/cases/FilterCase.php"
 			],
 			[
 				"filteface",
@@ -892,22 +1158,6 @@
 				"www/admin/view/javascript/teil/bower_components/jquery/src/attributes/classes.js"
 			],
 			[
-				"config",
-				"www/config.php"
-			],
-			[
-				"filterfac",
-				"www/system/filter/FilterFactory.php"
-			],
-			[
-				"filtercaseattributes",
-				"www/system/filter/cases/FilterCaseAttributes.php"
-			],
-			[
-				"filterbuilder",
-				"www/system/filter/builders/FilterBuilder.php"
-			],
-			[
 				"filtermanager",
 				"www/system/filter/FilterManager.php"
 			],
@@ -932,6 +1182,10 @@
 		"selected_items":
 		[
 			[
+				"mod",
+				"~/sites/modnadiva.dev/www/modnadiva.sublime-project"
+			],
+			[
 				"moda",
 				"~/sites/modnadiva.dev/www/modnadiva.sublime-project"
 			],
@@ -950,7 +1204,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 0,
+	"selected_group": 1,
 	"settings":
 	{
 		"last_automatic_layout":
@@ -972,7 +1226,7 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": false,
+	"side_bar_visible": true,
 	"side_bar_width": 247.0,
 	"status_bar_visible": true,
 	"template_settings":

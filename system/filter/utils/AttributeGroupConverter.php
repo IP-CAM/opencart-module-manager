@@ -68,6 +68,16 @@ class AttributeGroupConverter
 			// Loop through all attributes from attribute group
 			foreach ($attribute['items'] as & $original_attr)
 			{
+
+				// Set `selected` state
+				foreach ($settings as $setting)
+				{
+					if (in_array($original_attr['text'], $setting['items']))
+					{
+						$original_attr['selected'] = true;
+					}
+				}
+				
 				$original_attr['disabled'] = true;
 
 				// Loop through filtered attributes and compare their 
@@ -84,14 +94,6 @@ class AttributeGroupConverter
 					break;
 				}
 
-				// Set `selected` state
-				foreach ($settings as $setting)
-				{
-					if (in_array($original_attr['text'], $setting['items']))
-					{
-						$original_attr['selected'] = true;
-					}
-				}
 			}
 		}
 

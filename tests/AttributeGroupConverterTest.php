@@ -59,6 +59,7 @@ class AttributeGroupConverterTest extends \PHPUnit_Framework_TestCase
 				'attr_name' => 'Диагональ экрана',
 				'items' => array(
 					array('text' => '5.5'),
+					array('text' => '10'),
 					array('text' => '4')
 				)
 			),
