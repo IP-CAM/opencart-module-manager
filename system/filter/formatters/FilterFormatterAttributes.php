@@ -27,6 +27,7 @@ class FilterFormatterAttributes implements FilterFormatterInterface
 			if( ! isset($result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']]))
 			{
 				$result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']] = array(
+					'id' => $attribute['attribute_id'], 
 					'name' => $attribute['name'], 
 					'values' => array()
 				);

@@ -41,6 +41,7 @@
           <input 
             type="checkbox" 
             ng-model="attr.selected" 
+            ng-change="makeFilter()" 
           > {{ attr.text }}
           <br>
         </label>
@@ -82,9 +83,21 @@
     };
 
     $scope.listAttributes = function(key) {
-      var result = [];
+      var result = {};
 
-      console.log($scope);
+      angular.forEach($scope.filterData.attributes, function(group) {
+        angular.forEach(group.attribute_values, function(attr) {
+          result[attr.id] = [];
+
+          angular.forEach(attr.values, function(value) {
+            if (value.selected) {
+              result[attr.id].push(value.text);
+            };
+          });
+        });
+      });
+
+      console.log(result);
 
       return result;
     };
