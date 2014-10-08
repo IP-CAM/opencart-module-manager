@@ -38,7 +38,7 @@ class FilterCase implements FilterCaseInterface
 		$this->category_id = $category_id;
 
 		// Update where
-		$this->where['product_filter']['where']['category'] = 'sub_ptc.category_id = ' . $category_id;
+		// $this->where['product_filter']['where']['category'] = 'sub_ptc.category_id = ' . $category_id;
 	}
 
 

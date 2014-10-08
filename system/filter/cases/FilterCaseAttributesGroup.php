@@ -1,46 +1,66 @@
 <?php 
 
 
-class FilterCaseAttributesGroup extends FilterCase implements FilterCaseInterface 
+class FilterCaseAttributesGroup implements FilterCaseInterface 
 {
 	
 	// SQL data
 	public $select = array(
-		"main_pa.attribute_id as attr_id",
-		"main_pa.text as attr_text",
-		"ad.name as attr_name"
+		"pa.text",
+		"a.attribute_id",
+		"ad.name",
+		"ag.attribute_group_id",
+		"agd.name AS attribute_group_name",
 	);
 
-	public $from = "product_attribute AS main_pa";
+	public $from = "product_attribute AS pa";
 
 	public $where = array(
-		"language_filter" => "main_pa.language_id = 1",
-		"product_filter"  => array(
-			'select' => array('DISTINCT sub_ptc.product_id'),
-			'from' => 'product_to_category AS sub_ptc',
-			'join' => array(
-				" LEFT JOIN product_attribute AS sub_pa ON (sub_pa.product_id = sub_ptc.product_id) ",
-				" LEFT JOIN product_option_value AS sub_pov ON (sub_ptc.product_id = sub_pov.product_id) "
-			),
-			'where' => array()
-		)
+		"filter_product_status" => "p.status = 1",
+		"filter_product_date_avaliable" => "p.date_available <= NOW()",
+		"filter_store_id" => "p2s.store_id =0",
+		"filter_product_attribute_language_id" => "pa.language_id = 1",
+		"filter_attribute_text_language_id" => "ad.language_id = 1",
+		"filter_attribute_group_language_id" => "agd.language_id = 1"
 	);
 
 	public $join = array(
-		" JOIN attribute_description AS ad ON ad.attribute_id = main_pa.attribute_id "
+		" LEFT JOIN attribute a ON(pa.attribute_id=a.attribute_id) ",
+		" LEFT JOIN attribute_description ad ON(a.attribute_id=ad.attribute_id) ",
+		" LEFT JOIN attribute_group ag ON(ag.attribute_group_id=a.attribute_group_id) ",
+		" LEFT JOIN attribute_group_description agd ON(agd.attribute_group_id=ag.attribute_group_id) ",
+		" LEFT JOIN product p ON(p.product_id=pa.product_id) ",
+		" LEFT JOIN product_to_category p2c ON(p.product_id=p2c.product_id) ",
+		" LEFT JOIN product_to_store p2s ON(p.product_id=p2s.product_id) "
 	);
 
-	public $group_by = array(
-		"main_pa.text"
-	);
+	public $group_by = array();
 
 	public $order_by = array(
-		"main_pa.attribute_id ASC"
+		"ag.sort_order",
+		"agd.name",
+		"a.sort_order",
+		"ad.name",
+		"pa.text"
 	);
 
 
-	public function setOptions($options = array()) {}
-	public function setAttributes($attributes = array()) {}
+	/**
+	 * Filter by category id
+	 *
+	 * @return void
+	 */
+	public function setCategory($category_id)
+	{
+		if ( ! empty($category_id))
+		{
+			$this->where['filter_category_id'] = ' p2c.category_id = ' . $category_id . ' ';
+		}
+	}
+
+
+	public function setOptions($options) {}
+	public function setAttributes($attributes) {}
 
 
 }

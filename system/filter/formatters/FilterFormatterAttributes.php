@@ -2,67 +2,72 @@
 
 
 /**
- * Convert query result to readable list
- *
- * Example:
- *
- * Array
- * (
- *     [attribute_id_6] => Array
- *         (
- *             [id] => 6
- *             [name] => Processor
- *             [items] => Array
- *                 (
- *                     [0] => Array
- *                         (
- *                             [product_id] => 43
- *                             [attr_id] => 2
- *                             [attr_text] => 1
- *                             [attr_id] => 6
- *                             [attr_group_order] => 5
- *                             [attr_group_name] => Processor
- *                         )
- *                   )
- *          )
- *     [attribute_id_3] => Array
- *         (
- *             [id] => 3
- *             [name] => Memory
- *             [items] => Array
- *                 (
- *                     [0] => Array
- *                         (
- *                             [product_id] => 43
- *                             [attr_id] => 4
- *                             [attr_text] => 8gb
- *                             [attr_id] => 3
- *                             [attr_group_order] => 1
- *                             [attr_group_name] => Memory
- *                         )
- *                  )
- *         )
- *  )
+ * Create attribute groups from simple attribute list
  *
  */
 class FilterFormatterAttributes implements FilterFormatterInterface 
 {
 	
 
-	public function make($items)
+	public function make($attributes)
 	{
 		$result = array();
 
-		foreach ($items as $attribute)
+		// Create readable attribute groups
+		foreach($attributes as $attribute)
 		{
-			$key = 'attribute_id_' . $attribute['attr_id'];
+			if( ! isset($result[$attribute['attribute_group_id']]))
+			{
+				$result[$attribute['attribute_group_id']] = array(
+					'name' => $attribute['attribute_group_name'],
+					'attribute_values' => array()
+				);
+			}
 
-			$result[$key]['attr_id'] = $attribute['attr_id'];
+			if( ! isset($result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']]))
+			{
+				$result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']] = array(
+					'name' => $attribute['name'], 
+					'values' => array()
+				);
+			}
 
-			$result[$key]['items'][] = $attribute['attr_text'];
+			// | - is attribute delimeter
+			foreach(explode("|", $attribute['text']) as $text)
+			{
+				if( ! $this->valueExists($text, $result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']]))
+				{
+					$result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']]['values'][] = array('text' => $text);
+				}
+			}
 		}
-		
+
+		// Sort result
+		foreach($result as $attribute_group_id => $attribute_group)
+		{
+			foreach($attribute_group['attribute_values'] as $attribute_id => $attribute)
+			{
+				sort($result[$attribute_group_id]['attribute_values'][$attribute_id]['values']);
+			}
+		}
+
 		return $result;
+	}
+
+
+	/**
+	 * Check if attribute value already exists in array
+	 *
+	 * @return bool
+	 */
+	protected function valueExists($text, $attributes)
+	{
+		if (in_array(array('text' => $text), $attributes['values']))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 

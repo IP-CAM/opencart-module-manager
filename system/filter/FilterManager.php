@@ -10,6 +10,7 @@ class FilterManager
 	{
 		return array(
 			'attributes' => $this->getFilteredAttributes($db, $settings),
+			// 'attributes' => $this->getFilteredAttributes($db, $settings),
 			// 'options' => $this->getCategoryOptions($db, $settings)
 		);
 	}
@@ -27,19 +28,10 @@ class FilterManager
 			new FilterCaseAttributesGroup,
 			new FilterFormatterAttributes
 		);
+
 		$factory = new FilterFactory($builder);
-		$attributes = $factory->make(array(
-				'category_id' => $settings['category_id'],
-				'attributes' => array(),
-				'options' => array()
-			))
-			->resolve($db);
-
-		// Convert attributes to groups
-		$converter = new AttributeGroupConverter;
-		$result = $converter->toGroup($attributes);
-
-		return $result;
+		
+		return $factory->make($settings)->resolve($db);
 	}
 
 
@@ -53,41 +45,9 @@ class FilterManager
 		$attribute_groups = $this->getRealAttributes($db, $settings);
 
 		// Get filtered attributes
-		foreach ($attribute_groups as & $group)
-		{
-			$group['filters'] = array();
+		
 
-			foreach ($settings['attributes'] as $setting_attribute_group)
-			{
-				if ($group['attr_id'] != $setting_attribute_group['attr_group_id'])
-				{
-					$group['filters'] = array_merge($group['filters'], $setting_attribute_group['items']);
-				}
-			}
-
-			$filter_settings = array(
-				'category_id' => $settings['category_id'],
-				'attributes' => $group,
-				'options' => $settings['options']
-			);
-
-			$builder = new FilterBuilder(
-				new FilterCaseAttributes,
-				new FilterFormatterAttributes
-			);
-			$factory = new FilterFactory($builder);
-
-			$converter = new AttributeGroupConverter;
-
-			$group['attributes'] = $converter->pluckAttributeTextArray(
-				$factory->make($filter_settings)->resolve($db)
-			);
-		}
-
-		$converter = new AttributeGroupConverter;
-		$result = $converter->compose($attribute_groups, $settings['attributes']);
-
-		return $result;
+		return $attribute_groups;
 	}
 
 

@@ -38,7 +38,9 @@ class FilterBuilder implements FilterBuilderInterface
 		// echo $sql . "\n\n";
 		
 		// Get result item list
-		return $db->query($sql)->rows;
+		return $this->formatter->make(
+			$db->query($sql)->rows
+		);
 	}
 
 

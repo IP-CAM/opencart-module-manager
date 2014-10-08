@@ -28,39 +28,23 @@
       style="border: 1px dashed #e2e2e2; padding: 10px;" 
       ng-repeat="attrGroup in filterData.attributes" 
     >
-      <h4>{{ attrGroup.attr_name }}</h4>
+      <h4>{{ attrGroup.name }}</h4>
 
-      <label 
-        ng-repeat="attr in attrGroup.items" 
-        ng-class="{'disabled': attr.disabled}" 
+      <div 
+        class="filterGroup" 
+        style="border: 1px dashed #e2e2e2; padding: 10px;" 
+        ng-repeat="attribute in attrGroup.attribute_values" 
       >
-        <input 
-          type="checkbox" 
-          ng-model="attr.selected" 
-          ng-change="makeFilter()" 
-        > 
-        {{ attr.text }}<br>
-      </label>
+        <h4>{{ attribute.name }}</h4>
 
-    </div>
-
-    <div 
-      class="filterGroup" 
-      style="border: 1px dashed #e2e2e2; padding: 10px;" 
-      ng-repeat="optionGroup in filterData.options" 
-    >
-      <h4>{{ optionGroup.name }}</h4>
-
-      <label ng-repeat="option in optionGroup.items">
-        <input 
-          type="checkbox" 
-          ng-model="option.selected" 
-          ng-disabled="option.disabled" 
-          ng-checked="option.selected" 
-          ng-change="makeFilter()" 
-        > 
-        {{ option.name }}<br>
-      </label>
+        <label ng-repeat="attr in attribute.values">
+          <input 
+            type="checkbox" 
+            ng-model="attr.selected" 
+          > {{ attr.text }}
+          <br>
+        </label>
+      </div>
 
     </div>
 
@@ -81,75 +65,28 @@
 
     $scope.test = 0;
     $scope.filterData = false;
-    $scope.firstChangeGroup = 0;
 
-    $scope.makeFilter = function(groupId) {
-      $scope.firstChangeGroup = groupId;
-
+    $scope.makeFilter = function() {
       $http({
         url: '/index.php?route=product/category/filter',
         method: 'post',
         responseType: 'json',
         data: $.param({
-          attributes: $scope.listAttributes(),
-          options: $scope.listOptions()
+          attributes: $scope.listAttributes()
         }),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       })
         .success(function(resp) {
           $scope.filterData = resp;
-
-          $scope.needRefilter();
         });
     };
 
     $scope.listAttributes = function(key) {
       var result = [];
 
-      angular.forEach($scope.filterData.attributes, function(el) {
-        var subresult = {
-          attr_group_id: el.attr_id,
-          items: []
-        };
-        
-        angular.forEach(el.items, function(item) {
-          if (item.selected) {
-            subresult.items.push(item.text);
-          };
-        });
-
-        if (subresult.items.length) result.push(subresult);
-      });
+      console.log($scope);
 
       return result;
-    };
-
-    $scope.listOptions = function(key) {
-      var result = [];
-
-      angular.forEach($scope.filterData.options, function(el) {
-        angular.forEach(el.items, function(item) {
-          if (item.selected) {
-            result.push(item.option_value_id);
-          };
-        });
-      });
-
-      return result;
-    };
-
-    // If one of already filtered attributes has `selected` 
-    // and `disabled` we will refilter
-    $scope.needRefilter = function() {
-      angular.forEach($scope.filterData.attributes, function(el) {
-        angular.forEach(el.items, function(item) {
-          if (item.disabled && item.selected) {
-            item.selected = false;
-
-            $scope.makeFilter();
-          };
-        });
-      });
     };
 
     $scope.makeFilter();
