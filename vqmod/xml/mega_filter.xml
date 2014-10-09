@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>Mega Filter PRO</id>
+	<version>1.5.x</version>
+	<vqmver required="true">2.4.0</vqmver>
+	<author>marsilea15@gmail.com</author>
+	
+	<!-- Column Left, Column Right, Content Top, Content Bottom -->
+	<file path="catalog/controller/common/" name="column_left.php,column_right.php,content_top.php">
+		<operation>
+			<search position="before"><![CDATA[foreach ($modules as $module) {]]></search>
+			<add><![CDATA[
+				$idx = 0;
+				$idxs = array();
+				
+				foreach( $modules as $k => $v ) {
+					$idxs[] = $k;
+				}
+			]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[foreach ($modules as $module) {]]></search>
+			<add><![CDATA[
+				if( ! isset( $module['layout_id'] ) )
+					$module['layout_id'] = 0;
+					
+				if( ! isset( $module['position'] ) )
+					$module['position'] = '';
+								
+				if( ! isset( $module['status'] ) )
+					$module['status'] = '0';
+								
+				if( ! isset( $module['sort_order'] ) )
+					$module['sort_order'] = 0;
+			
+				if( ! is_array( $module['layout_id'] ) )
+					$module['layout_id'] = array( $module['layout_id'] );
+					
+				$module['_idx'] = $idxs[$idx++];
+			]]></add>
+		</operation>
+		<operation error="skip">
+			<search position="replace"><![CDATA[$module['layout_id'] == $layout_id]]></search>
+			<add><![CDATA[( in_array( $layout_id, $module['layout_id'] ) || in_array( '-1', $module['layout_id'] ) )]]></add>
+		</operation>
+		<operation error="skip">
+			<search position="replace"><![CDATA[$layout['layout_id'] == $module['layout_id']]]></search>
+			<add><![CDATA[( in_array( $layout['layout_id'], $module['layout_id'] ) || in_array( '-1', $module['layout_id'] ) )]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$module_data[] = array(]]></search>
+			<add><![CDATA[
+				if( $extension['code'] != 'mega_filter' ) {
+					unset( $module['_idx'] );
+					$module['layout_id'] = current( $module['layout_id'] );
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/model/catalog/" name="product.php">
+		<operation>
+			<search position="before"><![CDATA[$query = $this->db->query($sql);]]></search>
+			<add><![CDATA[
+				if( in_array( __FUNCTION__, array( 'getProducts', 'getTotalProducts', 'getProductSpecials', 'getTotalProductSpecials' ) ) ) {					
+					if( ! empty( $this->request->get['mfp'] ) || ( NULL != ( $mfSettings = $this->config->get('mega_filter_settings') ) && ! empty( $mfSettings['in_stock_default_selected'] ) ) ) {
+						$this->load->model( 'module/mega_filter' );
+					
+						$sql = MegaFilterCore::newInstance( $this, $sql )->getSQL( __FUNCTION__ );
+					}
+				}
+			]]></add>
+		</operation>
+		<operation error="skip">
+			<search position="replace"><![CDATA[$this->db->query("SELECT COUNT(DISTINCT ps.product_id) AS total FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$customer_group_id . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))");]]></search>
+			<add><![CDATA[
+				$sql = "SELECT COUNT(DISTINCT ps.product_id) AS total FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$customer_group_id . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))";
+			
+				if( ! empty( $this->request->get['mfp'] ) || ( NULL != ( $mfSettings = $this->config->get('mega_filter_settings') ) && ! empty( $mfSettings['in_stock_default_selected'] ) ) ) {
+					$this->load->model( 'module/mega_filter' );
+					
+					$sql = MegaFilterCore::newInstance( $this, $sql )->getSQL( __FUNCTION__ );
+				}
+				
+				$query = $this->db->query( $sql );
+			]]></add>
+		</operation>
+		<operation error="skip">
+			<search position="replace"><![CDATA[$query = $this->db->query("SELECT COUNT(DISTINCT ps.product_id) AS total FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND ( p.mod_customer_group_restrict IS NULL OR " . ( NULL != ( $cgrS = $this->config->get( 'customer_group_restrict' ) ) && $cgrS['mode_product'] == 'unavailable' ? 'NOT' : '' ) . " FIND_IN_SET( " . ( $this->customer->isLogged() ? (int) $this->customer->getCustomerGroupId() : $this->config->get('config_customer_group_id') ) . ", p.mod_customer_group_restrict )) AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$customer_group_id . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))");]]></search>
+			<add><![CDATA[
+				$sql = "SELECT COUNT(DISTINCT ps.product_id) AS total FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int)$customer_group_id . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))";
+			
+				if( ! empty( $this->request->get['mfp'] ) || ( NULL != ( $mfSettings = $this->config->get('mega_filter_settings') ) && ! empty( $mfSettings['in_stock_default_selected'] ) ) ) {
+					$this->load->model( 'module/mega_filter' );
+					
+					$sql = MegaFilterCore::newInstance( $this, $sql )->getSQL( __FUNCTION__ );
+				}
+				
+				$query = $this->db->query( $sql );
+			]]></add>
+		</operation>
+		<!-- v1.5.4 -->
+		<operation error="skip">
+			<search position="before"><![CDATA[$cache = md5(http_build_query($data));]]></search>
+			<add><![CDATA[
+				if( ! empty( $this->request->get['mfp'] ) ) {
+					$data['mfp'] = $this->request->get['mfp'];
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/controller/product/" name="category.php">
+		<operation>
+			<search position="before"><![CDATA[$product_total = $this->model_catalog_product->getTotalProducts($data);]]></search>
+			<add><![CDATA[
+				$fmSettings = $this->config->get('mega_filter_settings');
+		
+				if( ! empty( $fmSettings['show_products_from_subcategories'] ) ) {
+					if( ! empty( $fmSettings['level_products_from_subcategories'] ) ) {
+						$fmLevel = (int) $fmSettings['level_products_from_subcategories'];
+						$fmPath = explode( '_', empty( $this->request->get['path'] ) ? '' : $this->request->get['path'] );
+
+						if( $fmPath && count( $fmPath ) >= $fmLevel ) {
+							$data['filter_sub_category'] = '1';
+						}
+					} else {
+						$data['filter_sub_category'] = '1';
+					}
+				}
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$this->data['categories'] = array();]]></search>
+			<add><![CDATA[
+				$fmSettings = $this->config->get('mega_filter_settings');
+				
+				if( ! empty( $fmSettings['not_remember_filter_for_subcategories'] ) && false !== ( $mfpPos = strpos( $url, '&mfp=' ) ) ) {
+					$mfUrlBeforeChange = $url;
+					$mfSt = mb_strpos( $url, '&', $mfpPos+1, 'utf-8');
+					$url = $mfSt === false ? '' : mb_substr($url, $mfSt, mb_strlen( $url, 'utf-8' ), 'utf-8');
+				}
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$this->data['products'] = array();]]></search>
+			<add><![CDATA[
+				if( isset( $mfUrlBeforeChange ) ) {
+					$url = $mfUrlBeforeChange;
+					unset( $mfUrlBeforeChange );
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/controller/product/" name="category.php,manufacturer.php,search.php,special.php">
+		<operation>
+			<search position="after"><![CDATA[$url = '';]]></search>
+			<add><![CDATA[
+				if( ! empty( $this->request->get['mfp'] ) ) {
+					$url .= '&mfp=' . $this->request->get['mfp'];
+				}
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$this->response->setOutput(]]></search>
+			<add><![CDATA[
+				if( isset( $this->request->get['mfilterAjax'] ) ) {
+					$settings	= $this->config->get('mega_filter_settings');
+					
+					if( ! empty( $settings['show_number_of_products'] ) ) {
+						$this->load->model( 'module/mega_filter' );
+
+						$idx = 0;
+		
+						if( isset( $this->request->get['mfilterIdx'] ) )
+							$idx = (int) $this->request->get['mfilterIdx'];
+							
+						$baseTypes = array(	'stock_status', 'manufacturers', 'rating', 'attributes', 'price', 'options', 'filters' );
+		
+						if( isset( $this->request->get['mfilterBTypes'] ) )
+							$baseTypes = explode( ',', $this->request->get['mfilterBTypes'] );
+						
+						$this->data['mfilter_json'] = json_encode( MegaFilterCore::newInstance( $this, NULL )->getJsonData($baseTypes, $idx) );
+					}
+						
+					$this->children=array();
+					$this->data['header'] = $this->data['column_left'] = $this->data['column_right'] = $this->data['content_top'] = $this->data['content_bottom'] = $this->data['footer'] = '';
+				}
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/view/theme/*/template/product/" name="category.tpl,manufacturer_info.tpl,search.tpl,special.tpl">
+		<operation>
+			<search position="replace"><![CDATA[<?php echo $header; ?>]]></search>
+			<add><![CDATA[<?php echo $header; ?><?php if( ! empty( $mfilter_json ) ) { echo '<div id="mfilter-json" style="display:none">' . $mfilter_json . '</div>'; } ?>]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[<?php echo $content_top; ?>]]></search>
+			<add><![CDATA[<?php echo $content_top; ?><div id="mfilter-content-container">]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[<?php echo $content_bottom; ?>]]></search>
+			<add><![CDATA[</div><?php echo $content_bottom; ?>]]></add>
+		</operation>
+	</file>
+
+</modification>
