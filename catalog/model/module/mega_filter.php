@@ -127,6 +127,10 @@ class MegaFilterCore {
 		$modules	= $this->_ctrl->config->get('mega_filter_module');
 		$attribs	= $idx !== NULL && isset( $modules[$idx] ) ? $modules[$idx]['base_attribs'] : $this->_settings['attribs'];
 		
+
+		print_r($this->getCountsByAttributes()); die();
+
+
 		foreach( $types as $type ) {
 			if( in_array( $type, array( 'manufacturers', 'stock_status', 'rating', 'price' ) ) ) {
 				if( ! empty( $attribs[$type]['enabled'] ) ) {
@@ -161,6 +165,7 @@ class MegaFilterCore {
 		$this->_ctrl	= & $ctrl;
 		$this->_sql		= $sql;
 		$this->_data	= self::_getData( $ctrl );
+
 		
 		$this->_settings	= $this->_ctrl->config->get('mega_filter_settings');
 		
@@ -1380,7 +1385,11 @@ class MegaFilterCore {
 			%s
 			WHERE
 				%s
-		", implode( ',', $columns ), $this->_baseJoin(), implode( ' AND ', $this->_baseConditions( $conditionsIn ) ) ));
+			", 
+			implode( ',', $columns ), 
+			$this->_baseJoin(), 
+			implode( ' AND ', $this->_baseConditions( $conditionsIn ) ) 
+		));
 
 		if( $conditionsOut )
 			$sql = sprintf( "SELECT * FROM( %s ) AS `tmp` WHERE %s", $sql, implode( ' AND ', $conditionsOut ) );
@@ -1399,19 +1408,19 @@ class MegaFilterCore {
 			return self::$_cache[$cName];
 		
 		$query = $this->_ctrl->db->query( $sql );
-		
+		echo "\n\n" . $sql . "\n\n";
 		foreach( $query->rows as $row ) {
 			if( ! empty( $this->_settings['attribute_separator'] ) ) {
 				$texts = explode( $this->_settings['attribute_separator'], $row['text'] );
 				
 				foreach( $texts as $txt ) {
-					if( ! isset( $counts[$row['attribute_id']][md5($txt)] ) )
-						$counts[$row['attribute_id']][md5($txt)] = 0;
+					if( ! isset( $counts[$row['attribute_id']][$txt] ) )
+						$counts[$row['attribute_id']][$txt] = 0;
 					
-					$counts[$row['attribute_id']][md5($txt)] += $row['total'];
+					$counts[$row['attribute_id']][$txt] += $row['total'];
 				}
 			} else {
-				$counts[$row['attribute_id']][md5($row['text'])] = $row['total'];
+				$counts[$row['attribute_id']][$row['text']] = $row['total'];
 			}
 		}
 		
@@ -1467,6 +1476,10 @@ class MegaFilterCore {
 		
 		$clearCounts = $conditions ? $this->_getCountsByAttributes( $clearConditions, $conditionsIn ) : array();
 		
+		// print_r($counts);
+		// print_r($clearCounts);
+		// print_r($attribs);
+
 		foreach( $attribs as $key ) {
 			$copy			= $this->_attribs;
 			$conditions		= array();
@@ -1475,6 +1488,17 @@ class MegaFilterCore {
 			list( $k ) = explode( '-', $key );
 			
 			unset( $copy[$key] );
+
+			print_r($copy);
+			print_r($attribs);
+			print_r($this->_attribs);
+
+echo "\n\n ---------- \n\n";
+			print_r($copy);
+			print_r($conditionsIn);
+			print_r($conditions);
+echo "\n\n ---------- \n\n";
+
 			
 			if( $copy ) {
 				// atrybuty
@@ -1491,13 +1515,19 @@ class MegaFilterCore {
 				if( isset( $tmp[$k] ) ) {
 					$counts = $counts + array( $k => $tmp[$k] );
 				}
+				echo "\n\n+++\n\n";
 			} else {				
+				echo "\n\n---\n\n";
+				print_r($k);
+				
 				if( isset( $clearCounts[$k] ) ) {
 					$counts = $this->_replaceCounts( $counts, array( $k => $clearCounts[$k] ) );
 					//$counts = $counts + array( $k => $clearCounts[$k] );
 				}
 			}
 		}
+
+		print_r($counts);
 		
 		return $counts;
 	}
