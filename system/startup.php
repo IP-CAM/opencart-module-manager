@@ -129,6 +129,7 @@ require_once(DIR_SYSTEM . 'filter/builders/FilterBuilder.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterInterface.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAttributes.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterOptions.php');
+require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterFilteredAttributes.php');
 
 // Filter utils
 require_once(DIR_SYSTEM . 'filter/utils/FilterSqlConverter.php');

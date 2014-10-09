@@ -39,12 +39,6 @@ class FilterCaseAttributes extends FilterCase implements FilterCaseInterface
 	);
 
 
-	public function setOptions($attributes = array())
-	{
-		$this->join['options_1'] = " LEFT JOIN product_option AS main_po ON (main_po.product_id = main_pa.product_id) ";
-		
-		parent::setOptions($attributes);
-	}
 
 
 }
