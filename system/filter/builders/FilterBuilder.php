@@ -51,7 +51,7 @@ class FilterBuilder implements FilterBuilderInterface
 	 */
 	public function buildCategory($category_id)
 	{
-		$this->filter_case->setCategory($category_id);
+		// $this->filter_case->setCategory($category_id);
 	}
 
 
@@ -73,7 +73,7 @@ class FilterBuilder implements FilterBuilderInterface
 	 */
 	public function buildOptions($options)
 	{
-		$this->filter_case->setOptions($options);
+		// $this->filter_case->setOptions($options);
 	}
 
 

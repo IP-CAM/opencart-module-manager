@@ -467,7 +467,10 @@ class ControllerProductCategory extends Controller {
 		// Filter
 		$settings = array(
 			'category_id' => 24,
-			'attributes' => $attributes,
+			'attributes' => array(
+				"16" => array("IOS", "Android"),
+				"13" => array("Метал")
+			),
 			'options' => $options
 		);
 

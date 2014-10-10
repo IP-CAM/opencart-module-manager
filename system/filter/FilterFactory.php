@@ -22,9 +22,9 @@ class FilterFactory
 	 */
 	public function make($data)
 	{
-		$this->filter->buildCategory($data['category_id']);
+		// $this->filter->buildCategory($data['category_id']);
 		$this->filter->buildAttributes($data['attributes']);
-		$this->filter->buildOptions($data['options']);
+		// $this->filter->buildOptions($data['options']);
 
 		return $this;
 	}

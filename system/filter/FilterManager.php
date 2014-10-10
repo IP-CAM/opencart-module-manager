@@ -43,7 +43,7 @@ class FilterManager
 	{
 		$attribute_groups = $this->getRealAttributes($db, $settings);
 
-		Get filtered attributes
+		// Get filtered attributes
 		$builder = new FilterBuilder(
 			new FilterCaseAttributes,
 			new FilterFormatterFilteredAttributes
