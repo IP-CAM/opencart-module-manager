@@ -126,10 +126,6 @@ class MegaFilterCore {
 		$json		= array();
 		$modules	= $this->_ctrl->config->get('mega_filter_module');
 		$attribs	= $idx !== NULL && isset( $modules[$idx] ) ? $modules[$idx]['base_attribs'] : $this->_settings['attribs'];
-		
-
-		print_r($this->getCountsByAttributes()); die();
-
 
 		foreach( $types as $type ) {
 			if( in_array( $type, array( 'manufacturers', 'stock_status', 'rating', 'price' ) ) ) {
@@ -1408,7 +1404,7 @@ class MegaFilterCore {
 			return self::$_cache[$cName];
 		
 		$query = $this->_ctrl->db->query( $sql );
-		echo "\n\n" . $sql . "\n\n";
+		// echo "\n\n" . $sql . "\n\n";
 		foreach( $query->rows as $row ) {
 			if( ! empty( $this->_settings['attribute_separator'] ) ) {
 				$texts = explode( $this->_settings['attribute_separator'], $row['text'] );
@@ -1438,6 +1434,8 @@ class MegaFilterCore {
 		$attribs	= array_keys( $this->_attribs );
 		$ids		= array();
 		$counts		= array();
+
+		// print_r($attribs); die();
 		
 		foreach( $attribs as $attrib ) {
 			list( $id ) = explode( '-', $attrib );
@@ -1489,15 +1487,15 @@ class MegaFilterCore {
 			
 			unset( $copy[$key] );
 
-			print_r($copy);
-			print_r($attribs);
-			print_r($this->_attribs);
+			// print_r($copy);
+			// print_r($attribs);
+			// print_r($this->_attribs);
 
-echo "\n\n ---------- \n\n";
-			print_r($copy);
-			print_r($conditionsIn);
-			print_r($conditions);
-echo "\n\n ---------- \n\n";
+// echo "\n\n ---------- \n\n";
+// 			print_r($copy);
+// 			print_r($conditionsIn);
+// 			print_r($conditions);
+// echo "\n\n ---------- \n\n";
 
 			
 			if( $copy ) {
@@ -1515,10 +1513,10 @@ echo "\n\n ---------- \n\n";
 				if( isset( $tmp[$k] ) ) {
 					$counts = $counts + array( $k => $tmp[$k] );
 				}
-				echo "\n\n+++\n\n";
+				// echo "\n\n+++\n\n";
 			} else {				
-				echo "\n\n---\n\n";
-				print_r($k);
+				// echo "\n\n---\n\n";
+				// print_r($k);
 				
 				if( isset( $clearCounts[$k] ) ) {
 					$counts = $this->_replaceCounts( $counts, array( $k => $clearCounts[$k] ) );
@@ -1527,7 +1525,7 @@ echo "\n\n ---------- \n\n";
 			}
 		}
 
-		print_r($counts);
+		// print_r($counts);
 		
 		return $counts;
 	}
