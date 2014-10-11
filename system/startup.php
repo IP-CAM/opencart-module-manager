@@ -112,6 +112,15 @@ require_once(DIR_SYSTEM . 'library/amazonus.php');
 
 
 
+// Teil helper functions
+function teil_add_quotes($str) {
+	return sprintf("'%s'", $str);
+}
+
+function teil_quote_implode($delimeter, $array)
+{
+	return implode($delimeter, array_map('teil_add_quotes', $array));
+}
 
 
 // Filter cases
@@ -128,16 +137,11 @@ require_once(DIR_SYSTEM . 'filter/builders/FilterBuilder.php');
 // Filter formatters
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterInterface.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAttributes.php');
-require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterOptions.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterFilteredAttributes.php');
 
 // Filter utils
-require_once(DIR_SYSTEM . 'filter/utils/FilterSqlConverter.php');
-require_once(DIR_SYSTEM . 'filter/utils/SameFilterOptions.php');
-require_once(DIR_SYSTEM . 'filter/utils/FilterSettingResolver.php');
-require_once(DIR_SYSTEM . 'filter/utils/FilterComposer.php');
-require_once(DIR_SYSTEM . 'filter/utils/AttributeGroupConverter.php');
 
 // Filter managers
 require_once(DIR_SYSTEM . 'filter/FilterFactory.php');
 require_once(DIR_SYSTEM . 'filter/FilterManager.php');
+require_once(DIR_SYSTEM . 'filter/entity/Attributes.php');

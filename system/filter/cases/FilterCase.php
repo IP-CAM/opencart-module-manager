@@ -1,17 +1,11 @@
 <?php 
 
 
-function quote_escape($str) {
-	global $registry;
-
-	return '"' . $registry->get('db')->escape(chop($str)) . '"';
-}
-
-
 class FilterCase implements FilterCaseInterface 
 {
 	
-	protected $conditions;
+
+	protected $where;
 
 
 	/**
@@ -21,14 +15,17 @@ class FilterCase implements FilterCaseInterface
 	 */
 	public function setAttributes($attributes = array())
 	{
-		// Get list of attribute ids
-		$ids = array_keys($attributes);
+		$_attributes = new Attributes;
+		$result = $_attributes->sql($attributes);
+die();
+		// // Get list of attribute ids
+		// $ids = array_keys($attributes);
 
-		// Set attribute ID's filter
-		if ($ids)
-		{
-			$this->conditions[] = sprintf('`tmp`.`attribute_id` NOT IN(%s)', implode( ',', $ids));
-		}
+		// // Set attribute ID's filter
+		// if ($ids)
+		// {
+		// 	$this->where[] = sprintf('`tmp`.`attribute_id` NOT IN(%s)', implode( ',', $ids));
+		// }
 
 
 		// Convert attributes to sql
@@ -37,39 +34,27 @@ class FilterCase implements FilterCaseInterface
 			$sql = array();
 
 			foreach( $attributes as $attrib_id => $attr ) {
-				$_settings['attribute_separator'] = "|";
-
-				if( ! empty( $_settings['attribute_separator'] ) ) {
-					$sql[]	= sprintf( "`product_id` IN( 
-						SELECT 
-							`product_id` 
-						FROM 
-							`" . DB_PREFIX . "product_attribute`
-						WHERE 
-							( %s ) AND
-							`language_id` = " . (int) 1 . " AND
-							`attribute_id` = " . (int) $attrib_id . " 
-					)", implode( ' OR ', $this->_convertAttribs( $attr ) ) );
-				} else {
-					$sql[]	= sprintf( "`product_id` IN( 
-						SELECT 
-							`product_id` 
-						FROM 
-							`" . DB_PREFIX . "product_attribute` 
-						WHERE 
-							REPLACE(REPLACE(TRIM(`text`), '\r', ''), '\n', '') IN(%s) AND
-							`language_id` = " . (int) 1 . " AND
-							`attribute_id` = " . (int) $attrib_id . "
-					)", implode( ',', $attr ) );
-				}
+				$sql[]	= sprintf( "`product_id` IN( 
+					SELECT 
+						`product_id` 
+					FROM 
+						`" . DB_PREFIX . "product_attribute` 
+					WHERE 
+						REPLACE(REPLACE(TRIM(`text`), '\r', ''), '\n', '') IN(%s) AND
+						`language_id` = " . (int) 1 . " AND
+						`attribute_id` = " . (int) $attrib_id . "
+				)", implode( ',', $attr ) );
 			}
 			
-			$sql = $join . implode( ' AND ', $sql );
+			$sql = implode( ' AND ', $sql );
 		} else {
 			$sql = '';
 		}
 
+		$this->where[] = $sql;
 
+
+		$columns = $this->_baseColumns( '`pa`.`attribute_id`', '`p`.`product_id`', '`pa`.`text`' );
 		$sql = $this->_createSQLByCategories(sprintf( "
 			SELECT
 				%s
@@ -78,16 +63,15 @@ class FilterCase implements FilterCaseInterface
 			INNER JOIN
 				`" . DB_PREFIX . "product_attribute` AS `pa`
 			ON
-				`pa`.`product_id` = `p`.`product_id` AND `pa`.`language_id` = '" . (int) $this->_ctrl->config->get('config_language_id') . "'
+				`pa`.`product_id` = `p`.`product_id` AND `pa`.`language_id` = '" . (int) 1 . "'
 			%s
 			WHERE
 				%s
 			", 
 			implode( ',', $columns ), 
 			$this->_baseJoin(), 
-			implode( ' AND ', $this->_baseConditions( $conditionsIn ) ) 
+			implode( ' AND ', $this->_baseConditions() ) 
 		));
-		
 
 		$sql = sprintf( "
 			SELECT 
@@ -96,9 +80,10 @@ class FilterCase implements FilterCaseInterface
 				%s 
 			GROUP BY 
 				`text`, `attribute_id`
-		", $sql, $this->_conditionsToSQL( $conditions ) );
+		", $sql, $this->_conditionsToSQL( $this->where ) );
 
-		echo $sql; die('1231231');
+
+		echo $sql; die();
 	}
 
 
@@ -111,7 +96,6 @@ class FilterCase implements FilterCaseInterface
 	}
 
 	private function _createSQLByCategories( $sql ) {
-		if( ! $this->_categories )
 			return $sql;
 		
 		return sprintf("
@@ -136,7 +120,7 @@ class FilterCase implements FilterCaseInterface
 	 */
 	private function _convertAttribs( $attribs, $field = 'text' ) {
 		$tmp		= array();
-		print_r($attribs); die();
+		
 		foreach( $attribs as $attr ) {
 			foreach( $attr as $att ) {
 				if( $this->_settings['attribute_separator'] == ',' ) {
@@ -201,6 +185,126 @@ class FilterCase implements FilterCaseInterface
 		}
 		
 		return $sql;
+	}
+
+
+	public function _baseJoin( array $skip = array() ) {
+		$sql = '';
+		
+		if( ! in_array( 'p2s', $skip ) ) {
+			$sql .= "
+				INNER JOIN
+					`" . DB_PREFIX . "product_to_store` AS `p2s`
+				ON
+					`p2s`.`product_id` = `p`.`product_id` AND `p2s`.`store_id` = " . (int) 0 . "
+			";
+		}
+		
+		if( ( ! empty( $this->_data['filter_name'] ) || ! empty( $this->_data['filter_tag'] ) ) && ! in_array( 'pd', $skip ) ) {
+			$sql .= "
+				INNER JOIN
+					`" . DB_PREFIX . "product_description` AS `pd`
+				ON
+					`pd`.`product_id` = `p`.`product_id` AND `pd`.`language_id` = " . (int) 1 . "
+			";
+		}
+		
+		if( ! empty( $this->_data['filter_category_id'] ) ) {
+			if( ! in_array( 'p2c', $skip ) ) {
+				$sql .= $this->_joinProductToCategory( 'p2c' );
+			}
+			
+			if( ( ! empty( $this->_data['filter_sub_category'] ) || $this->_categories ) && ! in_array( 'cp', $skip ) ) {
+				$sql .= $this->_joinCategoryPath( 'cp', 'p2c' );
+			}
+		
+			if( ! empty( $this->_data['filter_filter'] ) && ! in_array( 'pf', $skip ) ) {
+				$sql .= "
+					INNER JOIN
+						`" . DB_PREFIX . "product_filter` AS `pf`
+					ON
+						`p2c`.`product_id` = `pf`.`product_id`
+				";
+			}
+		}
+		
+		return $sql;
+	}
+
+
+	public function _baseConditions( array $conditions = array() ) {
+		array_unshift( $conditions, "`p`.`status` = '1'");
+		array_unshift( $conditions, "`p`.`date_available` <= NOW()" );
+		
+		// sprawdź branżę
+		if( ! empty( $this->_data['filter_manufacturer_id'] ) ) {
+			$conditions[] = '`p`.`manufacturer_id` = ' . (int) $this->_data['filter_manufacturer_id'];
+		}
+		
+		// sprawdź kategorię
+		if( ! empty( $this->_data['filter_category_id'] ) ) {
+			if( ! empty( $this->_data['filter_sub_category'] ) || $this->_categories ) {
+				$conditions['cat_id'] = "`cp`.`path_id` = '" . (int) $this->_data['filter_category_id'] . "'";
+			} else {
+				$conditions['cat_id'] = "`p2c`.`category_id` = '" . (int) $this->_data['filter_category_id'] . "'";
+			}
+			
+			if( self::hasFilters() && ! empty( $this->_data['filter_filter'] ) && ! empty( $this->_data['filter_category_id'] ) ) {
+				$filters = explode( ',', $this->_data['filter_filter'] );
+				
+				$conditions[] = '`pf`.`filter_id` IN(' . implode( ',', $this->_parseArrayToInt( $filters ) ) . ')';
+			}
+		}
+		
+		// sprawdź frazę / tagi
+		if( ! empty( $this->_data['filter_name'] ) || ! empty( $this->_data['filter_tag'] ) ) {
+			$sql = array();
+			
+			if( ! empty( $this->_data['filter_name'] ) ) {
+				$implode	= array();
+				$words		= explode( ' ', trim( preg_replace( '/\s\s+/', ' ', $this->_data['filter_name'] ) ) );
+				
+				foreach( $words as $word ) {
+					$implode[] = "`pd`.`name` LIKE '%" . $this->_ctrl->db->escape( $word ) . "%'";
+				}
+				
+				if( $implode ) {
+					$sql[] = '(' . implode( ' AND ', $implode ) . ')';
+				}
+				
+				if( ! empty( $this->_data['filter_description'] ) ) {
+					$sql[] = "`pd`.`description` LIKE '%" . $this->_ctrl->db->escape( $this->_data['filter_name'] ) . "%'";
+				}
+			}
+			
+			if( ! empty( $this->_data['filter_tag'] ) ) {
+				$sql[] = "`pd`.`tag` LIKE '%" . $this->_ctrl->db->escape( $this->_data['filter_tag'] ) . "%'";
+			}
+			
+			if( ! empty( $this->_data['filter_name'] ) ) {
+				$tmp = array( '`p`.`model`', '`p`.`sku`', '`p`.`upc`', '`p`.`ean`', '`p`.`jan`', '`p`.`isbn`', '`p`.`mpn`' );
+				
+				foreach( $tmp as $tm ) {
+					$sql[] = "LCASE(" . $tm . ") = '" . $this->_ctrl->db->escape( utf8_strtolower( $this->_data['filter_name'] ) ) . "'";
+				}
+			}
+			
+			if( $sql ) {
+				$conditions['search'] = '(' . implode( ' OR ', $sql ) . ')';
+			}
+		}
+		
+		// sprawdź kategorię
+		//if( ! empty( $this->_data['filter_category_id'] ) ) {
+		//	$conditions[] = 'p2c.category_id = ' . (int) $this->_data['filter_category_id'];
+		//}
+		
+		return $conditions;
+	}
+
+
+	private function _conditionsToSQL( $conditions, $join = ' WHERE ' ) {
+		return $conditions ? $join . implode( ' AND ', $conditions ) : '';
 	}
 
 	

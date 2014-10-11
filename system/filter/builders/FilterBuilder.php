@@ -25,22 +25,11 @@ class FilterBuilder implements FilterBuilderInterface
 	public function fetch($db)
 	{
 		// Get sql
-		$factory = new FilterSqlConverter();
-		$sql = $factory->make(
-			$this->filter_case->select,
-			$this->filter_case->from,
-			$this->filter_case->join,
-			$this->filter_case->where,
-			$this->filter_case->group_by,
-			$this->filter_case->order_by
-		);
-
-		// echo $sql . "\n\n";
 		
 		// Get result item list
-		return $this->formatter->make(
-			$db->query($sql)->rows
-		);
+		// return $this->formatter->make(
+		// 	$db->query($sql)->rows
+		// );
 	}
 
 
