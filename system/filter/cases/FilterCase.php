@@ -17,7 +17,7 @@ class FilterCase implements FilterCaseInterface
 	{
 		$_attributes = new Attributes;
 		$result = $_attributes->sql($attributes);
-die();
+		
 		// // Get list of attribute ids
 		// $ids = array_keys($attributes);
 
@@ -29,29 +29,29 @@ die();
 
 
 		// Convert attributes to sql
-		if ($attributes)
-		{
-			$sql = array();
+		// if ($attributes)
+		// {
+		// 	$sql = array();
 
-			foreach( $attributes as $attrib_id => $attr ) {
-				$sql[]	= sprintf( "`product_id` IN( 
-					SELECT 
-						`product_id` 
-					FROM 
-						`" . DB_PREFIX . "product_attribute` 
-					WHERE 
-						REPLACE(REPLACE(TRIM(`text`), '\r', ''), '\n', '') IN(%s) AND
-						`language_id` = " . (int) 1 . " AND
-						`attribute_id` = " . (int) $attrib_id . "
-				)", implode( ',', $attr ) );
-			}
+		// 	foreach( $attributes as $attrib_id => $attr ) {
+		// 		$sql[]	= sprintf( "`product_id` IN( 
+		// 			SELECT 
+		// 				`product_id` 
+		// 			FROM 
+		// 				`" . DB_PREFIX . "product_attribute` 
+		// 			WHERE 
+		// 				REPLACE(REPLACE(TRIM(`text`), '\r', ''), '\n', '') IN(%s) AND
+		// 				`language_id` = " . (int) 1 . " AND
+		// 				`attribute_id` = " . (int) $attrib_id . "
+		// 		)", implode( ',', $attr ) );
+		// 	}
 			
-			$sql = implode( ' AND ', $sql );
-		} else {
-			$sql = '';
-		}
+		// 	$sql = implode( ' AND ', $sql );
+		// } else {
+		// 	$sql = '';
+		// }
 
-		$this->where[] = $sql;
+		// $this->where[] = $sql;
 
 
 		$columns = $this->_baseColumns( '`pa`.`attribute_id`', '`p`.`product_id`', '`pa`.`text`' );

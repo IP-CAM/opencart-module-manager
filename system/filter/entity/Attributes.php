@@ -48,7 +48,7 @@ class Attributes
 		$this->_original = $attributes;
 
 		$this->filterIDs();
-		$this->attributesToSql();
+		$this->filterAttributes();
 
 		print_r($this->_filters); die();
 	}
@@ -86,7 +86,7 @@ class Attributes
 	 *
 	 * @return void
 	 */
-	public function attributesToSql()
+	public function filterAttributes()
 	{
 		if ( ! $this->_original) return false;
 
