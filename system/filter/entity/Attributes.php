@@ -1,7 +1,7 @@
 <?php 
 
 
-class AttributesSQL 
+class AttributesSQL extends StringTemplate 
 {
 	
 
@@ -68,22 +68,6 @@ class Attributes
 
 
 	/**
-	 * Create sql by given template with attributes
-	 *
-	 * @return string
-	 */
-	protected function createFilter($template, $setting = array())
-	{
-		foreach ($setting as $key => $value)
-		{
-			$template = str_replace('{{' . $key . '}}', $value, $template);
-		}
-
-		return $template;
-	}
-
-
-	/**
 	 * Create attribute text filter
 	 *
 	 * @return void
@@ -97,7 +81,7 @@ class Attributes
 
 		foreach($this->_original as $attribute_id => $attribute)
 		{
-			$filter[] = $this->createFilter(
+			$filter[] = AttributesSQL::make(
 				AttributesSQL::ATTRIBUTE_FILTER,
 				array(
 					"PREFIX" => DB_PREFIX,
@@ -128,7 +112,7 @@ class Attributes
 
 		if ( ! $ids) return false;
 
-		$filter = $this->createFilter(
+		$filter = AttributesSQL::make(
 			AttributesSQL::ATTRIBUTE_IDS_FILTER,
 			array(
 				"ATTRIBUTES" => implode(',', $ids)

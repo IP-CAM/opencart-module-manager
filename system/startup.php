@@ -140,8 +140,11 @@ require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAttributes.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterFilteredAttributes.php');
 
 // Filter utils
+require_once(DIR_SYSTEM . 'filter/utils/StringTemplate.php');
+
 
 // Filter managers
 require_once(DIR_SYSTEM . 'filter/FilterFactory.php');
 require_once(DIR_SYSTEM . 'filter/FilterManager.php');
 require_once(DIR_SYSTEM . 'filter/entity/Attributes.php');
+require_once(DIR_SYSTEM . 'filter/entity/Categories.php');

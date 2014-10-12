@@ -70,6 +70,16 @@ class FilterCase implements FilterCaseInterface
 		// $this->where[] = $sql;
 
 
+		$categories = new Categories;
+		$result = $categories->sql(
+			array(),
+			array(
+				'select' => $this->getSelect(),
+				'join' => $this->getBasicJoins(),
+				'filters' => $this->getBasicFilters()
+			)
+		);
+
 		$sql = $this->_createSQLByCategories(sprintf( "
 			SELECT
 				%s
@@ -84,8 +94,8 @@ class FilterCase implements FilterCaseInterface
 				%s
 			", 
 			implode( ',', $this->getSelect() ), 
-			$this->_baseJoin(), 
-			implode( ' AND ', $this->_baseConditions() ) 
+			$this->getBasicJoins(), 
+			implode( ' AND ', $this->getBasicFilters() ) 
 		));
 
 		$sql = sprintf( "
@@ -194,7 +204,7 @@ class FilterCase implements FilterCaseInterface
 	}
 
 
-	public function _baseJoin( array $skip = array() ) {
+	public function getBasicJoins( array $skip = array() ) {
 		$sql = '';
 		
 		if( ! in_array( 'p2s', $skip ) ) {
@@ -238,7 +248,7 @@ class FilterCase implements FilterCaseInterface
 	}
 
 
-	public function _baseConditions( array $conditions = array() ) {
+	public function getBasicFilters( array $conditions = array() ) {
 		array_unshift( $conditions, "`p`.`status` = '1'");
 		array_unshift( $conditions, "`p`.`date_available` <= NOW()" );
 		
