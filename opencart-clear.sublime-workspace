@@ -1,0 +1,1137 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"AttG",
+				"AttributeGroupConverter"
+			],
+			[
+				"attis",
+				"attributes"
+			],
+			[
+				"test",
+				"test	test"
+			],
+			[
+				"te",
+				"teardown	teardown"
+			],
+			[
+				"settg",
+				"setting"
+			],
+			[
+				"sett",
+				"settings"
+			],
+			[
+				"grop",
+				"group_by"
+			],
+			[
+				"fil",
+				"filtered_item"
+			],
+			[
+				"array",
+				"array"
+			],
+			[
+				"arr",
+				"array"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "catalog/controller/product/category.php",
+			"settings":
+			{
+				"buffer_size": 15614,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "catalog/view/theme/default/template/product/category.tpl",
+			"settings":
+			{
+				"buffer_size": 11354,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "<?php\nclass ModelModuleFilterPro extends Model {\n	private $filterpro_setting;\n\n	public function __construct($registry) {\n		parent::__construct($registry);\n\n		$this->filterpro_setting = $this->config->get('filterpro_setting');\n		if(VERSION == '1.5.0') {\n			$this->filterpro_setting = unserialize($this->config->get('filterpro_setting'));\n		}\n	}\n\n\n	public function getAttributes($data) {\n\n		$sql = \"SELECT DISTINCT pa.text, a.`attribute_id`, ad.`name`, ag.attribute_group_id, agd.name as attribute_group_name FROM `\" . DB_PREFIX . \"product_attribute` pa\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"attribute a ON(pa.attribute_id=a.`attribute_id`) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"attribute_description ad ON(a.attribute_id=ad.`attribute_id`) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"attribute_group ag ON(ag.attribute_group_id=a.`attribute_group_id`) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"attribute_group_description agd ON(agd.attribute_group_id=ag.`attribute_group_id`) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product p ON(p.product_id=pa.`product_id`) \";\n		if($data['category_id']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON(p.product_id=p2c.product_id) \";\n		}\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON(p.product_id=p2s.product_id) \";\n		$sql .= \" WHERE  p.status = '1' AND p.date_available <= NOW() AND p2s.store_id =\" . (int)$this->config->get('config_store_id');\n		if($data['category_id']) {\n			$sql .= \" AND p2c.category_id = '\" . (int)$data['category_id'] . \"'\";\n		}\n		if($data['manufacturer_id']) {\n			$sql .= \" AND p.manufacturer_id = '\" . (int)$data['manufacturer_id'] . \"'\";\n		}\n\n		$sql .= \" AND pa.language_id = '\" . (int)$this->config->get('config_language_id') . \"'\" .\n				\" AND ad.language_id = '\" . (int)$this->config->get('config_language_id') . \"'\" .\n				\" AND agd.language_id = '\" . (int)$this->config->get('config_language_id') . \"'\" .\n				\" ORDER BY ag.sort_order, agd.name, a.sort_order, ad.name, pa.text\";\n\n		$query = $this->db->query($sql);\n\n\n		$attributes = array();\n		foreach($query->rows as $row) {\n			if(!isset($attributes[$row['attribute_group_id']])) {\n				$attributes[$row['attribute_group_id']] = array(\n					'name' => $row['attribute_group_name'],\n					'attribute_values' => array()\n				);\n			}\n\n			if(!isset($attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']])) {\n				$attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']] = array('name' => $row['name'], 'values' => array());\n			}\n			foreach(explode($this->filterpro_setting['attr_delimeter'], $row['text']) as $text) {\n				if(!in_array($text, $attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']]['values'])) {\n					$attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']]['values'][] = $text;\n				}\n			}\n		}\n\n		foreach($attributes as $attribute_group_id => $attribute_group) {\n			foreach($attribute_group['attribute_values'] as $attribute_id => $attribute) {\n				sort($attributes[$attribute_group_id]['attribute_values'][$attribute_id]['values']);\n			}\n		}\n		return $attributes;\n	}\n\n	public function getManufacturers($data) {\n		if($data['manufacturer_id']) {\n			return array();\n		}\n		$sql = \"SELECT DISTINCT m.`manufacturer_id`, m.`name` FROM `\" . DB_PREFIX . \"manufacturer` m\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product p ON(p.manufacturer_id=m.`manufacturer_id`) \";\n		if($data['category_id']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON(p.product_id=p2c.product_id) \";\n		}\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON(p.product_id=p2s.product_id) \" .\n				\" WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n		if($data['category_id']) {\n			$sql .= \" AND p2c.category_id = '\" . (int)$data['category_id'] . \"'\";\n		}\n		$sql .= \" ORDER BY m.sort_order, m.name\";\n		$query = $this->db->query($sql);\n		return $query->rows;\n	}\n\n	public function getTags($data) {\n		$sql = \"SELECT CONCAT(p2t.`tag`, ' (', count(*), ')') as 'name', p2t.tag FROM `\" . DB_PREFIX . \"product_tag` p2t\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product p ON(p.product_id=p2t.`product_id`) \";\n		if($data['category_id']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON(p.product_id=p2c.product_id) \";\n		}\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON(p.product_id=p2s.product_id) \" .\n				\" WHERE p.status = '1' AND p2t.language_id = '\" . (int)$this->config->get('config_language_id') . \"' AND p.date_available <= NOW() AND p2s.store_id =\" . (int)$this->config->get('config_store_id');\n		if($data['category_id']) {\n			$sql .= \" AND p2c.category_id = '\" . (int)$data['category_id'] . \"'\";\n		}\n		if($data['manufacturer_id']) {\n			$sql .= \" AND p.manufacturer_id = '\" . (int)$data['manufacturer_id'] . \"'\";\n		}\n		$sql .= \" GROUP BY p2t.`tag` ORDER BY p2t.`tag`\";\n\n		$query = $this->db->query($sql);\n		return $query->rows;\n	}\n\n	public function getSubCategories($data) {\n		$sql = \"SELECT DISTINCT cd.category_id, CONCAT(cd.name, ' (', COUNT(*), ')' ) AS 'name' FROM `\" . DB_PREFIX . \"category` c\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"category_description cd ON(cd.category_id=c.category_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON(c.category_id=p2c.category_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product p ON(p.product_id=p2c.`product_id`) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON(p.product_id=p2s.product_id) \" .\n			   \" WHERE c.status=1 AND c.parent_id = '\" . (int)$data['category_id'] . \"' AND cd.language_id = '\" . (int)$this->config->get('config_language_id') . \"' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id =\" . (int)$this->config->get('config_store_id');\n		if($data['manufacturer_id']) {\n			$sql .= \" AND p.manufacturer_id = '\" . (int)$data['manufacturer_id'] . \"'\";\n		}\n\n		$sql .= \" GROUP BY cd.category_id ORDER BY `c`.`sort_order`, `cd`.`name`\";\n\n		$query = $this->db->query($sql);\n		return $query->rows;\n	}\n\n	public function getOptions($data) {\n\n		$sql = \"SELECT DISTINCT ovd.option_value_id, ovd.*, od.name as 'option_name', ov.image FROM `\" . DB_PREFIX . \"option_value_description` ovd\n	    LEFT JOIN \" . DB_PREFIX . \"option_value ov ON(ovd.option_value_id=ov.option_value_id)\n	    LEFT JOIN \" . DB_PREFIX . \"option_description od ON(ov.option_id=od.option_id)\n	    LEFT JOIN `\" . DB_PREFIX . \"option` o ON(ov.option_id=o.option_id)\n	    LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON(ovd.`option_value_id`=pov.`option_value_id`)\n	    LEFT JOIN \" . DB_PREFIX . \"product p ON(pov.product_id = p.product_id) \";\n			if($data['category_id']) {\n				$sql .= \"LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON(p.product_id = p2c.product_id) \";\n			}\n			$sql .= \"LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON(p.product_id=p2s.product_id)\n		WHERE ovd.language_id = '\" . (int)$this->config->get('config_language_id') . \"' AND od.language_id = '\" . (int)$this->config->get('config_language_id') . \"'  AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id =\" . (int)$this->config->get('config_store_id');\n\n		if($data['category_id']) {\n			$sql .= \" AND p2c.category_id = '\" . (int)$data['category_id'] . \"'\";\n		}\n		if($data['manufacturer_id']) {\n			$sql .= \" AND p.manufacturer_id = '\" . (int)$data['manufacturer_id'] . \"'\";\n		}\n		$sql .= \" ORDER BY o.sort_order, ov.sort_order, ovd.option_id \";\n		$query = $this->db->query($sql);\n		$options = array();\n		foreach($query->rows as $row) {\n			if(!isset($options[$row['option_id']])) {\n				$options[$row['option_id']] = array('option_id' => $row['option_id'],\n													'name' => $row['option_name'],\n													'option_values' => array());\n			}\n\n			$options[$row['option_id']]['option_values'][] = array('option_value_id' => $row['option_value_id'], 'name' => $row['name'], 'image' => $row['image']);\n		}\n		return $options;\n	}\n\n	public function getPriceLimits($data) {\n\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"\n			SELECT \n				min(p.price) as min_price, \n				max(p.price) as max_price \n\n			FROM product AS p \n\n			WHERE p.product_id IN ( \n				SELECT pr1.product_id \n				FROM product_related as pr1 \n				WHERE pr1.related_id IN ( \n					SELECT p1.product_id \n					FROM product as p1 \n		\";\n\n		$sql .= \" JOIN product_to_store as p2s1 ON (p2s1.product_id = p1.product_id) \";\n\n		if($data['category_id'])\n		{\n			$sql .= \" JOIN product_to_category as p2c1 ON (p2c1.product_id = p1.product_id) \";\n		}\n\n		if($data['manufacturer_id'])\n		{\n			$sql .= \" JOIN manufacturer as m1 ON (m1.manufacturer_id = p1.manufacturer_id) \";\n		}\n\n		$sql .= \" \n			WHERE \n				p1.is_product_group = 1 AND \n				p1.status = '1' AND \n				p1.date_available <= NOW() AND \n				p2s1.store_id = \" . (int)$this->config->get('config_store_id') . \" \n		\";\n\n		if($data['category_id'])\n		{\n			$sql .= \" AND p2c1.category_id = \" . (int)$data['category_id'] . \" \";\n		}\n\n		if($data['manufacturer_id'])\n		{\n			$sql .= \" AND m1.manufacturer_id = \" . (int)$data['manufacturer_id'] . \" \";\n		}\n\n		$sql .= \"))\";\n\n		$query = $this->db->query($sql);\n\n		return $query->row;\n	}\n\n	public function getTotalProducts($data) {\n\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"SELECT count(*) as total FROM \" .\n			   \"(SELECT DISTINCT p.product_id, coalesce((SELECT price FROM \" . DB_PREFIX . \"product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '\" . (int)$customer_group_id . \"' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1), \" .\n			   \"(SELECT price FROM \" . DB_PREFIX . \"product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '\" . (int)$customer_group_id . \"' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1), \" .\n			   \" p.price) as realprice, \" .\n			   \n			   // Join related price limits\n			   \"(\n					SELECT MIN(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_min_price,\n				(\n					SELECT MAX(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_max_price\" . \n\n			   \" FROM \" . DB_PREFIX . \"product p\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON (pov.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p2s.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON (p2c.product_id=p.product_id)\";\n		if($data['attribute_value'] || $data['attr_slider']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_attribute p2a ON (p2a.product_id=p.product_id)\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_tag p2t ON (p2t.product_id=p.product_id)\";\n		}\n\n		$sql .= \" WHERE 1\";\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['categories']) {\n			$sql .= \" AND p2c.category_id IN (\" . implode(\",\", $data['categories']) . \")\";\n		}\n\n		$option_filters = array();\n		if($data['option_value']) {\n			foreach($data['option_value'] as $option_value) {\n				$option_filters[] = \"option_value_id IN(\" . implode(\",\", $option_value) . \")\";\n			}\n		}\n\n		if($option_filters) {\n			if($this->filterpro_setting['option_mode'] == 'and') {\n				foreach($option_filters as $i => $option_filter) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_option_value pov\" . $i .\n							\" WHERE pov\" . $i . \".product_id=pov.product_id AND pov\" . $i . \".\" . $option_filter . ($data['instock'] ? \"AND pov\" . $i . \".quantity > 0\"\n							: \"\") . \") \";\n\n				}\n			} else {\n				$sql .= \" AND (\" . implode(\" OR \", $option_filters) . \")\";\n			}\n		}\n\n		if($data['manufacturer']) {\n			$sql .= \" AND p.manufacturer_id IN(\" . implode(\", \", $data['manufacturer']) . \")\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" AND p2t.tag IN( '\" . implode(\"', '\", array_map(array($this->db, 'escape'), $data['tags'])) . \"') AND p2t.language_id='\" . (int)$this->config->get('config_language_id') . \"' \";\n		}\n\n		$d = $this->filterpro_setting['attr_delimeter'];\n\n		if($data['attribute_value']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id=p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id .\n							\" AND (p2a\" . $i . \".text = '\" . implode(\"' OR p2a\" . $i . \".text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '\" . implode($d . \"%' OR p2a\" . $i . \".text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode(\"' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode($d . \"%' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id .\n										   \" AND (p2a.text = '\" . implode(\"' OR p2a.text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '\" . implode($d . \"%' OR p2a.text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n										   \" OR p2a.text like '%\" . $d . implode(\"' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '%\" . $d . implode($d . \"%' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')\";\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$attribute_filters = array();\n		if($data['attr_slider']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id = p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id . \" AND \" .\n							\"(p2a\" . $i . \".text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'] . \")) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id . \" AND p2a.text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'];\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$sql .= \" AND p.status = '1' AND p.date_available <= NOW( ) AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n		$sql .= \") as innertable WHERE 1 \";\n		\n		$min_price = $this->currency->convert((int)$data['min_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n		$max_price = $this->currency->convert($data['max_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n\n		if ($min_price AND $max_price)\n		{\n			$sql .= \" \n				AND \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_max_price \n				OR \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_min_price \n				OR \n				\" . $min_price . \" >= related_min_price AND \" . $min_price . \" <= related_max_price AND \" . $max_price . \" >= related_min_price \n			\";\n		}\n\n		$query = $this->db->query($sql);\n\n		return $query->row['total'];\n	}\n\n	private function getCustomerGroup() {\n		if($this->customer->isLogged()) {\n			$customer_group_id = $this->customer->getCustomerGroupId();\n			return $customer_group_id;\n		} else {\n			$customer_group_id = $this->config->get('config_customer_group_id');\n			return $customer_group_id;\n		}\n	}\n\n	public function getTotalManufacturers($data) {\n\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"SELECT count(*) as total, manufacturer_id FROM \" .\n			   \"(SELECT DISTINCT p.product_id, m.manufacturer_id, coalesce((SELECT price FROM \" . DB_PREFIX . \"product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '\" . (int)$customer_group_id . \"' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1), \" .\n			   \"(SELECT price FROM \" . DB_PREFIX . \"product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '\" . (int)$customer_group_id . \"' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1), \" .\n			   \"p.price) as realprice, \" .\n\n			   // Join related price limits\n				\"(\n					SELECT MIN(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_min_price,\n				(\n					SELECT MAX(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_max_price\" . \n\n			   \" FROM \" . DB_PREFIX . \"product p\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"manufacturer m ON(m.manufacturer_id=p.manufacturer_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON (pov.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p2s.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON (p2c.product_id=p.product_id)\";\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_attribute p2a ON (p2a.product_id=p.product_id)\";\n\n		if($data['tags']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_tag p2t ON (p2t.product_id=p.product_id)\";\n		}\n\n		$sql .= \" WHERE 1\";\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" AND p2t.tag IN( '\" . implode(\"', '\", array_map(array($this->db, 'escape'), $data['tags'])) . \"') AND p2t.language_id='\" . (int)$this->config->get('config_language_id') . \"' \";\n		}\n\n		if($data['categories']) {\n			$sql .= \" AND p2c.category_id IN (\" . implode(\",\", $data['categories']) . \")\";\n		}\n\n		$option_filters = array();\n		if($data['option_value']) {\n			foreach($data['option_value'] as $option_value) {\n				$option_filters[] = \"option_value_id IN(\" . implode(\",\", $option_value) . \")\";\n			}\n		}\n\n		if($option_filters) {\n			if($this->filterpro_setting['option_mode'] == 'and') {\n				foreach($option_filters as $i => $option_filter) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_option_value pov\" . $i .\n							\" WHERE pov\" . $i . \".product_id=pov.product_id AND pov\" . $i . \".\" . $option_filter . ($data['instock'] ? \"AND pov\" . $i . \".quantity > 0\"\n							: \"\") . \") \";\n				}\n			} else {\n				$sql .= \" AND (\" . implode(\" OR \", $option_filters) . \")\";\n			}\n		}\n\n\n		$d = $this->filterpro_setting['attr_delimeter'];\n\n		if($data['attribute_value']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id=p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id .\n							\" AND (p2a\" . $i . \".text = '\" . implode(\"' OR p2a\" . $i . \".text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '\" . implode($d . \"%' OR p2a\" . $i . \".text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode(\"' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode($d . \"%' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id .\n										   \" AND (p2a.text = '\" . implode(\"' OR p2a.text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '\" . implode($d . \"%' OR p2a.text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n										   \" OR p2a.text like '%\" . $d . implode(\"' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '%\" . $d . implode($d . \"%' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')\";\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$attribute_filters = array();\n		if($data['attr_slider']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id = p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id . \" AND \" .\n							\"(p2a\" . $i . \".text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'] . \")) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id . \" AND p2a.text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'];\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$sql .= \" AND p.status = '1' AND p.date_available <= NOW( ) AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n		$sql .= \") as innertable WHERE 1 \";\n		\n		$min_price = $this->currency->convert((int)$data['min_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n		$max_price = $this->currency->convert($data['max_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n\n		if ($min_price AND $max_price)\n		{\n			$sql .= \" \n				AND \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_max_price \n				OR \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_min_price \n				OR \n				\" . $min_price . \" >= related_min_price AND \" . $min_price . \" <= related_max_price AND \" . $max_price . \" >= related_min_price \n			\";\n		}\n\n		$sql .= \" GROUP BY \" . \"manufacturer_id\";\n		$query = $this->db->query($sql);\n\n		$result = array();\n		foreach($query->rows as $row) {\n			$result[] = array('id' => $row['manufacturer_id'], 't' => $row['total']);\n		}\n\n		return $result;\n	}\n\n	public function getTotalTags($data) {\n\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"SELECT CONCAT(`tag`, ' (', count(*), ')') as 'name', tag FROM \" .\n			   \"(SELECT DISTINCT p.product_id, tag, coalesce((SELECT price FROM \" . DB_PREFIX . \"product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '\" . (int)$customer_group_id . \"' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1), \" .\n			   \"(SELECT price FROM \" . DB_PREFIX . \"product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '\" . (int)$customer_group_id . \"' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1), \" .\n			   \"p.price) as realprice, \" .\n				\n				// Join related price limits\n				\"(\n					SELECT MIN(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_min_price,\n				(\n					SELECT MAX(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_max_price\" . \n\n			   \" FROM \" . DB_PREFIX . \"product p\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"manufacturer m ON(m.manufacturer_id=p.manufacturer_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON (pov.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p2s.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON (p2c.product_id=p.product_id)\";\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_attribute p2a ON (p2a.product_id=p.product_id)\";\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_tag p2t ON (p2t.product_id=p.product_id)\";\n\n\n		$sql .= \" WHERE 1\";\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['categories']) {\n			$sql .= \" AND p2c.category_id IN (\" . implode(\",\", $data['categories']) . \")\";\n		}\n		if($data['manufacturer']) {\n			$sql .= \" AND p.manufacturer_id IN(\" . implode(\", \", $data['manufacturer']) . \")\";\n		}\n\n		$option_filters = array();\n		if($data['option_value']) {\n			foreach($data['option_value'] as $option_value) {\n				$option_filters[] = \"option_value_id IN(\" . implode(\",\", $option_value) . \")\";\n			}\n		}\n\n		if($option_filters) {\n			if($this->filterpro_setting['option_mode'] == 'and') {\n				foreach($option_filters as $i => $option_filter) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_option_value pov\" . $i .\n							\" WHERE pov\" . $i . \".product_id=pov.product_id AND pov\" . $i . \".\" . $option_filter . ($data['instock'] ? \"AND pov\" . $i . \".quantity > 0\"\n							: \"\") . \") \";\n				}\n			} else {\n				$sql .= \" AND (\" . implode(\" OR \", $option_filters) . \")\";\n			}\n		}\n\n		$d = $this->filterpro_setting['attr_delimeter'];\n\n		if($data['attribute_value']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id=p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id .\n							\" AND (p2a\" . $i . \".text = '\" . implode(\"' OR p2a\" . $i . \".text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '\" . implode($d . \"%' OR p2a\" . $i . \".text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode(\"' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode($d . \"%' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id .\n										   \" AND (p2a.text = '\" . implode(\"' OR p2a.text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '\" . implode($d . \"%' OR p2a.text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n										   \" OR p2a.text like '%\" . $d . implode(\"' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '%\" . $d . implode($d . \"%' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')\";\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$attribute_filters = array();\n		if($data['attr_slider']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id = p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id . \" AND \" .\n							\"(p2a\" . $i . \".text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'] . \")) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id . \" AND p2a.text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'];\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$sql .= \" AND p2t.language_id = '\" . (int)$this->config->get('config_language_id') . \"' AND p.status = '1' AND p.date_available <= NOW( ) AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n		$sql .= \") as innertable WHERE 1 \";\n	\n		$min_price = $this->currency->convert((int)$data['min_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n		$max_price = $this->currency->convert($data['max_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n\n		if ($min_price AND $max_price)\n		{\n			$sql .= \" \n				AND \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_max_price \n				OR \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_min_price \n				OR \n				\" . $min_price . \" >= related_min_price AND \" . $min_price . \" <= related_max_price AND \" . $max_price . \" >= related_min_price \n			\";\n		}\n\n		$sql .= \" GROUP BY `tag` ORDER BY `tag`\";\n		$query = $this->db->query($sql);\n		foreach($query->rows as $i => $row) {\n			if($data['tags'] && in_array($row['tag'], $data['tags'])) {\n				$query->rows[$i]['checked'] = \"1\";\n			}\n		}\n		return $query->rows;\n	}\n\n	public function getTotalCategories($data, $category_id) {\n\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"SELECT `name`, `category_id` FROM \" .\n			   \"(SELECT DISTINCT p.product_id, cd.name, cd.category_id, c.sort_order, coalesce((SELECT price FROM \" . DB_PREFIX . \"product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '\" . (int)$customer_group_id . \"' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1), \" .\n			   \"(SELECT price FROM \" . DB_PREFIX . \"product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '\" . (int)$customer_group_id . \"' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1), \" .\n			   \"p.price) as realprice, \" .\n				\n				// Join related price limits\n				\"(\n					SELECT MIN(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_min_price,\n				(\n					SELECT MAX(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_max_price\" . \n\n			   \" FROM \" . DB_PREFIX . \"product p\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"manufacturer m ON(m.manufacturer_id=p.manufacturer_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON (pov.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p2s.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON (p2c.product_id=p.product_id)\" .\n			   \" LEFT JOIN `\" . DB_PREFIX . \"category` c ON(p2c.category_id=c.category_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"category_description cd ON(cd.category_id=c.category_id) \";\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_attribute p2a ON (p2a.product_id=p.product_id)\";\n\n		if($data['tags']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_tag p2t ON (p2t.product_id=p.product_id)\";\n		}\n\n		$sql .= \" WHERE 1\";\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" AND p2t.tag IN( '\" . implode(\"', '\", array_map(array($this->db, 'escape'), $data['tags'])) . \"') AND p2t.language_id='\" . (int)$this->config->get('config_language_id') . \"' \";\n		}\n\n		if($data['manufacturer']) {\n			$sql .= \" AND p.manufacturer_id IN(\" . implode(\", \", $data['manufacturer']) . \")\";\n		}\n\n		$option_filters = array();\n		if($data['option_value']) {\n			foreach($data['option_value'] as $option_value) {\n				$option_filters[] = \"option_value_id IN(\" . implode(\",\", $option_value) . \")\";\n			}\n		}\n\n		if($option_filters) {\n			if($this->filterpro_setting['option_mode'] == 'and') {\n				foreach($option_filters as $i => $option_filter) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_option_value pov\" . $i .\n							\" WHERE pov\" . $i . \".product_id=pov.product_id AND pov\" . $i . \".\" . $option_filter . ($data['instock'] ? \"AND pov\" . $i . \".quantity > 0\"\n							: \"\") . \") \";\n				}\n			} else {\n				$sql .= \" AND (\" . implode(\" OR \", $option_filters) . \")\";\n			}\n		}\n\n		$d = $this->filterpro_setting['attr_delimeter'];\n\n		if($data['attribute_value']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id=p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id .\n							\" AND (p2a\" . $i . \".text = '\" . implode(\"' OR p2a\" . $i . \".text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '\" . implode($d . \"%' OR p2a\" . $i . \".text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode(\"' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode($d . \"%' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id .\n										   \" AND (p2a.text = '\" . implode(\"' OR p2a.text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '\" . implode($d . \"%' OR p2a.text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n										   \" OR p2a.text like '%\" . $d . implode(\"' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '%\" . $d . implode($d . \"%' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')\";\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$attribute_filters = array();\n		if($data['attr_slider']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id = p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id . \" AND \" .\n							\"(p2a\" . $i . \".text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'] . \")) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id . \" AND p2a.text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'];\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$sql .= \" AND c.status=1 AND c.parent_id = '\" . $category_id . \"' AND cd.language_id = '\" . (int)$this->config->get('config_language_id') . \"' AND p.status = '1' AND p.date_available <= NOW( ) AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n		$sql .= \") as innertable WHERE 1 \";\n		\n		$min_price = $this->currency->convert((int)$data['min_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n		$max_price = $this->currency->convert($data['max_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n\n		if ($min_price AND $max_price)\n		{\n			$sql .= \" \n				AND \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_max_price \n				OR \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_min_price \n				OR \n				\" . $min_price . \" >= related_min_price AND \" . $min_price . \" <= related_max_price AND \" . $max_price . \" >= related_min_price \n			\";\n		}\n\n		$sql .= \" GROUP BY category_id ORDER BY sort_order, name\";\n\n		$query = $this->db->query($sql);\n		foreach($query->rows as $i => $row) {\n			if($data['categories'] && in_array($row['category_id'], $data['categories'])) {\n				$query->rows[$i]['checked'] = \"1\";\n			}\n		}\n		return $query->rows;\n	}\n\n	public function getTotalAttributes($data) {\n\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"SELECT count(*) as total, attribute_id, text  FROM \" .\n			   \"(SELECT DISTINCT p.product_id, p2a.attribute_id, p2a.text, coalesce((SELECT price FROM \" . DB_PREFIX . \"product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '\" . (int)$customer_group_id . \"' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1), \" .\n			   \"(SELECT price FROM \" . DB_PREFIX . \"product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '\" . (int)$customer_group_id . \"' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1), \" .\n			   \"p.price) as realprice, \" .\n				\n				// Join related price limits\n				\"(\n					SELECT MIN(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_min_price,\n				(\n					SELECT MAX(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_max_price\" . \n\n			   \" FROM \" . DB_PREFIX . \"product p\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"manufacturer m ON(m.manufacturer_id=p.manufacturer_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON (pov.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p2s.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON (p2c.product_id=p.product_id)\";\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_attribute p2a ON (p2a.product_id=p.product_id)\";\n\n		if($data['tags']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_tag p2t ON (p2t.product_id=p.product_id)\";\n		}\n\n		$sql .= \" WHERE 1\";\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['categories']) {\n			$sql .= \" AND p2c.category_id IN (\" . implode(\",\", $data['categories']) . \")\";\n		}\n\n		if($data['manufacturer']) {\n			$sql .= \" AND p.manufacturer_id IN(\" . implode(\", \", $data['manufacturer']) . \")\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" AND p2t.tag IN( '\" . implode(\"', '\", array_map(array($this->db, 'escape'), $data['tags'])) . \"') AND p2t.language_id='\" . (int)$this->config->get('config_language_id') . \"' \";\n		}\n\n		$d = $this->filterpro_setting['attr_delimeter'];\n\n		if($data['attribute_value']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id=p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id .\n							\" AND (p2a\" . $i . \".text = '\" . implode(\"' OR p2a\" . $i . \".text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '\" . implode($d . \"%' OR p2a\" . $i . \".text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode(\"' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode($d . \"%' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')) \";\n					$i++;\n				}\n			}\n		}\n\n		$option_filters = array();\n		if($data['option_value']) {\n			foreach($data['option_value'] as $option_value) {\n				$option_filters[] = \"option_value_id IN(\" . implode(\",\", $option_value) . \")\";\n			}\n		}\n\n		if($option_filters) {\n			if($this->filterpro_setting['option_mode'] == 'and') {\n				foreach($option_filters as $i => $option_filter) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_option_value pov\" . $i .\n							\" WHERE pov\" . $i . \".product_id=pov.product_id AND pov\" . $i . \".\" . $option_filter . ($data['instock'] ? \"AND pov\" . $i . \".quantity > 0\"\n							: \"\") . \") \";\n				}\n			} else {\n				$sql .= \" AND (\" . implode(\" OR \", $option_filters) . \")\";\n			}\n		}\n\n		$sql .= \" AND p.status = '1' AND p.date_available <= NOW( ) AND p2a.language_id='\" . (int)$this->config->get('config_language_id') . \"' AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n		$sql .= \") as innertable WHERE 1 \";\n		\n		$min_price = $this->currency->convert((int)$data['min_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n		$max_price = $this->currency->convert($data['max_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n\n		if ($min_price AND $max_price)\n		{\n			$sql .= \" \n				AND \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_max_price \n				OR \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_min_price \n				OR \n				\" . $min_price . \" >= related_min_price AND \" . $min_price . \" <= related_max_price AND \" . $max_price . \" >= related_min_price \n			\";\n		}\n\n		$sql .= \" GROUP BY \" . \"attribute_id, text\";\n		$query = $this->db->query($sql);\n// echo $sql;\n		$result = array();\n		$attributes = array();\n		foreach($query->rows as $row) {\n			foreach(explode($this->filterpro_setting['attr_delimeter'], $row['text']) as $text) {\n				if(!isset($attributes[$row['attribute_id'] . \".\" . $text])) {\n					$attributes[$row['attribute_id'] . \".\" . $text] = array('id' => $row['attribute_id'], 'text' => $text, 't' => $row['total']);\n				} else {\n					$attributes[$row['attribute_id'] . \".\" . $text]['t'] += $row['total'];\n				}\n			}\n		}\n		foreach($attributes as $attribute) {\n			$result[] = array('id' => $attribute['id'], 'text' => $attribute['text'], 't' => $attribute['t']);\n		}\n		return $result;\n	}\n\n	public function getTotalOptions($data) {\n\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"SELECT count(*) as total, option_value_id FROM \" .\n			   \"(SELECT DISTINCT p.product_id, pov.option_value_id, coalesce((SELECT price FROM \" . DB_PREFIX . \"product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '\" . (int)$customer_group_id . \"' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1), \" .\n			   \"(SELECT price FROM \" . DB_PREFIX . \"product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '\" . (int)$customer_group_id . \"' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1), \" .\n			   \"p.price) as realprice, \" .\n\n				// Join related price limits\n				\"(\n					SELECT MIN(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_min_price,\n				(\n					SELECT MAX(p1.price) FROM product as p1 WHERE p1.product_id IN (\n						SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n					)\n				) as related_max_price\" . \n\n			   \" FROM \" . DB_PREFIX . \"product p\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"manufacturer m ON(m.manufacturer_id=p.manufacturer_id) \" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON (pov.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p2s.product_id=p.product_id)\" .\n			   \" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON (p2c.product_id=p.product_id)\";\n		$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_attribute p2a ON (p2a.product_id=p.product_id)\";\n		if($data['tags']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_tag p2t ON (p2t.product_id=p.product_id)\";\n		}\n\n		$sql .= \" WHERE 1\";\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['categories']) {\n			$sql .= \" AND p2c.category_id IN (\" . implode(\",\", $data['categories']) . \")\";\n		}\n\n		if($data['manufacturer']) {\n			$sql .= \" AND p.manufacturer_id IN(\" . implode(\", \", $data['manufacturer']) . \")\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" AND p2t.tag IN( '\" . implode(\"', '\", array_map(array($this->db, 'escape'), $data['tags'])) . \"') AND p2t.language_id='\" . (int)$this->config->get('config_language_id') . \"' \";\n		}\n\n		$d = $this->filterpro_setting['attr_delimeter'];\n\n		if($data['attribute_value']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id=p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id .\n							\" AND (p2a\" . $i . \".text = '\" . implode(\"' OR p2a\" . $i . \".text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '\" . implode($d . \"%' OR p2a\" . $i . \".text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode(\"' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode($d . \"%' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id .\n										   \" AND (p2a.text = '\" . implode(\"' OR p2a.text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '\" . implode($d . \"%' OR p2a.text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n										   \" OR p2a.text like '%\" . $d . implode(\"' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '%\" . $d . implode($d . \"%' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')\";\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$attribute_filters = array();\n		if($data['attr_slider']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id = p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id . \" AND \" .\n							\"(p2a\" . $i . \".text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'] . \")) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id . \" AND p2a.text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'];\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n\n		$sql .= \" AND p.status = '1' AND p.date_available <= NOW( ) AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n		$sql .= \") as innertable WHERE 1 \";\n		\n		$min_price = $this->currency->convert((int)$data['min_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n		$max_price = $this->currency->convert($data['max_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n\n		if ($min_price AND $max_price)\n		{\n			$sql .= \" \n				AND \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_max_price \n				OR \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_min_price \n				OR \n				\" . $min_price . \" >= related_min_price AND \" . $min_price . \" <= related_max_price AND \" . $max_price . \" >= related_min_price \n			\";\n		}\n\n		$sql .= \" GROUP BY \" . \"option_value_id\";\n		$query = $this->db->query($sql);\n\n		$result = array();\n		foreach($query->rows as $row) {\n			$result[] = array('id' => $row['option_value_id'], 't' => $row['total']);\n		}\n\n		return $result;\n	}\n\n	public function getProducts($data) {\n		$customer_group_id = $this->getCustomerGroup();\n\n		$sql = \"SELECT product_id FROM(\";\n		$sql .= \"SELECT DISTINCT p.product_id, pd.name, p.model, p.quantity, p.price, p.sort_order, p.date_added \";\n		if(isset($data[\"sort\"]) && $data[\"sort\"] == \"rating\") {\n			$sql .= \", (SELECT AVG(rating) AS total FROM \" . DB_PREFIX . \"review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating \";\n		}\n		$sql .= \", coalesce((SELECT price FROM \" . DB_PREFIX . \"product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '\" . (int)$customer_group_id . \"' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1), \" .\n				\"(SELECT price FROM \" . DB_PREFIX . \"product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '\" . (int)$customer_group_id . \"' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1), \" .\n				\"p.price) as realprice, \";\n		\n		// Join related price limits\n		$sql .= \"\n			(\n				SELECT MIN(p1.price) FROM product as p1 WHERE p1.product_id IN (\n					SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n				)\n			) as related_min_price,\n			(\n				SELECT MAX(p1.price) FROM product as p1 WHERE p1.product_id IN (\n					SELECT relateD_id FROM product_related as pr WHERE pr.product_id = p.product_id\n				)\n			) as related_max_price \n		\";\n\n		$sql .= \"FROM \" . DB_PREFIX . \"product p\" .\n				\" LEFT JOIN \" . DB_PREFIX . \"product_option_value pov ON (pov.product_id=p.product_id)\" .\n				\" LEFT JOIN \" . DB_PREFIX . \"product_description pd ON (pd.product_id=p.product_id)\" .\n				\" LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p2s.product_id=p.product_id)\" .\n				\" LEFT JOIN \" . DB_PREFIX . \"product_to_category p2c ON (p2c.product_id=p.product_id)\";\n		if($data['attribute_value'] || $data['attr_slider']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_attribute p2a ON (p2a.product_id=p.product_id)\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" LEFT JOIN \" . DB_PREFIX . \"product_tag p2t ON (p2t.product_id=p.product_id)\";\n		}\n\n		$sql .= \" WHERE 1 \";\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['instock']) {\n			$sql .= \" AND p.quantity > 0 AND (pov.quantity is null OR pov.quantity > 0)\";\n		}\n\n		if($data['categories']) {\n			$sql .= \" AND p2c.category_id IN (\" . implode(\",\", $data['categories']) . \")\";\n		}\n\n		$option_filters = array();\n		if($data['option_value']) {\n			foreach($data['option_value'] as $option_value) {\n				$option_filters[] = \"option_value_id IN(\" . implode(\",\", $option_value) . \")\";\n			}\n		}\n\n		if($option_filters) {\n			if($this->filterpro_setting['option_mode'] == 'and') {\n				foreach($option_filters as $i => $option_filter) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_option_value pov\" . $i .\n							\" WHERE pov\" . $i . \".product_id=pov.product_id AND pov\" . $i . \".\" . $option_filter . ($data['instock'] ? \"AND pov\" . $i . \".quantity > 0\"\n							: \"\") . \") \";\n				}\n			} else {\n				$sql .= \" AND (\" . implode(\" OR \", $option_filters) . \")\";\n			}\n		}\n\n		if($data['manufacturer']) {\n			$sql .= \" AND p.manufacturer_id IN(\" . implode(\", \", $data['manufacturer']) . \")\";\n		}\n\n		if($data['tags']) {\n			$sql .= \" AND p2t.tag IN( '\" . implode(\"', '\", array_map(array($this->db, 'escape'), $data['tags'])) . \"') AND p2t.language_id='\" . (int)$this->config->get('config_language_id') . \"' \";\n		}\n\n		$d = $this->filterpro_setting['attr_delimeter'];\n\n		if($data['attribute_value']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id=p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id .\n							\" AND (p2a\" . $i . \".text = '\" . implode(\"' OR p2a\" . $i . \".text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '\" . implode($d . \"%' OR p2a\" . $i . \".text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode(\"' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n							\" OR p2a\" . $i . \".text like '%\" . $d . implode($d . \"%' OR p2a\" . $i . \".text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attribute_value'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id .\n										   \" AND (p2a.text = '\" . implode(\"' OR p2a.text = '\", array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '\" . implode($d . \"%' OR p2a.text like '\", array_map(array($this->db, 'escape'), $values)) . $d . \"%'\" .\n										   \" OR p2a.text like '%\" . $d . implode(\"' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . \"'\" .\n										   \" OR p2a.text like '%\" . $d . implode($d . \"%' OR p2a.text like '%\" . $d, array_map(array($this->db, 'escape'), $values)) . $d . \"%')\";\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$attribute_filters = array();\n		if($data['attr_slider']) {\n			if($this->filterpro_setting['attribute_mode'] == 'and') {\n				$i = 0;\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$sql .= \" AND EXISTS (select 1 FROM \" . DB_PREFIX . \"product_attribute p2a\" . $i . \" WHERE p2a\" . $i . \".product_id = p2a.product_id AND p2a\" . $i . \".attribute_id = \" . (int)$attribute_id . \" AND \" .\n							\"(p2a\" . $i . \".text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'] . \")) \";\n					$i++;\n				}\n			} else {\n				foreach($data['attr_slider'] as $attribute_id => $values) {\n					$attribute_filters[] = \"p2a.attribute_id = \" . (int)$attribute_id . \" AND p2a.text * 1 BETWEEN \" . $values['min'] . \" AND \" . $values['max'];\n				}\n				$sql .= \" AND (\" . implode(\" OR \", $attribute_filters) . \")\";\n			}\n		}\n\n		$sql .= \" AND pd.language_id = '\" . (int)$this->config->get('config_language_id') . \"' AND p.status = '1' AND p.is_product_group = '1' AND p.date_available <= NOW() AND p2s.store_id = \" . (int)$this->config->get('config_store_id');\n\n		$sort_data = array(\n			'pd.name' => 'name',\n			'p.model' => 'model',\n			'p.quantity' => 'quantity',\n			'p.price' => 'related_min_price',\n			'p.sort_order' => 'sort_order',\n			'p.date_added' => 'date_added',\n			'rating' => 'rating'\n		);\n\n		$sql .= \") as innertable WHERE 1 \";\n\n		$min_price = $this->currency->convert((int)$data['min_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n		$max_price = $this->currency->convert($data['max_price'], $this->currency->getCode(), $this->config->get('config_currency'));\n\n		if ($min_price AND $max_price)\n		{\n			$sql .= \" \n				AND \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_max_price \n				OR \n				\" . $min_price . \" <= related_min_price AND \" . $max_price . \" >= related_min_price \n				OR \n				\" . $min_price . \" >= related_min_price AND \" . $min_price . \" <= related_max_price AND \" . $max_price . \" >= related_min_price \n			\";\n		}\n\n		if(isset($data['sort']) && array_key_exists($data['sort'], $sort_data)) {\n			$data['sort'] = $sort_data[$data['sort']];\n			if($data['sort'] == 'name' || $data['sort'] == 'model') {\n				$sql .= \" ORDER BY LCASE(\" . $data['sort'] . \")\";\n			} else {\n				$sql .= \" ORDER BY \" . $data['sort'];\n			}\n		} else {\n			$sql .= \" ORDER BY  sort_order\";\n		}\n		if(isset($data['order']) && ($data['order'] == 'DESC')) {\n			$sql .= \" DESC, LCASE(name) DESC\";\n		} else {\n			$sql .= \" ASC, LCASE(name) ASC\";\n		}\n\n\n		if(isset($data['start']) || isset($data['limit'])) {\n			if($data['start'] < 0) {\n				$data['start'] = 0;\n			}\n\n			if($data['limit'] < 1) {\n				$data['limit'] = 20;\n			}\n\n			$sql .= \" LIMIT \" . (int)$data['start'] . \",\" . (int)$data['limit'];\n		}\n\n		$query = $this->db->query($sql);\n\n		$product_data = array();\n		$related_products = Array();\n		$related_products_instock = Array();\n		\n		if($query->rows) {\n			$this->load->model('catalog/product');\n			foreach($query->rows as $result) {\n				$product_data[$result['product_id']] = $this->model_catalog_product->getCategoryProduct($result['product_id']);\n				$product_data[$result['product_id']]['short_description'] = strip_tags(htmlspecialchars_decode($this->db->query(\"SELECT short_description from product_description as pd where  pd.product_id = \" . $result['product_id'])->row['short_description']));\n				\n				$related_products[$result['product_id']] = $this->db->query(\"SELECT related_id FROM product_related as pr WHERE pr.product_id=\" . $result['product_id'])->rows; \n				foreach ($related_products[$result['product_id']] as & $related_product)\n				{\n						$related_product['quantity'] = $this->db->query(\"SELECT quantity FROM product  as p where p.product_id = \" . $related_product['related_id'])->rows[0]['quantity'];\n						if ($related_product['quantity'] > 1) {\n							$related_products_instock[$result['product_id']][$related_product['related_id']] = $related_product;\n						}\n				}\n				$product_data[$result['product_id']]['instock_related'] = count($related_products_instock[$result['product_id']]);\n\n				// add tester to product group if isset tester\n				$products_related = $this->db->query(\"SELECT * FROM \" . DB_PREFIX . \"product_related pr LEFT JOIN \" . DB_PREFIX . \"product p ON (pr.related_id = p.product_id) LEFT JOIN \" . DB_PREFIX . \"product_to_store p2s ON (p.product_id = p2s.product_id) WHERE pr.product_id = '\" . (int)$result['product_id'] . \"' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '\" . (int)$this->config->get('config_store_id') . \"'\")->rows;\n				$i = 0;\n				$tester = 0;\n				foreach ($products_related as $product_related ) {\n					if ($product_related['tester']) {\n						$tester = 1;\n					}\n					$i++;\n				}\n				$product_data[$result['product_id']]['tester'] = $tester;\n			}\n		}\n\n\n		return $product_data;\n	}\n\n	public function getTaxRates($tax_class_id) {\n		$query = $this->db->query(\"SELECT tr1.rate, tr1.type FROM \" . DB_PREFIX . \"tax_rate tr1 LEFT JOIN \" . DB_PREFIX . \"tax_rule tr2 ON (tr1.tax_rate_id=tr2.tax_rate_id) \" .\n								  \"WHERE tr2.tax_class_id=\" . (int)$tax_class_id . \" ORDER BY tr2.priority\");\n		return $query->rows;\n	}\n\n}\n",
+			"settings":
+			{
+				"buffer_size": 60173,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "system/filter/cases/FilterCase.php",
+			"settings":
+			{
+				"buffer_size": 3271,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "system/filter/FilterManager.php",
+			"settings":
+			{
+				"buffer_size": 5933,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "system/filter/builders/FilterBuilder.php",
+			"settings":
+			{
+				"buffer_size": 1279,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"sql",
+				"SQL Beautifier: Format Current SQL File"
+			],
+			[
+				"ref",
+				"Project: Refresh Folders"
+			],
+			[
+				"refresh",
+				"Project: Refresh Folders"
+			],
+			[
+				"refre",
+				"Project: Refresh Folders"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"swl",
+				"HTML: Wrap Selection With Tag"
+			],
+			[
+				"packagein",
+				"Package Control: Install Package"
+			],
+			[
+				"proj save",
+				"Project: Save As"
+			],
+			[
+				"proje",
+				"Project: Add Folder"
+			]
+		],
+		"width": 512.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/logs",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/tests"
+	],
+	"file_history":
+	[
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/FilterSqlConverter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/startup.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/FilterFactory.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseAttributesGroup.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseAttributes.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterAttributes.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/builders/FilterBuilder.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/module/category.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/stylesheet/carousel.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/javascript/common.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/catalog/review.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/stylesheet/ie6.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/account/wishlist.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/module/welcome.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/voucher.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/javascript/unitpngfix/unitpngfix.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/javascript/jquery/ui/i18n/jquery.ui.datepicker-el.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/javascript/jquery/ui/minified/jquery.ui.widget.min.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/account/transaction.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/product/category.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/config.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseInterface.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterOptions.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/formatters/FilterFormatterInterface.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-number.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/catalog/filter_list.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/src/Framework/IncompleteTestError.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/tests/FilterManagerTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/builders/FilterBuilderInterface.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/php-file-iterator/File/Iterator.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/AttributeGroupConverter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/FilterManager.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/tests/AttributeGroupConverterTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/FilterComposer.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeInUp.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit-mock-objects/tests/_fixture/MethodCallbackByReference.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/localisation/return_reason_form.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/catalog/review_form.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/src/Framework/RiskyTestError.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/engine/registry.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCase.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/autoload.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/total/tax.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-number-isolation.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/common/filemanager.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/AttributeGroupConverter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/localisation/stock_status.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/testable.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/src/Framework/TestSuite.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/Util/TestTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/get-size/test/index.html",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/index.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/encryption.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/database/mysqli.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/startup.php",
+		"/Users/yuriikrevnyi/.bash_profile",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/phpunit.xml",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/php.ini",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/language/english/openbay/ebay_new.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/ebay.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/core/interface/CommandInterface.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-only-range.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/cases/FilterCaseOptions.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/database/mysql.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/payment/sagepay_direct.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/database/mmsql.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/symfony/yaml/Symfony/Component/Yaml/Tests/Fixtures/sfQuotes.yml",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/flippers/flipInY.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/payment/nochex.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/_files/ThrowExceptionTestCase.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-classname-and-range-isolation.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/filter-dataprovider-by-classname-and-range.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/TextUI/dataprovider-testdox.phpt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/ckeditor/lang/da.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/db.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/ckeditor/plugins/codemirror/js/util/pig-hint.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/php-token-stream/tests/Token/IncludeTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/vendor/phpunit/phpunit/tests/_files/ExceptionInTest.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/composer.json",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/sass-bootstrap-glyphicons/composer.json",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/eventEmitter/component.json",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/product/compare.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/common.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/report/affiliate_commission.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/SameFilterOptions.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/ProductFilter.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/core/ProviderRepository.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/logs/error.txt",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/common/filemanager.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeInLeft.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/view/theme/default/template/payment/paypoint_failure.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeIn.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/catalog/attribute.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/sale/affiliate_transaction.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/engine/action.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/filter/utils/FilterSettingResolver.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/setting/setting.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/session.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/catalog/product.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/catalog/category.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/account/address.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/design/layout.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/module/ebaydisplay.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/account/download.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/payment/moneybookers.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/catalog/manufacturer.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/localisation/order_status.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/report/sale_tax.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/checkout/shipping_address.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/autoload.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/teil/lib/TeilDownloader.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/template.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/library/tax.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/animate.css/source/fading_entrances/fadeInDown.css",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/template/catalog/attribute_form.tpl",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/system/cache/cache.stock_status.1.1411828433",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/product/category.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/jquery/src/attributes/classes.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/affiliate/tracking.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/view/javascript/teil/bower_components/jquery/src/traversing/var/rneedsContext.js",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/admin/controller/report/customer_online.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/module/category.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/checkout/confirm.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/total/coupon.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/module/carousel.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/controller/error/not_found.php",
+		"/Users/yuriikrevnyi/sites/opencart-clear.dev/www/catalog/model/account/customer.php"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"<open files>",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"printr",
+			"print",
+			"attrgr",
+			"row",
+			"items",
+			"attributes",
+			"query->rows",
+			"attributes",
+			"$attributes = array();\n		foreach($query->rows as $row) {\n			if(!isset($attributes[$row['attribute_group_id']])) {\n				$attributes[$row['attribute_group_id']] = array(\n					'name' => $row['attribute_group_name'],\n					'attribute_values' => array()\n				);\n			}\n\n			if(!isset($attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']])) {\n				$attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']] = array('name' => $row['name'], 'values' => array());\n			}\n			foreach(explode($this->filterpro_setting['attr_delimeter'], $row['text']) as $text) {\n				if(!in_array($text, $attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']]['values'])) {\n					$attributes[$row['attribute_group_id']]['attribute_values'][$row['attribute_id']]['values'][] = $text;\n				}\n			}\n		}\n\n		foreach($attributes as $attribute_group_id => $attribute_group) {\n			foreach($attribute_group['attribute_values'] as $attribute_id => $attribute) {\n				sort($attributes[$attribute_group_id]['attribute_values'][$attribute_id]['values']);\n			}\n		}",
+			"category_id",
+			"'",
+			"  AND",
+			"`",
+			",\"",
+			"forma",
+			"<?",
+			"disabled",
+			"return",
+			"select",
+			"sql",
+			"http",
+			"disable",
+			"http",
+			"getFilteredAttributes",
+			"pluck",
+			"'items' => array(",
+			"),\n\narray(",
+			"attr_id",
+			"[1] => ",
+			"[0] => ",
+			"'attributes' => array\n        (",
+			"attributes] => Array",
+			"[attributes] => Array",
+			"[filters] => Array\n        (\n        )",
+			"'items' => array",
+			"'items' => Array",
+			"[attr_id] =>",
+			"[attr_id]",
+			"attribute_id",
+			"'attr_id",
+			"attribute_id",
+			"'attr_id",
+			"`",
+			"attr_",
+			"id",
+			"filter_settings",
+			"testGetCategoryAttributes",
+			"AttributeGroupConverterTestTest",
+			"[\"product_id\"]",
+			"[product_id]",
+			"),",
+			"=> Array",
+			"[",
+			"pa",
+			"PATH",
+			"Applications/XAMPP",
+			"mcrypt",
+			"local",
+			"mysql.default_socket",
+			",",
+			"attrGroup.id",
+			"items",
+			"group",
+			"setting",
+			"$attributes",
+			"attributes",
+			"attribute_groups",
+			"attribute_grops",
+			"category_builder",
+			"LEFT",
+			"category_id",
+			"setatt",
+			"http",
+			"changeFilter",
+			"group",
+			"makeFilter",
+			"distinct",
+			"dist",
+			"SELECT main_pa.product_id AS product_id,\n       main_pa.attribute_id AS attr_id,\n       main_pa.text AS attr_text,\n       a.attribute_group_id AS attr_group_id,\n       ad.name AS attr_name,\n       a.sort_order AS attr_group_order,\n       agd.name AS attr_group_name\nFROM product_attribute AS main_pa\nLEFT JOIN attribute AS a ON (a.attribute_id = main_pa.attribute_id)\nLEFT JOIN attribute_description AS ad ON (ad.attribute_id = main_pa.attribute_id)\nLEFT JOIN attribute_group_description AS agd ON (a.attribute_group_id = agd.attribute_group_id)\nLEFT JOIN product_option AS main_po ON (main_po.product_id = main_pa.product_id)\nLEFT JOIN `option` AS o ON (o.option_id = main_po.option_id)\nLEFT JOIN option_description AS od ON (od.option_id = main_po.option_id)\nLEFT JOIN option_value AS ov ON (ov.option_id = main_po.option_id)\nLEFT JOIN option_value_description AS ovd ON (ovd.option_value_id = ov.option_value_id)\nWHERE main_pa.language_id = 1\n  AND main_pa.product_id IN\n    (SELECT sub_ptc.product_id\n     FROM product_to_category AS sub_ptc\n     LEFT JOIN product_attribute AS sub_pa ON (sub_pa.product_id = sub_ptc.product_id)\n     LEFT JOIN product_option_value AS sub_pov ON (sub_ptc.product_id = sub_pov.product_id)\n     WHERE sub_ptc.category_id = 24)\n  AND ov.option_value_id IN\n    (SELECT option_value_id\n     FROM product_option_value\n     WHERE product_id = main_po.product_id)\nGROUP BY attr_text\nORDER BY attr_id ASC",
+			"distinct",
+			"havin",
+			"group_by",
+			"HAVING",
+			"order_by",
+			"group_by",
+			"setAttributes",
+			"setOptions",
+			"Options",
+			"this",
+			"setOptions",
+			"Attributes",
+			"attributes",
+			"setAttributes",
+			"options",
+			"setAttributes",
+			"setOptions",
+			"main.",
+			"main",
+			"main.",
+			"attributes",
+			"setAttributes",
+			"main_po.pro",
+			"main",
+			"main.o",
+			"main_po",
+			" po.",
+			" pa.",
+			"pa.",
+			"GROUP BY",
+			"havi",
+			"sql",
+			"die",
+			"$this->where",
+			"options_filter",
+			"product_id = main_po.product_id",
+			"main",
+			",",
+			"LEFT",
+			"attribute",
+			"attr",
+			"compose",
+			"attr_text",
+			"attributes",
+			"Attributes",
+			"attributes",
+			"category_builder",
+			"FilterFormatterAttributes",
+			"FilterCaseAttributes"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"main."
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "catalog/controller/product/category.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15614,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								15566,
+								15566
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 7185.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "catalog/view/theme/default/template/product/category.tpl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11354,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1174,
+								1174
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 60173,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								386,
+								386
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 3,
+					"file": "system/filter/cases/FilterCase.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3271,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								651,
+								651
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 488.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "system/filter/FilterManager.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5933,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								137,
+								137
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "system/filter/builders/FilterBuilder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1279,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.5,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"project": "opencart-clear.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"sql",
+				"www/system/filter/utils/FilterSqlConverter.php"
+			],
+			[
+				"filterbuidl",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filterfac",
+				"www/system/filter/FilterFactory.php"
+			],
+			[
+				"filtercaseattrg",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filtemanage",
+				"www/system/filter/FilterManager.php"
+			],
+			[
+				"filterfacto",
+				"www/system/filter/FilterFactory.php"
+			],
+			[
+				"filterattforma",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"cat/view/category",
+				"www/catalog/view/theme/default/template/product/category.tpl"
+			],
+			[
+				"filtercaseinter",
+				"www/system/filter/cases/FilterCaseInterface.php"
+			],
+			[
+				"filterbuild",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filterbuilder",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filterattfomr",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"filter",
+				"www/system/filter/FilterFactory.php"
+			],
+			[
+				"filterfactory",
+				"www/system/filter/FilterFactory.php"
+			],
+			[
+				"filtersqlconverter",
+				"www/system/filter/utils/FilterSqlConverter.php"
+			],
+			[
+				"filtercaseattg",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filtebuilinter",
+				"www/system/filter/builders/FilterBuilderInterface.php"
+			],
+			[
+				"fiterbuild",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filtermanager",
+				"www/system/filter/FilterManager.php"
+			],
+			[
+				"fuilterbuil",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filtercase",
+				"www/system/filter/cases/FilterCase.php"
+			],
+			[
+				"filterbuil",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"filtercaseatt",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"cat/category.tpl",
+				"www/catalog/view/theme/default/template/product/category.tpl"
+			],
+			[
+				"filtercompose",
+				"www/system/filter/utils/FilterComposer.php"
+			],
+			[
+				"filterattg",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filterattrig",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filtercseattg",
+				"www/system/filter/cases/FilterCaseAttributesGroup.php"
+			],
+			[
+				"filterformaatt",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"filterattrformatt",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"filettbuildr",
+				"www/system/filter/builders/FilterBuilder.php"
+			],
+			[
+				"attributegroupconverter",
+				"www/system/filter/utils/AttributeGroupConverter.php"
+			],
+			[
+				"startup",
+				"www/system/startup.php"
+			],
+			[
+				"start",
+				"www/system/startup.php"
+			],
+			[
+				"testable",
+				"www/testable.php"
+			],
+			[
+				"tests/",
+				"www/tests/FilterManagerTest.php"
+			],
+			[
+				"tes",
+				"www/testable.php"
+			],
+			[
+				"phpunit",
+				"www/phpunit.xml"
+			],
+			[
+				"inde",
+				"www/index.php"
+			],
+			[
+				"php",
+				"www/php.ini"
+			],
+			[
+				"index",
+				"www/index.php"
+			],
+			[
+				"enc",
+				"www/system/library/encryption.php"
+			],
+			[
+				"config",
+				"www/config.php"
+			],
+			[
+				"php.in",
+				"www/php.ini"
+			],
+			[
+				"mysqli",
+				"www/system/database/mysqli.php"
+			],
+			[
+				"database/myi",
+				"www/system/database/mysqli.php"
+			],
+			[
+				"composer",
+				"www/admin/view/javascript/teil/bower_components/sass-bootstrap-glyphicons/composer.json"
+			],
+			[
+				"filtecase",
+				"www/system/filter/cases/FilterCase.php"
+			],
+			[
+				"filtercae",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filtercaseattr",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"sta",
+				"www/system/startup.php"
+			],
+			[
+				"filtercaseattributes",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filterbuilerinter",
+				"www/system/filter/builders/FilterBuilderInterface.php"
+			],
+			[
+				"filtermanage",
+				"www/system/filter/FilterManager.php"
+			],
+			[
+				"filtermana",
+				"www/system/filter/FilterManager.php"
+			],
+			[
+				"filtercom",
+				"www/system/filter/utils/FilterComposer.php"
+			],
+			[
+				"filatecase",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filtercaseop",
+				"www/system/filter/cases/FilterCaseOptions.php"
+			],
+			[
+				"filtersql",
+				"www/system/filter/utils/FilterSqlConverter.php"
+			],
+			[
+				"filter/sql",
+				"www/system/filter/utils/FilterSqlConverter.php"
+			],
+			[
+				"filtecaseatt",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filtecaseop",
+				"www/system/filter/cases/FilterCaseOptions.php"
+			],
+			[
+				"fitler/sql",
+				"www/system/filter/utils/FilterSqlConverter.php"
+			],
+			[
+				"filterformatterattributes",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"filtecaeattributes",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filterbuilter",
+				"www/system/filter/builders/FilterBuilderInterface.php"
+			],
+			[
+				"filte/sql",
+				"www/system/filter/utils/FilterSqlConverter.php"
+			],
+			[
+				"filtercaseopt",
+				"www/system/filter/cases/FilterCaseOptions.php"
+			],
+			[
+				"samefilteroptions",
+				"www/system/filter/utils/SameFilterOptions.php"
+			],
+			[
+				"filtercaseattru",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"failtecaseatt",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"settreso",
+				"www/system/filter/utils/FilterSettingResolver.php"
+			],
+			[
+				"filterformattribute",
+				"www/system/filter/formatters/FilterFormatterAttributes.php"
+			],
+			[
+				"filterformatt",
+				"www/system/filter/formatters/FilterFormatterOptions.php"
+			],
+			[
+				"filterformatteroptions",
+				"www/system/filter/formatters/FilterFormatterOptions.php"
+			],
+			[
+				"filtercomposer",
+				"www/system/filter/utils/FilterComposer.php"
+			],
+			[
+				"filterocmpose",
+				"www/system/filter/utils/FilterComposer.php"
+			],
+			[
+				"cat/model/catalog/pro",
+				"www/catalog/model/catalog/product.php"
+			],
+			[
+				"filtercaeattr",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filter/filtercompose",
+				"www/system/filter/utils/FilterComposer.php"
+			],
+			[
+				"filtefc",
+				"www/system/filter/FilterFactory.php"
+			],
+			[
+				"filtrcase",
+				"www/system/filter/cases/FilterCase.php"
+			],
+			[
+				"filterreso",
+				"www/system/filter/utils/FilterSettingResolver.php"
+			],
+			[
+				"filteface",
+				"www/system/filter/cases/FilterCaseInterface.php"
+			],
+			[
+				"filterattr",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filtercaseatttr",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"filteropti",
+				"www/system/filter/cases/FilterCaseOptions.php"
+			],
+			[
+				"caseatt",
+				"www/system/filter/cases/FilterCaseAttributes.php"
+			],
+			[
+				"attrcase",
+				"www/admin/view/javascript/teil/bower_components/jquery/src/attributes/classes.js"
+			],
+			[
+				"cat/con/category",
+				"www/catalog/controller/product/category.php"
+			],
+			[
+				"cat/view/produ/categp",
+				"www/catalog/view/theme/default/template/product/category.tpl"
+			],
+			[
+				"admin/config",
+				"www/admin/config.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"defa",
+				"~/sites/defactory.dev/defactory.sublime-project"
+			],
+			[
+				"mod",
+				"~/sites/modnadiva.dev/www/modnadiva.sublime-project"
+			],
+			[
+				"moda",
+				"~/sites/modnadiva.dev/www/modnadiva.sublime-project"
+			],
+			[
+				"modna",
+				"~/sites/modnadiva.dev/www/modnadiva.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"last_automatic_layout":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		]
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 247.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
