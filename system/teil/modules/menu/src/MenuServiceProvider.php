@@ -11,7 +11,7 @@ class MenuServiceProvider extends ServiceProvider {
 	{
 		parent::__construct($app);
 
-		$this->MODULE_CODE = 'Menu';
+		$this->MODULE_CODE = 'menu';
 	}
 
 
@@ -50,7 +50,7 @@ class MenuServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('Menu');
+		return array('menu');
 	}
 
 

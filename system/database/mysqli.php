@@ -4,7 +4,7 @@ final class DBMySQLi {
 
 	public function __construct($hostname, $username, $password, $database) {
 		$this->link = new mysqli($hostname, $username, $password, $database);
-
+// print_r($this->link); die();
 		if (mysqli_connect_error()) {
 			throw new ErrorException('Error: Could not make a database link (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
 		}

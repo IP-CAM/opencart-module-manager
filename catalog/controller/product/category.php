@@ -457,5 +457,28 @@ class ControllerProductCategory extends Controller {
 			$this->response->setOutput($this->render());
 		}
 	}
+
+
+	public function filter()
+	{
+		$attributes = empty($_POST['attributes']) ? array() : $_POST['attributes'];
+		$options = empty($_POST['options']) ? array() : $_POST['options'];
+
+		// Filter
+		$settings = array(
+			'category_id' => 24,
+			'attributes' => array(
+				"16" => array("IOS", "Android"),
+				"13" => array("Метал")
+			),
+			'options' => $options
+		);
+
+		$filter_manager = new FilterManager;
+		$result = $filter_manager->filter($this->db, $settings);
+		
+		echo json_encode($result); die();
+	}
+
 }
 ?>

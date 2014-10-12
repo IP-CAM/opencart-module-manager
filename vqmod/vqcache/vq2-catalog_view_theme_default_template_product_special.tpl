@@ -1,158 +1,15 @@
-<?php echo $header; ?>
-
-<?php echo $column_left; ?>
-
-<?php echo $column_right; ?>
-<div id="content">
-
-<?php echo $content_top; ?>
-
+<?php echo $header; ?><?php if( ! empty( $mfilter_json ) ) { echo '<div id="mfilter-json" style="display:none">' . $mfilter_json . '</div>'; } ?><?php echo $column_left; ?><?php echo $column_right; ?>
+<div id="content"><?php echo $content_top; ?><div id="mfilter-content-container">
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
-
   <h1><?php echo $heading_title; ?></h1>
-
-<style type="text/css">
-  .disabled {
-    opacity: 0.5;
-  }
-</style>
-  <div class="filter" ng-app="filterApp" ng-controller="FilterCtrl">
-
-  <div class="filter-container" ng-show="filterData">
-    <div 
-      class="filterGroup" 
-      style="border: 1px dashed #e2e2e2; padding: 10px;" 
-      ng-repeat="attrGroup in filterData.attributes" 
-    >
-      <h4>{{ attrGroup.name }}</h4>
-
-      <div 
-        class="filterGroup" 
-        style="border: 1px dashed #e2e2e2; padding: 10px;" 
-        ng-repeat="attribute in attrGroup.attribute_values" 
-      >
-        <h4>{{ attribute.name }}</h4>
-
-        <label ng-repeat="attr in attribute.values">
-          <input 
-            type="checkbox" 
-            ng-model="attr.selected" 
-            ng-change="makeFilter()" 
-          > {{ attr.text }}
-          <br>
-        </label>
-      </div>
-
-    </div>
-
-  </div>
-
-  </div>
-
-<br><br><br><br>
-
-
-<script src="/admin/view/javascript/teil/bower_components/angular/angular.js"></script>
-<script type="text/javascript">
-
-  window.filterApp = angular.module('filterApp', []);
-
-  filterApp.controller('FilterCtrl', function FilterCtrl($scope, $http, $timeout) {
-    var updateFilterTimer = 0;
-
-    $scope.test = 0;
-    $scope.filterData = false;
-
-    $scope.makeFilter = function() {
-      $http({
-        url: '/index.php?route=product/category/filter',
-        method: 'post',
-        responseType: 'json',
-        data: $.param({
-          attributes: $scope.listAttributes()
-        }),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-      })
-        .success(function(resp) {
-          $scope.filterData = resp;
-        });
-    };
-
-    $scope.listAttributes = function(key) {
-      var result = {};
-
-      angular.forEach($scope.filterData.attributes, function(group) {
-        angular.forEach(group.attribute_values, function(attr) {
-          result[attr.id] = [];
-
-          angular.forEach(attr.values, function(value) {
-            if (value.selected) {
-              result[attr.id].push(value.text);
-            };
-          });
-        });
-      });
-
-      console.log(result);
-
-      return result;
-    };
-
-    $scope.makeFilter();
-
-  });
-
-</script>
-
-
-
-
-
-
-
-
-
-  <?php if ($thumb || $description) { ?>
-  <div class="category-info">
-    <?php if ($thumb) { ?>
-    <div class="image"><img src="<?php echo $thumb; ?>" alt="<?php echo $heading_title; ?>" /></div>
-    <?php } ?>
-    <?php if ($description) { ?>
-    <?php echo $description; ?>
-    <?php } ?>
-  </div>
-  <?php } ?>
-  <?php if ($categories) { ?>
-  <h2><?php echo $text_refine; ?></h2>
-  <div class="category-list">
-    <?php if (count($categories) <= 5) { ?>
-    <ul>
-      <?php foreach ($categories as $category) { ?>
-      <li><a href="<?php echo $category['href']; ?>"><?php echo $category['name']; ?></a></li>
-      <?php } ?>
-    </ul>
-    <?php } else { ?>
-    <?php for ($i = 0; $i < count($categories);) { ?>
-    <ul>
-      <?php $j = $i + ceil(count($categories) / 4); ?>
-      <?php for (; $i < $j; $i++) { ?>
-      <?php if (isset($categories[$i])) { ?>
-      <li><a href="<?php echo $categories[$i]['href']; ?>"><?php echo $categories[$i]['name']; ?></a></li>
-      <?php } ?>
-      <?php } ?>
-    </ul>
-    <?php } ?>
-    <?php } ?>
-  </div>
-  <?php } ?>
   <?php if ($products) { ?>
   <div class="product-filter">
     <div class="display"><b><?php echo $text_display; ?></b> <?php echo $text_list; ?> <b>/</b> <a onclick="display('grid');"><?php echo $text_grid; ?></a></div>
-    <div class="limit"><b><?php echo $text_limit; ?></b>
+    <div class="limit"><?php echo $text_limit; ?>
       <select onchange="location = this.value;">
         <?php foreach ($limits as $limits) { ?>
         <?php if ($limits['value'] == $limit) { ?>
@@ -163,7 +20,7 @@
         <?php } ?>
       </select>
     </div>
-    <div class="sort"><b><?php echo $text_sort; ?></b>
+    <div class="sort"><?php echo $text_sort; ?>
       <select onchange="location = this.value;">
         <?php foreach ($sorts as $sorts) { ?>
         <?php if ($sorts['value'] == $sort . '-' . $order) { ?>
@@ -200,23 +57,17 @@
       <?php if ($product['rating']) { ?>
       <div class="rating"><img src="catalog/view/theme/default/image/stars-<?php echo $product['rating']; ?>.png" alt="<?php echo $product['reviews']; ?>" /></div>
       <?php } ?>
-      <div class="cart">
-        <input type="button" value="<?php echo $button_cart; ?>" onclick="addToCart('<?php echo $product['product_id']; ?>');" class="button" />
-      </div>
+      <div class="cart"><input type="button" value="<?php echo $button_cart; ?>" onclick="addToCart('<?php echo $product['product_id']; ?>');" class="button" /></div>
       <div class="wishlist"><a onclick="addToWishList('<?php echo $product['product_id']; ?>');"><?php echo $button_wishlist; ?></a></div>
       <div class="compare"><a onclick="addToCompare('<?php echo $product['product_id']; ?>');"><?php echo $button_compare; ?></a></div>
     </div>
     <?php } ?>
   </div>
   <div class="pagination"><?php echo $pagination; ?></div>
-  <?php } ?>
-  <?php if (!$categories && !$products) { ?>
+  <?php } else { ?>
   <div class="content"><?php echo $text_empty; ?></div>
-  <div class="buttons">
-    <div class="right"><a href="<?php echo $continue; ?>" class="button"><?php echo $button_continue; ?></a></div>
-  </div>
-  <?php } ?>
-  <?php echo $content_bottom; ?></div>
+  <?php }?>
+  </div><?php echo $content_bottom; ?></div>
 <script type="text/javascript"><!--
 function display(view) {
 	if (view == 'list') {
@@ -280,7 +131,7 @@ function display(view) {
 			if (price != null) {
 				html += '<div class="price">' + price  + '</div>';
 			}
-			
+						
 			var rating = $(element).find('.rating').html();
 			
 			if (rating != null) {
@@ -308,5 +159,4 @@ if (view) {
 	display('list');
 }
 //--></script> 
-
 <?php echo $footer; ?>

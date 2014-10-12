@@ -112,7 +112,7 @@ class Security
 		if (!is_numeric($value))
 		{
 			// Escape and ' or " to remove SQL Injections
-			$value = mysql_real_escape_string($value);
+			$value = $GLOBALS['app']->make('registry')->get('db')->escape($value);
 		}
 
 		return $value;
