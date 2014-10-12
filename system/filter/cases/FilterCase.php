@@ -6,6 +6,22 @@ class FilterCase implements FilterCaseInterface
 	
 
 	protected $where;
+	protected $_select = array(
+		'`pa`.`attribute_id`',
+		'`p`.`product_id`',
+		'`pa`.`text`'
+	);
+
+
+	/**
+	 * Get columns to select from
+	 *
+	 * @return array
+	 */
+	protected function getSelect()
+	{
+		return $this->_select;
+	}
 
 
 	/**
@@ -54,7 +70,6 @@ class FilterCase implements FilterCaseInterface
 		// $this->where[] = $sql;
 
 
-		$columns = $this->_baseColumns( '`pa`.`attribute_id`', '`p`.`product_id`', '`pa`.`text`' );
 		$sql = $this->_createSQLByCategories(sprintf( "
 			SELECT
 				%s
@@ -68,7 +83,7 @@ class FilterCase implements FilterCaseInterface
 			WHERE
 				%s
 			", 
-			implode( ',', $columns ), 
+			implode( ',', $this->getSelect() ), 
 			$this->_baseJoin(), 
 			implode( ' AND ', $this->_baseConditions() ) 
 		));
@@ -80,19 +95,10 @@ class FilterCase implements FilterCaseInterface
 				%s 
 			GROUP BY 
 				`text`, `attribute_id`
-		", $sql, $this->_conditionsToSQL( $this->where ) );
+		", $sql, $this->_conditionsToSQL( $result ) );
 
 
 		echo $sql; die();
-	}
-
-
-	private function _baseColumns() {
-		$columns = func_get_args();
-		
-		
-		
-		return $columns;
 	}
 
 	private function _createSQLByCategories( $sql ) {

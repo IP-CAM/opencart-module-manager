@@ -50,7 +50,9 @@ class Attributes
 		$this->filterIDs();
 		$this->filterAttributes();
 
-		print_r($this->_filters); die();
+		// print_r($this->_filters); die();
+
+		return $this->_filters;
 	}
 
 
@@ -110,7 +112,7 @@ class Attributes
 		// Store filter
 		$this->addFilter(
 			'attribute_text_filter',
-			implode(' AND ', $filter )
+			implode(' AND ', $filter)
 		);
 	}
 
