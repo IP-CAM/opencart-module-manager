@@ -9,6 +9,8 @@ class FilterBuilder implements FilterBuilderInterface
 	protected $filter_case;
 	protected $formatter;
 
+	protected $sql =  '';
+
 	
 	function __construct(FilterCaseInterface $filter_case, FilterFormatterInterface $formatter)
 	{
@@ -24,12 +26,10 @@ class FilterBuilder implements FilterBuilderInterface
 	 */
 	public function fetch($db)
 	{
-		// Get sql
-		
 		// Get result item list
-		// return $this->formatter->make(
-		// 	$db->query($sql)->rows
-		// );
+		return $this->formatter->make(
+			$db->query($this->sql)->rows
+		);
 	}
 
 
@@ -51,7 +51,7 @@ class FilterBuilder implements FilterBuilderInterface
 	 */
 	public function buildAttributes($attributes)
 	{
-		$this->filter_case->setAttributes($attributes);
+		$this->sql = $this->filter_case->setAttributes($attributes);
 	}
 
 

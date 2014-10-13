@@ -469,7 +469,7 @@ class ControllerProductCategory extends Controller {
 			'category_id' => 24,
 			'attributes' => array(
 				"16" => array("IOS", "Android"),
-				"13" => array("Метал")
+				// "13" => array("Метал")
 			),
 			'options' => $options
 		);

@@ -22,14 +22,16 @@ class FilterManager
 	 */
 	public function getRealAttributes($db, $settings)
 	{
-		// Get all category attributes
+		// Get all the attributes
 		$builder = new FilterBuilder(
-			new FilterCaseAttributesGroup,
+			new FilterCaseAttributes,
 			new FilterFormatterAttributes
 		);
 
+		// Fake setting
+		$settings['attributes'] = array();
+
 		$factory = new FilterFactory($builder);
-		
 		return $factory->make($settings)->resolve($db);
 	}
 
@@ -46,15 +48,56 @@ class FilterManager
 		// Get filtered attributes
 		$builder = new FilterBuilder(
 			new FilterCaseAttributes,
-			new FilterFormatterFilteredAttributes
+			new FilterFormatterAttributes
 		);
 
 		$factory = new FilterFactory($builder);
-		
-		$filtered_attributes = $factory->make($settings)->resolve($db);
-		
+		$filteredAttributes = $factory->make($settings)->resolve($db);
 
-		return $attribute_groups;
+		// ///////////////////
+		foreach($settings['attributes'] as $attribute_id => $attribute_values)
+		{
+			$copy = $settings;
+			
+			// list( $k ) = explode( '-', $key );
+			
+			unset($copy['attributes'][$attribute_id]);
+			
+			if ($copy['attributes'])
+			{
+				$tmp = $factory->make($copy)->resolve($db);
+
+				// print_r($tmp); 
+				
+				if (isset($tmp[$attribute_id]))
+				{
+					$filteredAttributes = $filteredAttributes + array(
+						$attribute_id => $tmp[$attribute_id]
+					);
+				}
+			}
+			
+			else
+			{
+				if( isset( $attribute_groups[$attribute_id] ) ) {
+					$filteredAttributes = $this->_replaceCounts( $filteredAttributes, array( $attribute_id => $attribute_groups[$attribute_id] ) );
+				}
+			}
+
+		}
+
+		print_r($filteredAttributes); die();
+
+	}
+
+	private function _replaceCounts( array $counts1, array $counts2 ) {
+		foreach( $counts2 as $k1 => $v1 ) {
+			foreach( $v1 as $k2 => $v2 ) {				
+				$counts1[$k1][$k2] = $v2;
+			}
+		}
+		
+		return $counts1;
 	}
 
 

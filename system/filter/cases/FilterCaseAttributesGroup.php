@@ -58,8 +58,6 @@ class FilterCaseAttributesGroup implements FilterCaseInterface
 		}
 	}
 
-
-	public function setOptions($options) {}
 	public function setAttributes($attributes) {}
 
 

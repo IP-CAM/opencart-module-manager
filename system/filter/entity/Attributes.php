@@ -1,24 +1,33 @@
-<?php 
+<?php
 
 
-class AttributesSQL extends StringTemplate 
+class AttributesSQL extends StringTemplate
 {
-	
+
+
+	const ATTRIBUTES_RESULT_FILTER = "
+		SELECT {{SELECT}} 
+		FROM({{FROM}}) AS `tmp` 
+		{{FILTERS}} 
+		GROUP BY 
+			`text`, `attribute_id` 
+	";
+
 
 	const ATTRIBUTE_IDS_FILTER = "
 		`tmp`.`attribute_id` NOT IN({{ATTRIBUTES}})
 	";
-	
+
 	/**
 	 * Sql to filter by attributes
 	 */
 	const ATTRIBUTE_FILTER = "
-		`product_id` IN( 
-			SELECT 
-				`product_id` 
-			FROM 
-				`{{PREFIX}}product_attribute` 
-			WHERE 
+		`product_id` IN(
+			SELECT
+				`product_id`
+			FROM
+				`{{PREFIX}}product_attribute`
+			WHERE
 				REPLACE(REPLACE(TRIM(`text`), '\r', ''), '\n', '') IN({{ATTRIBUTES}}) AND
 				`language_id` = {{LANGUAGE_ID}} AND
 				`attribute_id` = {{ATTRIBUTE_ID}}
@@ -30,10 +39,10 @@ class AttributesSQL extends StringTemplate
 
 
 
-class Attributes 
+class Attributes
 {
-	
-	
+
+
 	protected $_original = array();
 	protected $_filters = array();
 
@@ -49,8 +58,6 @@ class Attributes
 
 		$this->filterIDs();
 		$this->filterAttributes();
-
-		// print_r($this->_filters); die();
 
 		return $this->_filters;
 	}
@@ -92,7 +99,7 @@ class Attributes
 			);
 
 		}
-		
+
 		// Store filter
 		$this->addFilter(
 			'attribute_text_filter',

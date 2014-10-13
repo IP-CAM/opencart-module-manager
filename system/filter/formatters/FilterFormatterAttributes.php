@@ -13,62 +13,29 @@ class FilterFormatterAttributes implements FilterFormatterInterface
 	{
 		$result = array();
 
-		// Create readable attribute groups
-		foreach($attributes as $attribute)
+		foreach($attributes as $row)
 		{
-			if( ! isset($result[$attribute['attribute_group_id']]))
+			if( ! empty($this->_settings['attribute_separator']))
 			{
-				$result[$attribute['attribute_group_id']] = array(
-					'name' => $attribute['attribute_group_name'],
-					'attribute_values' => array()
-				);
-			}
-
-			if( ! isset($result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']]))
-			{
-				$result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']] = array(
-					'id' => $attribute['attribute_id'], 
-					'name' => $attribute['name'], 
-					'values' => array()
-				);
-			}
-
-			// | - is attribute delimeter
-			foreach(explode("|", $attribute['text']) as $text)
-			{
-				if( ! $this->valueExists($text, $result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']]))
+				$texts = explode($this->_settings['attribute_separator'], $row['text']);
+				
+				foreach($texts as $txt)
 				{
-					$result[$attribute['attribute_group_id']]['attribute_values'][$attribute['attribute_id']]['values'][] = array('text' => $text);
+					if( ! isset($result[$row['attribute_id']][$txt]))
+					{
+						$result[$row['attribute_id']][$txt] = 0;
+					}
+					
+					$result[$row['attribute_id']][$txt] += $row['total'];
 				}
 			}
-		}
-
-		// Sort result
-		foreach($result as $attribute_group_id => $attribute_group)
-		{
-			foreach($attribute_group['attribute_values'] as $attribute_id => $attribute)
+			else
 			{
-				sort($result[$attribute_group_id]['attribute_values'][$attribute_id]['values']);
+				$result[$row['attribute_id']][$row['text']] = $row['total'];
 			}
 		}
 
 		return $result;
-	}
-
-
-	/**
-	 * Check if attribute value already exists in array
-	 *
-	 * @return bool
-	 */
-	protected function valueExists($text, $attributes)
-	{
-		if (in_array(array('text' => $text), $attributes['values']))
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 
