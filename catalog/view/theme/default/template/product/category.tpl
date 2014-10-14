@@ -15,14 +15,15 @@
 
   <h1><?php echo $heading_title; ?></h1>
 
-<style type="text/css">
-  .disabled {
-    opacity: 0.5;
-  }
-  .disabled .counter {
-    display: none;
-  }
-</style>
+  <style type="text/css">
+    .disabled {
+      opacity: 0.5;
+    }
+    .disabled .counter {
+      display: none;
+    }
+  </style>
+
   <div class="filter" ng-app="filterApp" ng-controller="FilterCtrl">
 
   <div class="filter-container" ng-show="data">
@@ -120,10 +121,6 @@
 
         result[attrId].push(attrText);
       });
-
-      console.log(result);
-
-
 
       return result;
     };
