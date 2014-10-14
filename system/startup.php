@@ -137,11 +137,11 @@ require_once(DIR_SYSTEM . 'filter/builders/FilterBuilder.php');
 // Filter formatters
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterInterface.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAttributes.php');
+require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAllAttributes.php');
 require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterFilteredAttributes.php');
 
 // Filter utils
 require_once(DIR_SYSTEM . 'filter/utils/StringTemplate.php');
-
 
 // Filter managers
 require_once(DIR_SYSTEM . 'filter/FilterFactory.php');

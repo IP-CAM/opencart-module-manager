@@ -31,7 +31,7 @@ class FilterFormatterAttributes implements FilterFormatterInterface
 			}
 			else
 			{
-				$result[$row['attribute_id']][$row['text']] = $row['total'];
+				$result[$row['attribute_id']][md5($row['text'])] = $row['total'];
 			}
 		}
 

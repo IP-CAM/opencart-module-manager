@@ -467,15 +467,28 @@ class ControllerProductCategory extends Controller {
 		// Filter
 		$settings = array(
 			'category_id' => 24,
-			'attributes' => array(
-				"16" => array("IOS", "Android"),
-				// "13" => array("Метал")
-			),
+			'attributes' => $attributes,
 			'options' => $options
 		);
 
 		$filter_manager = new FilterManager;
 		$result = $filter_manager->filter($this->db, $settings);
+		
+		echo json_encode($result); die();
+	}
+
+
+	public function info()
+	{
+		// Filter
+		$settings = array(
+			'category_id' => 24,
+			'attributes' => array(),
+			'options' => array()
+		);
+
+		$filter_manager = new FilterManager;
+		$result = $filter_manager->info($this->db, $settings);
 		
 		echo json_encode($result); die();
 	}

@@ -19,33 +19,28 @@
   .disabled {
     opacity: 0.5;
   }
+  .disabled .counter {
+    display: none;
+  }
 </style>
   <div class="filter" ng-app="filterApp" ng-controller="FilterCtrl">
 
-  <div class="filter-container" ng-show="filterData">
+  <div class="filter-container" ng-show="data">
     <div 
       class="filterGroup" 
       style="border: 1px dashed #e2e2e2; padding: 10px;" 
-      ng-repeat="attrGroup in filterData.attributes" 
+      ng-repeat="attrGroup in data.attributes" 
     >
       <h4>{{ attrGroup.name }}</h4>
 
-      <div 
-        class="filterGroup" 
-        style="border: 1px dashed #e2e2e2; padding: 10px;" 
-        ng-repeat="attribute in attrGroup.attribute_values" 
+      <label 
+        ng-repeat="attr in attrGroup.items" 
+        class="filtarable-{{ attrGroup.id }}-{{ attr.code }}" 
+        data-attr-id="{{ attrGroup.id }}" 
+        data-attr-text="{{ attr.text }}" 
       >
-        <h4>{{ attribute.name }}</h4>
-
-        <label ng-repeat="attr in attribute.values">
-          <input 
-            type="checkbox" 
-            ng-model="attr.selected" 
-            ng-change="makeFilter()" 
-          > {{ attr.text }}
-          <br>
-        </label>
-      </div>
+        <input type="checkbox" on-change="attribute"> {{ attr.text }} <span class="counter">({{ attr.total }})</span><br>
+      </label>
 
     </div>
 
@@ -61,12 +56,35 @@
 
   window.filterApp = angular.module('filterApp', []);
 
-  filterApp.controller('FilterCtrl', function FilterCtrl($scope, $http, $timeout) {
-    var updateFilterTimer = 0;
+  filterApp.directive('onChange', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, el, attrs) {
+        angular.element(el).on('change', scope.$parent.makeFilter);
+      }
+    }
+  });
 
-    $scope.test = 0;
+  filterApp.controller('FilterCtrl', function FilterCtrl($scope, $http, $timeout) {
+    $scope.data = false;
     $scope.filterData = false;
 
+    // Get all the attribtes, options etc.
+    $scope.getFilterData = function() {
+      $http({
+        url: '/index.php?route=product/category/info',
+        method: 'post',
+        responseType: 'json',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      })
+        .success(function(resp) {
+          $scope.data = resp;
+
+          $scope.makeFilter();
+        });
+    };
+
+    // Get filtered data
     $scope.makeFilter = function() {
       $http({
         url: '/index.php?route=product/category/filter',
@@ -79,30 +97,94 @@
       })
         .success(function(resp) {
           $scope.filterData = resp;
+
+          $scope.setDisabled();
         });
     };
 
-    $scope.listAttributes = function(key) {
-      var result = {};
+    // Create list of selected attributes
+    $scope.listAttributes = function() {
+      if ($scope.data.attributes == undefined) return [];
 
-      angular.forEach($scope.filterData.attributes, function(group) {
-        angular.forEach(group.attribute_values, function(attr) {
-          result[attr.id] = [];
+      var result = {},
+          label = false,
+          selectedAttributes = $('.filterGroup label input:checked');
 
-          angular.forEach(attr.values, function(value) {
-            if (value.selected) {
-              result[attr.id].push(value.text);
-            };
-          });
-        });
+      angular.forEach(selectedAttributes, function(el) {
+        label = $(el).parent();
+
+        var attrId = label.data('attr-id'),
+            attrText = label.data('attr-text');
+
+        if (result[attrId] == undefined) result[attrId] = [];
+
+        result[attrId].push(attrText);
       });
 
       console.log(result);
 
+
+
       return result;
     };
 
-    $scope.makeFilter();
+    // Merges filter data
+    $scope.setDisabled = function() {
+      var result = {};
+
+      // Disable all the attributes
+      $scope.disableAttributes();
+
+      // Loop and then recount and enable filtered attributes
+      angular.forEach($scope.data.attributes, function(attr, attrId) {
+
+        // Loop throught filtered attribute results
+        angular.forEach($scope.filterData.attributes, function(filteredAttr, filteredAttrId) {
+
+          if (attrId == filteredAttrId) {
+
+            // Loop throught attributes
+            angular.forEach(attr.items, function(attribute) {
+
+              // Loop throught filtered results attribute texts
+              angular.forEach(filteredAttr, function(filteredAttrTotal, filteredAttrCode) {
+
+                // Remove disabled state from filtered item
+                if (attribute.code == filteredAttrCode) {
+                  attribute.total = filteredAttrTotal;
+                  $scope.enableAttribute(".filtarable-" + attrId + "-" + attribute.code);
+
+                  return true;
+                };
+
+              });
+            });
+
+            return true;
+          };
+        });
+      });
+
+    };
+
+    // Set disabled to all the attributes
+    $scope.disableAttributes = function() {
+      $('.filterGroup label')
+        .addClass('disabled')
+        .find('input')
+        .attr('disabled', true);
+    };
+
+    // Enable attribute by its unique classname
+    $scope.enableAttribute = function(labelAttrClass) {
+      $(".filterGroup label" + labelAttrClass)
+        .removeClass('disabled')
+        .find('input')
+        .removeAttr('disabled');
+    };
+
+
+    $scope.getFilterData();
 
   });
 

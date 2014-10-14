@@ -5,13 +5,40 @@ class FilterManager
 {
 
 
+	public function info($db, $settings)
+	{
+		return array(
+			'attributes' => $this->getAllAttributes($db, $settings)
+		);
+	}
+
+
 	public function filter($db, $settings)
 	{
 		return array(
-			'attributes' => $this->getFilteredAttributes($db, $settings),
-			// 'attributes' => $this->getFilteredAttributes($db, $settings),
-			// 'options' => $this->getCategoryOptions($db, $settings)
+			'attributes' => $this->getFilteredAttributes($db, $settings)
 		);
+	}
+
+
+	/**
+	 * Get all the attributes
+	 *
+	 * @return array
+	 */
+	public function getAllAttributes($db, $settings)
+	{
+		// Get all the attributes
+		$builder = new FilterBuilder(
+			new FilterCaseAttributes,
+			new FilterFormatterAllAttributes
+		);
+
+		// Fake setting
+		$settings['attributes'] = array();
+
+		$factory = new FilterFactory($builder);
+		return $factory->make($settings)->resolve($db);
 	}
 
 
@@ -86,8 +113,7 @@ class FilterManager
 
 		}
 
-		print_r($filteredAttributes); die();
-
+		return $filteredAttributes;
 	}
 
 	private function _replaceCounts( array $counts1, array $counts2 ) {

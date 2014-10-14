@@ -9,11 +9,13 @@ class FilterCase implements FilterCaseInterface
 	protected $_select = array(
 		'`pa`.`attribute_id`',
 		'`p`.`product_id`',
-		'`pa`.`text`'
+		'`pa`.`text`',
+		'`ad`.`name`'
 	);
 	protected $_resultSelect = array(
 		'`text`', 
 		'`attribute_id`', 
+		'`name`', 
 		'COUNT( DISTINCT `tmp`.`product_id` ) AS `total`'
 	);
 
@@ -64,12 +66,10 @@ class FilterCase implements FilterCaseInterface
 				)
 			)
 		);
-
-		die();
 	}
 
 
-	public function getBasicJoins( array $skip = array() ) {
+	protected function getBasicJoins( array $skip = array() ) {
 		$sql = '';
 		
 		if( ! in_array( 'p2s', $skip ) ) {
@@ -80,6 +80,17 @@ class FilterCase implements FilterCaseInterface
 					`p2s`.`product_id` = `p`.`product_id` AND `p2s`.`store_id` = " . (int) 0 . "
 			";
 		}
+
+
+		if( ! in_array( 'ad', $skip ) ) {
+			$sql .= "
+				INNER JOIN
+					`" . DB_PREFIX . "attribute_description` AS `ad`
+				ON
+					`ad`.`attribute_id` = `pa`.`attribute_id` AND `ad`.`language_id` = " . (int) 1 . "
+			";
+		}
+
 		
 		if( ( ! empty( $this->_data['filter_name'] ) || ! empty( $this->_data['filter_tag'] ) ) && ! in_array( 'pd', $skip ) ) {
 			$sql .= "
@@ -113,7 +124,7 @@ class FilterCase implements FilterCaseInterface
 	}
 
 
-	public function getBasicFilters( array $conditions = array() ) {
+	protected function getBasicFilters( array $conditions = array() ) {
 		array_unshift( $conditions, "`p`.`status` = '1'");
 		array_unshift( $conditions, "`p`.`date_available` <= NOW()" );
 		

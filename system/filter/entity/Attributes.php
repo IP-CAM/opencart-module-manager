@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 
 class AttributesSQL extends StringTemplate
@@ -32,6 +32,51 @@ class AttributesSQL extends StringTemplate
 				`language_id` = {{LANGUAGE_ID}} AND
 				`attribute_id` = {{ATTRIBUTE_ID}}
 		)
+	";
+
+
+	const ALL_ATTRIBUTES = "
+		SELECT
+			`a`.`attribute_id`,
+			REPLACE(REPLACE(TRIM(pa.text), '\r', ''), '\n', '') AS `txt`,
+			`ad`.`name`,
+			`agd`.`name` AS `gname`,
+			`agd`.`attribute_group_id`
+		FROM
+			`{{PREFIX}}product` AS `p`
+		INNER JOIN
+			`{{PREFIX}}product_to_store` AS `pts`
+		ON
+			`p`.`product_id` = `pts`.`product_id` AND `pts`.`store_id` = {{STORE_ID}}
+		INNER JOIN
+			`{{PREFIX}}product_attribute` AS `pa`
+		ON
+			`p`.`product_id` = `pa`.`product_id` AND `pa`.`language_id` = {{LANGUAGE_ID}}
+		INNER JOIN
+			`{{PREFIX}}attribute` AS `a`
+		ON
+			`a`.`attribute_id` = `pa`.`attribute_id`
+		INNER JOIN
+			`{{PREFIX}}attribute_description` AS `ad`
+		ON
+			`ad`.`attribute_id` = `a`.`attribute_id` AND `ad`.`language_id` = {{LANGUAGE_ID}}
+		INNER JOIN
+			`{{PREFIX}}attribute_group` AS `ag`
+		ON
+			`ag`.`attribute_group_id` = `a`.`attribute_group_id`
+		INNER JOIN
+			`{{PREFIX}}attribute_group_description` AS `agd`
+		ON
+			`agd`.`attribute_group_id` = `ag`.`attribute_group_id` AND `agd`.`language_id` = {{LANGUAGE_ID}} 
+		 
+		{{JOIN}} 
+		{{WHERE}} 
+		GROUP BY 
+			`txt`, `pa`.`attribute_id` 
+		HAVING 
+			`txt` != '' 
+		ORDER BY 
+			`txt`
 	";
 
 
