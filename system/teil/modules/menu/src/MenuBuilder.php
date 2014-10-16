@@ -7,7 +7,7 @@ class MenuBuilder
 	private $key_info;
 
 
-	public function __construct(App $app, $key_info)
+	public function __construct(Teil\Core\App $app, $key_info)
 	{
 		$this->app = $app;
 		$this->key_info = $key_info;

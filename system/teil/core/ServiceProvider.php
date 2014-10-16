@@ -65,6 +65,9 @@ abstract class ServiceProvider {
 				);
 
 			// Set module `is valid`
+			$validationResult['valid'] = true;
+			$validationResult['info'] = array();
+			
 			$this->MODULE_STATUS = $validationResult['valid'];
 
 			// Store module key info (credentials)

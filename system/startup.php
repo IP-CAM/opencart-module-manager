@@ -107,7 +107,7 @@ require_once(DIR_SYSTEM . 'library/amazon.php');
 require_once(DIR_SYSTEM . 'library/amazonus.php');
 
 // Teil
-// require_once(DIR_SYSTEM . 'teil/autoload.php');
+require_once(DIR_SYSTEM . 'teil/autoload.php');
 // require_once(DIR_SYSTEM . 'filter.php');
 
 
@@ -121,30 +121,3 @@ function teil_quote_implode($delimeter, $array)
 {
 	return implode($delimeter, array_map('teil_add_quotes', $array));
 }
-
-
-// Filter cases
-require_once(DIR_SYSTEM . 'filter/cases/FilterCaseInterface.php');
-require_once(DIR_SYSTEM . 'filter/cases/FilterCase.php');
-require_once(DIR_SYSTEM . 'filter/cases/FilterCaseAttributes.php');
-require_once(DIR_SYSTEM . 'filter/cases/FilterCaseOptions.php');
-require_once(DIR_SYSTEM . 'filter/cases/FilterCaseAttributesGroup.php');
-
-// Filter builders
-require_once(DIR_SYSTEM . 'filter/builders/FilterBuilderInterface.php');
-require_once(DIR_SYSTEM . 'filter/builders/FilterBuilder.php');
-
-// Filter formatters
-require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterInterface.php');
-require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAttributes.php');
-require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterAllAttributes.php');
-require_once(DIR_SYSTEM . 'filter/formatters/FilterFormatterFilteredAttributes.php');
-
-// Filter utils
-require_once(DIR_SYSTEM . 'filter/utils/StringTemplate.php');
-
-// Filter managers
-require_once(DIR_SYSTEM . 'filter/FilterFactory.php');
-require_once(DIR_SYSTEM . 'filter/FilterManager.php');
-require_once(DIR_SYSTEM . 'filter/entity/Attributes.php');
-require_once(DIR_SYSTEM . 'filter/entity/Categories.php');
