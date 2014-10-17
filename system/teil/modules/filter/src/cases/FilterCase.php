@@ -16,7 +16,7 @@ class FilterCase implements FilterCaseInterface
 		'`text`', 
 		'`attribute_id`', 
 		'`name`', 
-		'COUNT( DISTINCT `tmp`.`product_id` ) AS `total`'
+		'COUNT( DISTINCT `tmp`.`product_id`) AS `total`'
 	);
 
 
@@ -36,21 +36,21 @@ class FilterCase implements FilterCaseInterface
 	 *
 	 * @return void
 	 */
-	public function setAttributes($attributes = array())
+	public function setAttributes($settings = array())
 	{
 		$_attributes = new Attributes;
 		$_categories = new Categories;
 
 		// Get attribute filters
-		$attributeFilters = $_attributes->sql($attributes);
+		$attributeFilters = $_attributes->sql($settings['attributes']);
 
 		// Get categories AND if needed filter by categories
 		$categoriesResult = $_categories->sql(
-			array(),
+			$settings,
 			array(
 				'select' => $this->getSelect(),
-				'joins' => $this->getBasicJoins(),
-				'filters' => $this->getBasicFilters()
+				'joins' => $this->getBasicJoins($settings),
+				'filters' => $this->getBasicFilters($settings)
 			)
 		);
 
@@ -66,13 +66,17 @@ class FilterCase implements FilterCaseInterface
 				)
 			)
 		);
+
+		die();
 	}
 
 
-	protected function getBasicJoins( array $skip = array() ) {
+	protected function getBasicJoins($settings, $skip = array())
+	{
 		$sql = '';
 		
-		if( ! in_array( 'p2s', $skip ) ) {
+		if ( ! in_array( 'p2s', $skip))
+		{
 			$sql .= "
 				INNER JOIN
 					`" . DB_PREFIX . "product_to_store` AS `p2s`
@@ -82,7 +86,8 @@ class FilterCase implements FilterCaseInterface
 		}
 
 
-		if( ! in_array( 'ad', $skip ) ) {
+		if ( ! in_array( 'ad', $skip))
+		{
 			$sql .= "
 				INNER JOIN
 					`" . DB_PREFIX . "attribute_description` AS `ad`
@@ -92,7 +97,8 @@ class FilterCase implements FilterCaseInterface
 		}
 
 		
-		if( ( ! empty( $this->_data['filter_name'] ) || ! empty( $this->_data['filter_tag'] ) ) && ! in_array( 'pd', $skip ) ) {
+		if ( ( ! empty($settings['page_params']['filter_name']) || ! empty($settings['page_params']['filter_tag'])) && ! in_array( 'pd', $skip))
+		{
 			$sql .= "
 				INNER JOIN
 					`" . DB_PREFIX . "product_description` AS `pd`
@@ -101,16 +107,23 @@ class FilterCase implements FilterCaseInterface
 			";
 		}
 		
-		if( ! empty( $this->_data['filter_category_id'] ) ) {
-			if( ! in_array( 'p2c', $skip ) ) {
-				$sql .= $this->_joinProductToCategory( 'p2c' );
+		if ( ! empty($settings['page_params']['filter_category_id']))
+		{
+			if ( ! in_array( 'p2c', $skip))
+			{
+				$sql .= CategoriesSQL::make(
+					CategoriesSQL::PRODUCT_TO_CATEGORY_RELATION_INNER,
+					array('PREFIX' => DB_PREFIX)
+				);
 			}
 			
-			if( ( ! empty( $this->_data['filter_sub_category'] ) || $this->_categories ) && ! in_array( 'cp', $skip ) ) {
-				$sql .= $this->_joinCategoryPath( 'cp', 'p2c' );
+			if ( ( ! empty($settings['page_params']['filter_sub_category']) || $settings['page_categories']) && ! in_array( 'cp', $skip))
+			{
+				$sql .= $this->_joinCategoryPath( 'cp', 'p2c');
 			}
 		
-			if( ! empty( $this->_data['filter_filter'] ) && ! in_array( 'pf', $skip ) ) {
+			if ( ! empty($settings['page_params']['filter_filter']) && ! in_array( 'pf', $skip))
+			{
 				$sql .= "
 					INNER JOIN
 						`" . DB_PREFIX . "product_filter` AS `pf`
@@ -124,69 +137,87 @@ class FilterCase implements FilterCaseInterface
 	}
 
 
-	protected function getBasicFilters( array $conditions = array() ) {
-		array_unshift( $conditions, "`p`.`status` = '1'");
-		array_unshift( $conditions, "`p`.`date_available` <= NOW()" );
+	protected function getBasicFilters($settings)
+	{
+		$filters = array();
+
+		array_unshift($filters, "`p`.`status` = '1'");
+		array_unshift($filters, "`p`.`date_available` <= NOW()");
 		
 		// sprawdź branżę
-		if( ! empty( $this->_data['filter_manufacturer_id'] ) ) {
-			$conditions[] = '`p`.`manufacturer_id` = ' . (int) $this->_data['filter_manufacturer_id'];
+		if ( ! empty($settings['page_params']['filter_manufacturer_id']))
+		{
+			$filters[] = '`p`.`manufacturer_id` = ' . (int) $settings['page_params']['filter_manufacturer_id'];
 		}
 		
 		// sprawdź kategorię
-		if( ! empty( $this->_data['filter_category_id'] ) ) {
-			if( ! empty( $this->_data['filter_sub_category'] ) || $this->_categories ) {
-				$conditions['cat_id'] = "`cp`.`path_id` = '" . (int) $this->_data['filter_category_id'] . "'";
-			} else {
-				$conditions['cat_id'] = "`p2c`.`category_id` = '" . (int) $this->_data['filter_category_id'] . "'";
+		if ( ! empty($settings['page_params']['filter_category_id']))
+		{
+			if ( ! empty($settings['page_params']['filter_sub_category']) || $settings['page_categories'])
+			{
+				$filters['cat_id'] = "`cp`.`path_id` = '" . (int) $settings['page_params']['filter_category_id'] . "'";
+			}
+			else
+			{
+				$filters['cat_id'] = "`p2c`.`category_id` = '" . (int) $settings['page_params']['filter_category_id'] . "'";
 			}
 			
-			if( self::hasFilters() && ! empty( $this->_data['filter_filter'] ) && ! empty( $this->_data['filter_category_id'] ) ) {
-				$filters = explode( ',', $this->_data['filter_filter'] );
+			if ( ! empty($settings['page_params']['filter_filter']) && ! empty($settings['page_params']['filter_category_id']))
+			{
+				$filters = explode( ',', $settings['page_params']['filter_filter']);
 				
-				$conditions[] = '`pf`.`filter_id` IN(' . implode( ',', $this->_parseArrayToInt( $filters ) ) . ')';
+				$filters[] = '`pf`.`filter_id` IN(' . implode( ',', $this->_parseArrayToInt($filters)) . ')';
 			}
 		}
 		
 		// sprawdź frazę / tagi
-		if( ! empty( $this->_data['filter_name'] ) || ! empty( $this->_data['filter_tag'] ) ) {
+		if ( ! empty($settings['page_params']['filter_name']) || ! empty($settings['page_params']['filter_tag']))
+		{
 			$sql = array();
 			
-			if( ! empty( $this->_data['filter_name'] ) ) {
+			if ( ! empty($settings['page_params']['filter_name']))
+			{
 				$implode	= array();
-				$words		= explode( ' ', trim( preg_replace( '/\s\s+/', ' ', $this->_data['filter_name'] ) ) );
+				$words		= explode( ' ', trim( preg_replace( '/\s\s+/', ' ', $settings['page_params']['filter_name'])));
 				
-				foreach( $words as $word ) {
-					$implode[] = "`pd`.`name` LIKE '%" . $this->_ctrl->db->escape( $word ) . "%'";
+				foreach($words as $word)
+				{
+					$implode[] = "`pd`.`name` LIKE '%" . $this->_ctrl->db->escape($word) . "%'";
 				}
 				
-				if( $implode ) {
-					$sql[] = '(' . implode( ' AND ', $implode ) . ')';
+				if ($implode)
+				{
+					$sql[] = '(' . implode( ' AND ', $implode) . ')';
 				}
 				
-				if( ! empty( $this->_data['filter_description'] ) ) {
-					$sql[] = "`pd`.`description` LIKE '%" . $this->_ctrl->db->escape( $this->_data['filter_name'] ) . "%'";
-				}
-			}
-			
-			if( ! empty( $this->_data['filter_tag'] ) ) {
-				$sql[] = "`pd`.`tag` LIKE '%" . $this->_ctrl->db->escape( $this->_data['filter_tag'] ) . "%'";
-			}
-			
-			if( ! empty( $this->_data['filter_name'] ) ) {
-				$tmp = array( '`p`.`model`', '`p`.`sku`', '`p`.`upc`', '`p`.`ean`', '`p`.`jan`', '`p`.`isbn`', '`p`.`mpn`' );
-				
-				foreach( $tmp as $tm ) {
-					$sql[] = "LCASE(" . $tm . ") = '" . $this->_ctrl->db->escape( utf8_strtolower( $this->_data['filter_name'] ) ) . "'";
+				if ( ! empty($settings['page_params']['filter_description']))
+				{
+					$sql[] = "`pd`.`description` LIKE '%" . $this->_ctrl->db->escape($settings['page_params']['filter_name']) . "%'";
 				}
 			}
 			
-			if( $sql ) {
-				$conditions['search'] = '(' . implode( ' OR ', $sql ) . ')';
+			if ( ! empty($settings['page_params']['filter_tag']))
+			{
+				$sql[] = "`pd`.`tag` LIKE '%" . $this->_ctrl->db->escape($settings['page_params']['filter_tag']) . "%'";
+			}
+			
+			if ( ! empty($settings['page_params']['filter_name']))
+			{
+				$tmp = array( '`p`.`model`', '`p`.`sku`', '`p`.`upc`', '`p`.`ean`', '`p`.`jan`', '`p`.`isbn`', '`p`.`mpn`');
+				
+				foreach($tmp as $tm)
+				{
+					$sql[] = "LCASE(" . $tm . ") = '" . $this->_ctrl->db->escape( utf8_strtolower($settings['page_params']['filter_name'])) . "'";
+				}
+			}
+			
+			if ($sql)
+			{
+				$filters['search'] = '(' . implode( ' OR ', $sql) . ')';
 			}
 		}
 		
-		return $conditions;
+		return $filters;
 	}
 
 	

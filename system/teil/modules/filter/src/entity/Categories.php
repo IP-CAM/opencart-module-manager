@@ -36,6 +36,11 @@ class CategoriesSQL extends StringTemplate
 		ON `mf_p2c`.`product_id` = `p`.`product_id`
 	";
 
+	const PRODUCT_TO_CATEGORY_RELATION_INNER = "
+		INNER JOIN `{{PREFIX}}product_to_category` AS `p2c` 
+		ON `p2c`.`product_id` = `p`.`product_id` 
+	";
+
 	const CATEGORY_TO_CATEGORY_RELATION = "
 		INNER JOIN `{{PREFIX}}category_path` AS `mf_cp`
 		ON `mf_cp`.`category_id` = `mf_p2c`.`category_id`
@@ -77,7 +82,7 @@ class Categories
 				'INNER_TABLE' => $inner_table_result,
 				'PRODUCTS_TABLE' => $this->createProductToCategoryRelation(),
 				'CATEGORIES_PATHS_TABLE' => $this->createCategoryToCategoryRelation(),
-				'CATEGORIES' => $this->filterCategories($params['categories'])
+				'CATEGORIES' => $this->filterCategories($params['page_categories'])
 			)
 		);
 	}
@@ -90,7 +95,7 @@ class Categories
 	 */
 	private function hasCategories($params)
 	{
-		if (empty($params['categories']))
+		if (empty($params['page_categories']))
 		{
 			return false;
 		}
@@ -145,7 +150,7 @@ class Categories
 	 *
 	 * @return string
 	 */
-	private function createCategoryToCategoryRelation( $alias = 'mf_cp', $on = 'mf_p2c' ) {
+	private function createCategoryToCategoryRelation() {
 		return CategoriesSQL::make(
 			CategoriesSQL::CATEGORY_TO_CATEGORY_RELATION,
 			array('PREFIX' => DB_PREFIX)

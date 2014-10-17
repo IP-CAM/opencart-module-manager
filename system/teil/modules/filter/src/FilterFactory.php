@@ -20,11 +20,11 @@ class FilterFactory
 	 *
 	 * @return mixed
 	 */
-	public function make($data)
+	public function make($settings)
 	{
-		// $this->filter->buildCategory($data['category_id']);
-		$this->filter->buildAttributes($data['attributes']);
-		// $this->filter->buildOptions($data['options']);
+		// $this->filter->buildCategory($settings['category_id']);
+		$this->filter->buildAttributes($settings);
+		// $this->filter->buildOptions($settings['options']);
 
 		return $this;
 	}

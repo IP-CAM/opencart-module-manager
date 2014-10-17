@@ -463,9 +463,13 @@ class ControllerProductCategory extends Controller {
 	{
 		$attributes = empty($_POST['attributes']) ? array() : $_POST['attributes'];
 		$options = empty($_POST['options']) ? array() : $_POST['options'];
+		$page_params = empty($_POST['page_params']) ? array() : $_POST['page_params'];
+		$page_categories = empty($_POST['page_categories']) ? array() : $_POST['page_categories'];
 
 		// Filter
 		$settings = array(
+			'page_params' => $page_params,
+			'page_categories' => $page_categories,
 			'category_id' => 24,
 			'attributes' => $attributes,
 			'options' => $options
@@ -479,14 +483,19 @@ class ControllerProductCategory extends Controller {
 
 	public function info()
 	{
+		$page_params = empty($_POST['page_params']) ? array() : $_POST['page_params'];
+		$page_categories = empty($_POST['page_categories']) ? array() : $_POST['page_categories'];
+
 		// Filter
 		$settings = array(
+			'page_params' => $page_params,
+			'page_categories' => $page_categories,
 			'category_id' => 24,
 			'attributes' => array(),
 			'options' => array()
 		);
 
-		$result = Filter::info($this->db, $settings);
+		$result = Filter::info($settings);
 		
 		echo json_encode($result); die();
 	}

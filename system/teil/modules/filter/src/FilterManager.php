@@ -14,16 +14,6 @@ class FilterManager
 	{
 		$this->app = $app;
 		$this->key_info = $key_info;
-
-		$this->db = $this->app->make('registry')->get('db');
-	}
-
-
-	public function test()
-	{
-		
-		
-		echo "testing menu module";
 	}
 
 
@@ -34,6 +24,15 @@ class FilterManager
 	 */
 	public function info($settings)
 	{
+		$this->db = $this->app->make('registry')->get('db');
+
+		// Get categories
+		// $this->app->make('registry')->get('load')->model('catalog/category');
+
+		// $categories = $this->app->make('registry')->get('model_catalog_category')->getCategories();
+
+		// print_r($categories); die();
+
 		return array(
 			'attributes' => $this->getAllAttributes($settings)
 		);
@@ -42,6 +41,8 @@ class FilterManager
 
 	public function filter($settings)
 	{
+		$this->db = $this->app->make('registry')->get('db');
+
 		return array(
 			'attributes' => $this->getFilteredAttributes($settings)
 		);
@@ -113,7 +114,7 @@ class FilterManager
 		{
 			$copy = $settings;
 			
-			// list( $k ) = explode( '-', $key );
+			// list($k ) = explode( '-', $key);
 			
 			unset($copy['attributes'][$attribute_id]);
 			
@@ -133,8 +134,9 @@ class FilterManager
 			
 			else
 			{
-				if( isset( $attribute_groups[$attribute_id] ) ) {
-					$filteredAttributes = $this->_replaceCounts( $filteredAttributes, array( $attribute_id => $attribute_groups[$attribute_id] ) );
+				if ( isset($attribute_groups[$attribute_id]))
+				{
+					$filteredAttributes = $this->_replaceCounts($filteredAttributes, array($attribute_id => $attribute_groups[$attribute_id]));
 				}
 			}
 
@@ -144,8 +146,8 @@ class FilterManager
 	}
 
 	private function _replaceCounts( array $counts1, array $counts2 ) {
-		foreach( $counts2 as $k1 => $v1 ) {
-			foreach( $v1 as $k2 => $v2 ) {				
+		foreach($counts2 as $k1 => $v1 ) {
+			foreach($v1 as $k2 => $v2 ) {				
 				$counts1[$k1][$k2] = $v2;
 			}
 		}

@@ -69,6 +69,10 @@
   filterApp.controller('FilterCtrl', function FilterCtrl($scope, $http, $timeout) {
     $scope.data = false;
     $scope.filterData = false;
+    $scope.pageParams = <?php echo json_encode(PageParams::parseURL()) ?>;
+    $scope.pageCategories = <?php echo json_encode($categories) ?>;
+
+    console.log($scope.filters);
 
     // Get all the attribtes, options etc.
     $scope.getFilterData = function() {
@@ -76,6 +80,10 @@
         url: '/index.php?route=product/category/info',
         method: 'post',
         responseType: 'json',
+        data: $.param({
+          page_params: $scope.pageParams,
+          page_categories: $scope.pageCategories
+        }),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       })
         .success(function(resp) {
@@ -92,6 +100,8 @@
         method: 'post',
         responseType: 'json',
         data: $.param({
+          page_params: $scope.pageParams,
+          page_categories: $scope.pageCategories,
           attributes: $scope.listAttributes()
         }),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
