@@ -471,7 +471,7 @@ class ControllerProductCategory extends Controller {
 			'options' => $options
 		);
 
-		$result = Filter::filter($this->db, $settings);
+		$result = Filter::filter($settings);
 		
 		echo json_encode($result); die();
 	}

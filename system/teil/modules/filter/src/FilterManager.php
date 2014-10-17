@@ -7,18 +7,21 @@ class FilterManager
 	private $app;
 	private $key_info;
 
+	private $db;
+
 
 	public function __construct(Teil\Core\App $app, $key_info)
 	{
 		$this->app = $app;
 		$this->key_info = $key_info;
+
+		$this->db = $this->app->make('registry')->get('db');
 	}
 
 
 	public function test()
 	{
-		// $this->app->make('registry')->get('db')->query("select * from product");
-		print_r($this->key_info); die();
+		
 		
 		echo "testing menu module";
 	}
@@ -29,18 +32,18 @@ class FilterManager
 	 *
 	 * @return array
 	 */
-	public function info($db, $settings)
+	public function info($settings)
 	{
 		return array(
-			'attributes' => $this->getAllAttributes($db, $settings)
+			'attributes' => $this->getAllAttributes($settings)
 		);
 	}
 
 
-	public function filter($db, $settings)
+	public function filter($settings)
 	{
 		return array(
-			'attributes' => $this->getFilteredAttributes($db, $settings)
+			'attributes' => $this->getFilteredAttributes($settings)
 		);
 	}
 
@@ -50,7 +53,7 @@ class FilterManager
 	 *
 	 * @return array
 	 */
-	public function getAllAttributes($db, $settings)
+	public function getAllAttributes($settings)
 	{
 		// Get all the attributes
 		$builder = new FilterBuilder(
@@ -62,7 +65,7 @@ class FilterManager
 		$settings['attributes'] = array();
 
 		$factory = new FilterFactory($builder);
-		return $factory->make($settings)->resolve($db);
+		return $factory->make($settings)->resolve($this->db);
 	}
 
 
@@ -71,7 +74,7 @@ class FilterManager
 	 *
 	 * @return array
 	 */
-	public function getRealAttributes($db, $settings)
+	public function getRealAttributes($settings)
 	{
 		// Get all the attributes
 		$builder = new FilterBuilder(
@@ -83,7 +86,7 @@ class FilterManager
 		$settings['attributes'] = array();
 
 		$factory = new FilterFactory($builder);
-		return $factory->make($settings)->resolve($db);
+		return $factory->make($settings)->resolve($this->db);
 	}
 
 
@@ -92,9 +95,9 @@ class FilterManager
 	 *
 	 * @return array
 	 */
-	public function getFilteredAttributes($db, $settings)
+	public function getFilteredAttributes($settings)
 	{
-		$attribute_groups = $this->getRealAttributes($db, $settings);
+		$attribute_groups = $this->getRealAttributes($settings);
 
 		// Get filtered attributes
 		$builder = new FilterBuilder(
@@ -103,7 +106,7 @@ class FilterManager
 		);
 
 		$factory = new FilterFactory($builder);
-		$filteredAttributes = $factory->make($settings)->resolve($db);
+		$filteredAttributes = $factory->make($settings)->resolve($this->db);
 
 		// ///////////////////
 		foreach($settings['attributes'] as $attribute_id => $attribute_values)
@@ -116,7 +119,7 @@ class FilterManager
 			
 			if ($copy['attributes'])
 			{
-				$tmp = $factory->make($copy)->resolve($db);
+				$tmp = $factory->make($copy)->resolve($this->db);
 
 				// print_r($tmp); 
 				
